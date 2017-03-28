@@ -6,7 +6,7 @@ volumes:
 
 services:
   postgres:
-    build: ./app/compose/postgres
+    build: ./compose/postgres
     volumes:
       - postgres_data_dev:/var/lib/postgresql/data
       - postgres_backup_dev:/backups
@@ -16,7 +16,7 @@ services:
   django:
     build:
       context: .
-      dockerfile: ./app/compose/django/Dockerfile-dev
+      dockerfile: ./compose/django/Dockerfile-dev
     command: /start-dev.sh
     depends_on:
       - postgres
@@ -34,7 +34,7 @@ services:
   pycharm:
     build:
       context: .
-      dockerfile: ./app/compose/django/Dockerfile-dev
+      dockerfile: ./compose/django/Dockerfile-dev
     depends_on:
       - postgres
     environment:

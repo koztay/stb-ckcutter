@@ -12,9 +12,10 @@ from __future__ import absolute_import, unicode_literals
 
 import environ
 
-ROOT_DIR = environ.Path(__file__) - 3  # (app/config/settings/base.py - 3 = app/)
+# (ecommerce_istebu_cookiecutter/config/settings/base.py - 3 = ecommerce_istebu_cookiecutter/)
+ROOT_DIR = environ.Path(__file__) - 3
 APPS_DIR = ROOT_DIR.path('ecommerce_istebu_cookiecutter')
-MAIN_ROOT_DIR = environ.Path(__file__) - 4
+
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
@@ -203,7 +204,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = str(MAIN_ROOT_DIR('staticfiles'))
+STATIC_ROOT = str(ROOT_DIR('staticfiles'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
