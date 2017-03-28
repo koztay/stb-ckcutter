@@ -1,0 +1,51 @@
+{% load staticfiles %}
+<!-- burada seçilen tabın class 'ı active oluyor nasıl yapacağız bunu?
+ diğer tabların içerikleri aşağıdaki gibi başlıyor:
+ <div class="tab-pane fade" id="women">
+ kendisi otomatik active ediyor.
+ -->
+                                <!-- Start one-cikanlar product category -->
+                                <div class="tab-pane fade in active" id="one-cikanlar">
+                                    <ul class="aa-product-catg">
+                                        {% include '_products_section/_single_product.html' with products=products%}
+                                    </ul>
+                                    <a class="aa-browse-btn" href="{% url 'products:products' %}">TÜMÜNE GÖZAT <span
+                                            class="fa fa-long-arrow-right"></span></a>
+                                </div>
+                                <!-- / one-cikanlar product category -->
+
+                                <!-- Start firsat ürünleri product category -->
+                                <div class="tab-pane fade" id="firsat">
+                                    <ul class="aa-product-catg">
+                                        {% include '_products_section/_single_product.html' with products=products %}
+                                    </ul>
+
+                                    <a class="aa-browse-btn" href="{% url 'products:products' %}">TÜMÜNE GÖZAT <span
+                                            class="fa fa-long-arrow-right"></span></a>
+
+                                </div>
+                                <!-- / firsat ürünleri product category -->
+
+                                <!-- Start kampanya ürünleri product category -->
+                                <div class="tab-pane fade" id="kampanya">
+                                    <ul class="aa-product-catg">
+                                        {% include '_products_section/_single_product.html' with products=products %}
+                                    </ul>
+
+                                    <a class="aa-browse-btn" href="{% url 'products:products' %}">TÜMÜNE GÖZAT <span
+                                            class="fa fa-long-arrow-right"></span></a>
+
+                                </div>
+                                <!-- / kampanya product category -->
+
+                                <!-- Start cok-satanlar ürünleri product category -->
+                                <div class="tab-pane fade" id="cok-satan">
+                                    <ul class="aa-product-catg">
+                                        {% include '_products_section/_single_product.html' with products=products %}
+                                    </ul>
+
+                                    <a class="aa-browse-btn" href="{% url 'products:products' %}">TÜMÜNE GÖZAT <span
+                                            class="fa fa-long-arrow-right"></span></a>
+
+                                </div>
+                                <!-- / cok-satanlar product category -->

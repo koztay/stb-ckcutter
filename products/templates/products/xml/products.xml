@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{% load get_thumbnail %}
+<products>
+  {% for product in products %}
+  <product>
+    <id>{{ product.id }}</id>
+    <product_title><![CDATA[ {{ product.title }} ]]></product_title>
+    <product_price>{{ product.variation_set.first.sale_price }}</product_price>
+    <product_image>{{ domain }}{{ product|get_thumbnail:"sd" }}</product_image>
+    <product_url>{{ domain }}{{ product.get_absolute_url }}</product_url>
+  </product>
+  {% endfor %}
+</products>

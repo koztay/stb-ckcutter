@@ -1,0 +1,11 @@
+{% extends "__base.html" %}
+
+
+
+{% block content %}
+
+    {% include "orders/order_summary_short.html" with order=order %}
+
+    <p><b>Lütfen saklamak için yazdırın.</b></p>
+{% endblock %}
+

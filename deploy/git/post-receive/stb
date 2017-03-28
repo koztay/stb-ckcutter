@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+REPO_NAME="stb"
+# just add the remote repo before pushing any code to server lik below:
+# git remote add <REPO_NAME> ssh://<IP_ADDRESS>:<REPO_LOCATION_ON_REMOTE>
+# example below :
+# git remote add production ssh://139.162.164.170:/var/git/stb.git
+
+
+# Check out the newest version of the code.
+
+export GIT_WORK_TREE="/var/git/${REPO_NAME}"
+git checkout -f
+
+#scp -r ../../../. "kemal@192.168.1.150:/var/git/stb"
+#TAG="$(git log --pretty=format:'%h' -n 1)"
+#FULL_COMMIT_TAG="${REPO_NAME}:${TAG}"
+#FULL_LATEST_TAG="${REPO_NAME}:latest"
+
+# Build the image with the proper commit tag.
+# aşağıya Dockerfile 'ın olduğu path i yazıyoruz:
+#docker build -t "${FULL_LATEST_TAG}" "${GIT_WORK_TREE}/app/"
+docker-compose -f "${GIT_WORK_TREE}/docker-compose-production.yml" build
+# Get the Docker ID of the last built image.
+#DOCKER_ID="$(docker images -q ${REPO_NAME} | head -1)"
+docker-compose -f "${GIT_WORK_TREE}/docker-compose-production.yml" up -d
+# Tag a latest version based off a commit tag.
+#docker tag -f "${DOCKER_ID}" "${FULL_LATEST_TAG}"
+
+#echo "Restarting ${REPO_NAME}"
+#docker stop "${REPO_NAME}"
+
+echo "Removing untagged Docker images (may take a while)"
+docker rmi $(docker images --quiet --filter "dangling=true")

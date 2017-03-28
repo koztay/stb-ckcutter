@@ -1,0 +1,17 @@
+[
+{
+    "model": "mytest.Contact",
+    "fields":[
+        "name",
+        "year",
+        "last"
+    ]
+},
+{
+    "model": "mytest.State",
+    "fields":[
+        "name",
+        "abbr"
+    ]
+}
+]

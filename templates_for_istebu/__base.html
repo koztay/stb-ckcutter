@@ -1,0 +1,56 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <title>{% block title %} İştebu! | Yaşamınızı Kolaylaştırır {% endblock %}</title>
+    {% include '_head_css.html' %}
+</head>
+<body>
+<!-- wpf loader Two -->
+<div id="wpf-loader-two">
+    <div class="wpf-loader-two-inner">
+        <span>Loading</span>
+    </div>
+</div>
+<!-- / wpf loader Two -->
+<!-- SCROLL TOP BUTTON -->
+<a class="scrollToTop" href="#"><i class="fa fa-chevron-up"></i></a>
+<!-- END SCROLL TOP BUTTON -->
+{% include '_header_section.html' %}
+
+{#{% include '_menu_section.html' %}#}
+{% include "visual_site_elements/menu/menu_items.html" with object_list=categories %}
+
+{#{% block messages %} {% endblock %}#}
+
+{% block slider_section %} {% endblock %}
+
+{% block content %} {% endblock %}
+
+{% block promo_section %} {% endblock %}
+
+{% block products_section %} {% endblock %}
+
+{% block banner_section %} {% endblock %}
+
+{% block popular_section %} {% endblock %}
+
+{% block support_section %} {% endblock %}
+
+{% block latest_blog_section %} {% endblock %}
+
+{% block brand_section %} {% endblock %}
+
+{% block subscribe_section %} {% endblock %}
+
+{% include '_footer_section.html' %}
+
+{% include '_login_modal_section.html' %}
+
+{% block javascript_section %} {% endblock %}
+
+</body>
+</html>

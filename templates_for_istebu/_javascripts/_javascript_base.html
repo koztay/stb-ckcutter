@@ -1,0 +1,24 @@
+{% load staticfiles %}
+
+{% block jquery_bootstrap %}
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="{% static 'js/bootstrap.js' %}"></script>
+{% endblock jquery_bootstrap %}
+
+{% block smart_menus %} {% endblock %}
+
+{% block slider %} {% endblock %}
+
+{% block product_view_slider %} {% endblock %}
+
+{% block slick_slider %} {% endblock %}
+
+{% block price_picker_slider %} {% endblock %}
+<!-- Custom js -->
+<script src="{% static 'js/custom.js' %}"></script>
+<!-- istebu js -->
+<script src="{% static 'js/istebu.js' %}"></script>
+
+{% block custom_javascript %} {% endblock %}

@@ -1,0 +1,23 @@
+{% extends "__base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="row">
+    <div class='col-sm-4 col-sm-offset-4 text-center'>
+        <p class='lead'>
+            Lütfen siparişiniz için adres seçin.
+        </p>
+        <form method="POST" action=''>{% csrf_token %}
+
+
+            {{ form|crispy }}
+
+
+            <input class='btn btn-primary btn-block' type='submit' value='Seç'/>
+            <a class='btn btn-link' href='{% url "user_address_create" %}'>Yeni adres ekle</a>
+
+        </form>
+
+    </div>
+    </div>
+{% endblock %}

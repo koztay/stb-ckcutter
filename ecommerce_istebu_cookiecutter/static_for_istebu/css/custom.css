@@ -1,0 +1,45 @@
+figure {
+    margin: 1px;
+}
+
+/*.container-alert-flash {*/
+    /*position: absolute;*/
+    /*top: 10px;*/
+    /*z-index: 50000;*/
+    /*width: 100%;*/
+    /*right: 0%;*/
+    /*margin: 0px;*/
+    /*display: none;*/
+/*}*/
+
+.container-alert-flash {
+    position: fixed;
+    top: 25%;
+    z-index: 50000;
+    width: 100%;
+    right: 25%;
+    margin: 0px;
+    display: none;
+}
+
+
+#aa-product .aa-product-area .aa-product-inner #one-cikanlar {
+    text-align: center;
+    padding-bottom: 35px;
+}
+
+#aa-product .aa-product-area .aa-product-inner #firsat {
+    text-align: center;
+    padding-bottom: 35px;
+}
+
+#aa-product .aa-product-area .aa-product-inner #kampanya {
+    text-align: center;
+    padding-bottom: 35px;
+}
+
+#aa-product .aa-product-area .aa-product-inner #cok-satan {
+    text-align: center;
+    padding-bottom: 35px;
+}
+

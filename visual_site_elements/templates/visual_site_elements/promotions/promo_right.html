@@ -1,0 +1,11 @@
+{% load get_promotion_thumbnail %}
+
+<div class="aa-single-promo-right">
+    <div class="aa-promo-banner">
+        <img src="{{ promotion|get_promotion_thumbnail:'md' }}" alt="img">
+        <div class="aa-prom-content">
+            <span>{{ promotion.title }}</span>
+            <h4><a href="{{ promotion.url }}">{{ promotion.sub_title }}</a></h4>
+        </div>
+    </div>
+</div>

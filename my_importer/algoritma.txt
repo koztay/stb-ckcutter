@@ -1,0 +1,11 @@
+1-) select file -> next
+2-) if file is XML file select get nodes and select root node -> next
+3-) analyze fields and return field list, redirect to mapping page -> next
+4-) in this view prefill existing fields next to it selectable fields dropdown including 'ignore' -> next
+5-) after mapping completed save this mapping as an object
+
+So a mapping object has to be the following fields:
+name = JSONField
+
+
+

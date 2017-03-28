@@ -1,0 +1,45 @@
+{% load get_thumbnail %}
+
+{#{{ product }}#}
+{#<img id='img' class='img-responsive' src='{{ product|get_thumbnail:"micro"}}' />#}
+{#{{ product.get_absolute_url }}#}
+
+<div class="thumbnail text-center">
+
+    <h4><a href='{{ product.get_absolute_url }}'>{{ product.title }}</a></h4>
+    {% if product|get_thumbnail:"micro" %}
+        <a href='{{ product.get_absolute_url }}'><img id='img' class='img-responsive'
+                                                      src='{{ product|get_thumbnail:"micro"}}'/></a><br/>
+    {% endif %}
+
+    {% if price == "True" %}
+        {{ product.variation_set.first.get_html_price }}
+    {% endif %}
+</div>
+
+{#<div class="thumbnail text-center">#}
+{#<h4><a href='{{ product.get_absolute_url }}'>{{ product.title }}</a></h4>#}
+{#	{% if instance|get_thumbnail:"micro" %}#}
+{#	<a href='{{ product.get_absolute_url }}'><img id='img' class='img-responsive' src='{{ product.get_image_url }}' /></a><br/>#}
+{#	{% endif %}#}
+{##}
+{#	{% if price == "True" %}#}
+{#		{{ product.variation_set.first.get_html_price }}#}
+{#	{% endif %}#}
+{#</div>#}
+
+{#{% for instance in product_list %}#}
+{#    <li class="">#}
+{#    	<a href='{{ instance.get_absolute_url }}'>{{ instance.title }}</a><br/>#}
+{#    	{% if instance|get_thumbnail:"micro" %}#}
+{#    	<a href='{{ instance.get_absolute_url }}'>#}
+{##}
+{#    		<img src='{{ instance|get_thumbnail:"micro" }}' /></a>#}
+{#            <br/>#}
+{#    	{% endif %}#}
+{#    	#}
+{#    	{{ instance.get_html_price|safe }}#}
+{#   </li>#}
+{#{% empty %}#}
+{#    <li>No Products yet.</li>#}
+{#{% endfor %}#}

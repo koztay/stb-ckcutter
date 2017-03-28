@@ -1,0 +1,59 @@
+<!-- Testimonial -->
+<section id="aa-testimonial">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="aa-testimonial-area">
+                    <ul class="aa-testimonial-slider">
+                        <!-- single slide -->
+                        {% for testimonial in testimonials %}
+                        <li>
+                            <div class="aa-testimonial-single">
+                                <img class="aa-testimonial-img" src="{{ testimonial.image }}" alt="testimonial img">
+                                <span class="fa fa-quote-left aa-testimonial-quote"></span>
+                                <p>{{ testimonial.comment }}</p>
+                                <div class="aa-testimonial-info">
+                                    <p>{{ testimonial.name_of_person }}</p>
+                                    <span>{{ testimonial.date }}</span>
+                                    <a href="{{ testimonial.url }}">N11.com</a>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+{#                        <!-- single slide -->#}
+{#                        <li>#}
+{#                            <div class="aa-testimonial-single">#}
+{#                                <img class="aa-testimonial-img" src="{% static 'img/testimonial-img-1.jpg' %}" alt="testimonial img">#}
+{#                                <span class="fa fa-quote-left aa-testimonial-quote"></span>#}
+{#                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt distinctio omnis#}
+{#                                    possimus, facere, quidem qui!consectetur adipisicing elit. Sunt distinctio omnis#}
+{#                                    possimus, facere, quidem qui.</p>#}
+{#                                <div class="aa-testimonial-info">#}
+{#                                    <p>KEVIN MEYER</p>#}
+{#                                    <span>CEO</span>#}
+{#                                    <a href="#">Alphabet</a>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </li>#}
+{#                        <!-- single slide -->#}
+{#                        <li>#}
+{#                            <div class="aa-testimonial-single">#}
+{#                                <img class="aa-testimonial-img" src="{% static 'img/testimonial-img-3.jpg' %}" alt="testimonial img">#}
+{#                                <span class="fa fa-quote-left aa-testimonial-quote"></span>#}
+{#                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt distinctio omnis#}
+{#                                    possimus, facere, quidem qui!consectetur adipisicing elit. Sunt distinctio omnis#}
+{#                                    possimus, facere, quidem qui.</p>#}
+{#                                <div class="aa-testimonial-info">#}
+{#                                    <p>Luner</p>#}
+{#                                    <span>COO</span>#}
+{#                                    <a href="#">Kinatic Solution</a>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </li>#}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- / Testimonial -->

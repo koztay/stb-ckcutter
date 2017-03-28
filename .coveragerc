@@ -1,0 +1,5 @@
+[run]
+include = ecommerce_istebu_cookiecutter/*
+omit = *migrations*, *tests*
+plugins =
+    django_coverage_plugin

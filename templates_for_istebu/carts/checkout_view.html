@@ -1,0 +1,95 @@
+{% extends "__base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
+
+<script>
+    {% block jquery %}
+
+{#        Paynet.onPaymentClick(function () {#}
+{#          if (true) {#}
+{#            alert("True.");#}
+{#            return true; //Gömülü form ödeme ekranı açılır.#}
+{#          }else {#}
+{#            alert("Uyarı.");#}
+{#            return false;    //Gömülü form ödeme ekranı açılmaz.#}
+{#         }#}
+{#    });#}
+
+    {% endblock %}
+</script>
+
+{% block content %}
+
+
+    {% if not user_can_continue %}
+        <div class='col-sm-6'>
+            <p class='lead'>Continue as Guest</p>
+
+
+            <form method='POST' action=''>{% csrf_token %}
+                {{ form|crispy }}
+                <input type='submit' class='btn btn-success' value='Continue as Guest'/>
+            </form>
+
+
+        </div>
+        <div class='col-sm-6'>
+            <p class='lead'>Login to Continue</p>
+            <form method='POST' action="{% url 'auth_login' %}"> {% csrf_token %}
+                {{ login_form|crispy }}
+
+                <input type='hidden' name='next' value='{{ next_url }}'/>
+                <input type='submit' class='btn btn-success' value='Login'/>
+            </form>
+            <p class='text-center'>
+
+            <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
+            <p>{% trans "Not member" %}? <a href="{% url 'about' %}">{% trans "Register" %}</a>!</p>
+            </p>
+
+        </div>
+
+    {% else %}
+
+        <div class='col-sm-4 col-sm-offset-4 text-center'>
+
+            {% include "orders/order_summary_short.html" with order=order %}
+
+
+            <p>
+                <a href='{% url "order_address" %}'>Change an Address</a>
+            </p>
+            <br/>
+
+            <form id="checkout" method='POST' action="{% url 'checkout_final' %}">{% csrf_token %}
+                <script
+                    class="paynet-button"
+                    type="text/javascript"
+                    src="{{ paynet_js_url }}"
+                    data-key="{{ paynet_publishable_key }}"
+                    data-amount="{{ order.paynet_order_total }}"
+                    data-button_label="Ödeme Yap"
+                    data-image="[image_url]">
+                </script>
+                <!-- <input type='hidden' name='payment_token' value='ABC' /> -->
+{#                <div id="payment-form"></div>#}
+{#                <p><b>#}
+{#                    <button type='submit'>Complete Order</button>#}
+{#                </b>#}
+{##}
+{#                </p>#}
+            </form>
+
+
+        </div>
+
+
+
+    {% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "__base.html" %}
+
+{% block slider_section %}
+    {% include 'visual_site_elements/sliders/sliders.html' with object_list=sliders %}
+{% endblock %}
+
+{% block promo_section %}
+    {% include "visual_site_elements/promotions/promotions.html" with object_list=promotions %}
+{% endblock %}
+
+{% block products_section %}
+    {% include '_products_section/__products_section.html' with object_list=products %}
+{% endblock %}
+
+{% block banner_section %}
+    {% include '_banner_section.html' %}
+{% endblock %}
+
+{% block popular_section %}
+    {% include '_popular_section.html' %}
+{% endblock %}
+
+{% block support_section %}
+    {% include '_support_section.html' %}
+{% endblock %}
+
+{% block brand_section %}
+    {% include '_brand_section.html' %}
+{% endblock %}
+
+{% block subscribe_section %}
+    {% include '_subscribe_section.html' %}
+{% endblock %}
+
+{% block javascript_section %}
+    {% include '_javascripts/_javascript_home.html' %}
+{% endblock %}

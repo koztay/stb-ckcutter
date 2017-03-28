@@ -1,0 +1,39 @@
+{% load get_promotion_thumbnail %}
+
+{% if object_list %}
+<!-- Start Promo section -->
+<section id="aa-promo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="aa-promo-area">
+                    <div class="row">
+                        <!-- promo left -->
+                        <div class="col-md-5 no-padding">
+                            <div class="aa-promo-left">
+                                <div class="aa-promo-banner">
+                                    <img src="{{ object_list.0|get_promotion_thumbnail:'lg' }}" alt="img">
+                                    <div class="aa-prom-content">
+                                        <span>{{ object_list.0.title }}</span>
+                                        <h4><a href="{{ object_list.0.url }}">{{ object_list.0.sub_title }}</a></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- promo right -->
+                        <div class="col-md-7 no-padding">
+                            <div class="aa-promo-right">
+                                {% for promotion in object_list.1 %}
+                                    {% include "visual_site_elements/promotions/promo_right.html" with promotion=promotion %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- / Promo section -->
+{% endif %}
+

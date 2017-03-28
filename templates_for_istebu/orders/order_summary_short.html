@@ -1,0 +1,41 @@
+<p class='lead'>
+    {% if order.order_id %}#{{ order.order_id }}{% endif %} no.lu Sipariş Özeti</p>
+
+<table class='table'>
+    <tr>
+        <td>{{ order.cart.cartitem_set.count }} Ürünler: <br/>{% for i in order.cart.cartitem_set.all %}
+            <b>{{ i.item.get_title }}</b><br/>
+        {% endfor %}</td>
+    </tr>
+    <tr>
+        <td>Sepet Toplamı : {{ order.cart.subtotal }}</td>
+    </tr>
+    <tr>
+        <td>KDV : {{ order.cart.tax_total }}</td>
+    </tr>
+    <tr>
+        <td>KDV 'li Toplam : {{ order.cart.total }}</td>
+    </tr>
+
+    <tr>
+        <td>Kargo Ücreti : {{ order.shipping_total_price }}</td>
+    </tr>
+    <tr>
+        <td>Sipariş Toplamı : {{ order.order_total }}</td>
+    </tr>
+
+
+</table>
+</div>
+
+<div class='col-sm-4 col-sm-offset-4 text-center'>
+
+    <p><b>Fatura Adresi :</b>
+        <br/>
+        {{ order.billing_address.get_address }}
+    <p>
+    <p><b>Sevk Adresi :</b>
+        <br/>
+        {{ order.shipping_address.get_address }}
+    </p>
+</div>
