@@ -43,7 +43,6 @@ services:
       - .:/app
 
 
-
   mailhog:
     image: mailhog/mailhog
     ports:

@@ -6,6 +6,7 @@
         <entryData>
           <resourceRoots>
             <path value="file://$PROJECT_DIR$/ecommerce_istebu_cookiecutter/static" />
+            <path value="file://$PROJECT_DIR$/ecommerce_istebu_cookiecutter/static_for_istebu" />
           </resourceRoots>
         </entryData>
       </entry>

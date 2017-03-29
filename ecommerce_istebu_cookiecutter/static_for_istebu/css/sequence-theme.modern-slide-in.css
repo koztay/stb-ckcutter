@@ -33,7 +33,6 @@ html,
 
 .seq {
     position: relative;
-    /*background: #D9D9D9 url("../images/bg-sequence.jpg") no-repeat;*/
     background-position: 0% 100%;
     background-size: cover;
     /* Dimensions */
@@ -154,7 +153,7 @@ html,
 
 .seq .seq-next {
     right: 20px;
-    /*background: url("../img/slider/bt-next.png");*/
+
 }
 
 .seq .seq-next:focus,
@@ -166,7 +165,7 @@ html,
 
 .seq .seq-prev {
     left: 20px;
-    /*background: url("../img/slider/bt-prev.png");*/
+
 }
 
 .seq .seq-prev:focus,
@@ -515,14 +514,14 @@ html,
     }
 
     .seq .seq-next {
-        /*background: url("../images/bt-next@2x.png");*/
+
         background-size: 35px 66px;
     }
 
     .seq .seq-prev {
-        /*background: url("../images/bt-prev@2x.png");*/
+
         background-size: 35px 66px;
     }
 }
 
-/*# sourceMappingURL=sequence-theme.modern-slide-in.css.map */
+
