@@ -46,8 +46,8 @@ urlpatterns = [
     url(r'^checkout/address/add/$', UserAddressCreateView.as_view(), name='user_address_create'),
     url(r'^checkout/final/$', CheckoutFinalView.as_view(), name='checkout_final'),
 
-    # tiny_mce
-    url(r'^tinymce/', include('tinymce.urls')),
+    # ckeditor
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 
     # data-importer
     url(r'^data-importer/', include('importer.urls', namespace='importer')),

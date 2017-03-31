@@ -55,6 +55,7 @@ THIRD_PARTY_APPS = [
     'allauth',  # registration
     'allauth.account',  # registration
     'allauth.socialaccount',  # registration
+    'ckeditor',
     'data_importer',
     'django_celery_beat',
     'django_celery_results',
@@ -62,7 +63,7 @@ THIRD_PARTY_APPS = [
     'formtools',
     'rest_framework',
     'taggit',
-    'tinymce',
+
 ]
 
 # Apps specific for this project go here.
@@ -318,4 +319,8 @@ PAYNET_TEST_API_URL = env('PAYNET_TEST_API_URL', default='string for prevent cra
 PAYNET_TEST_PAYNETJS_URL = env('PAYNET_TEST_PAYNETJS_URL', default='string for prevent crash building docker')
 PAYNET_PRODUCTION_API_URL = env('PAYNET_PRODUCTION_API_URL', default='string for prevent crash building docker')
 PAYNET_PRODUCTION_PAYNETJS_URL = env('PAYNET_PRODUCTION_PAYNETJS_URL', default='string for prevent crash building docker')
+
+
+CKEDITOR_UPLOAD_PATH = 'ck_uploads/'
+
 

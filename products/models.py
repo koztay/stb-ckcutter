@@ -5,7 +5,8 @@ from django.db.models import Case, Count, F, Max, Q, Value, When
 from django.utils.safestring import mark_safe
 from uuslug import slugify
 from taggit.managers import TaggableManager
-from tinymce.models import HTMLField
+# from tinymce.models import HTMLField
+from ckeditor.fields import RichTextField
 # from utils import thumbnail_location, THUMB_CHOICES
 
 
@@ -67,7 +68,7 @@ class ProductManager(models.Manager):
 class Product(models.Model):
     title = models.CharField(max_length=1000)
     # description = models.TextField(blank=True, null=True)
-    description = HTMLField(default="<h1>default description</h1>", blank=True, null=True)
+    description = RichTextField(default="<h1>default description</h1>", blank=True, null=True)
     price = models.DecimalField(decimal_places=2, max_digits=20, blank=True, null=True)
     active = models.BooleanField(default=True)
     categories = models.ManyToManyField('Category', blank=True)
