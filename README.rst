@@ -1,7 +1,7 @@
 ecommerce_istebu_cookiecutter
 =============================
 
-istebu.com website
+ecommerce_istebu_cookiecutter website
 
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
