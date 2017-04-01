@@ -56,6 +56,7 @@ THIRD_PARTY_APPS = [
     'allauth.account',  # registration
     'allauth.socialaccount',  # registration
     'ckeditor',
+    'ckeditor_uploader',
     'data_importer',
     'django_celery_beat',
     'django_celery_results',
@@ -304,7 +305,7 @@ else:
 # django-compressor
 # ------------------------------------------------------------------------------
 INSTALLED_APPS += ['compressor']
-STATICFILES_FINDERS += ['compressor.finders.CompressorFinder']
+STATICFILES_FINDERS += ['compressor.finders.CompressorFinder', ]
 
 # Location of root django.contrib.admin URL, use {% url 'admin:index' %}
 ADMIN_URL = r'^admin/'
@@ -322,5 +323,6 @@ PAYNET_PRODUCTION_PAYNETJS_URL = env('PAYNET_PRODUCTION_PAYNETJS_URL', default='
 
 
 CKEDITOR_UPLOAD_PATH = 'ck_uploads/'
+CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
 
 
