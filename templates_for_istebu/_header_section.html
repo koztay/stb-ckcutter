@@ -27,9 +27,9 @@
                             {% endif %}
                             {% if request.user.is_authenticated %}
                                 <li><a href="{% url 'orders' %}">Siparişlerim</a></li>
-                                <li><a href="{% url 'auth_logout' %}">Çıkış</a></li>
+                                <li><a href="{% url 'account_logout' %}">Çıkış</a></li>
                             {% else %}
-                                <li><a href="{% url 'about' %}">Kayıt Ol</a></li>
+                                <li><a href="{% url 'account_signup' %}">Kayıt Ol</a></li>
                                 {% if not request.user.is_authenticated and not "/accounts/login" in request.get_full_path %}
                                     <li><a href="" data-toggle="modal" data-target="#login-modal">Giriş Yap</a></li>
                                 {% endif %}

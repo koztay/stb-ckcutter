@@ -218,7 +218,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
+        # self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
             email = form.cleaned_data.get("email")

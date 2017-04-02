@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import XMLImportMap
+from .models import XMLImportMap, ImporterFile
 
 
 class XMLImportMapAdmin(admin.ModelAdmin):
@@ -11,3 +11,4 @@ class XMLImportMapAdmin(admin.ModelAdmin):
         model = XMLImportMap
 
 admin.site.register(XMLImportMap, XMLImportMapAdmin)
+admin.site.register(ImporterFile)
