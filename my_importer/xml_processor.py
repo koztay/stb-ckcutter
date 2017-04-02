@@ -4,22 +4,36 @@
 # import xml.etree.ElementTree as etree #this is not preserve CDATA
 from lxml import etree
 
+# "/app/ecommerce_istebu_cookiecutter/media/my_importer/n11_urunler_fmjkb4d.xml"
+
 
 def get_root(file_path):
     parser = etree.XMLParser(strip_cdata=False, recover=True)
     tree = etree.parse(file_path, parser)
     root = tree.getroot()
+    # print(root.tag)  # Burada Urunler basması lazım.
+    # print(root.getchildren()[0])  # root.getchildren() tüm ürünleri element olarak listeliyor. findall() 'a gerek yok.
+    # print(root.getchildren()[0].tag) # bu da ilk elementin tagini veriyor.
     return root
 
 
+# buna gerek yok ben sub_elementlere bakıyorum ama dursun şimdilik bir zararı yok.
 def get_all_elements(root):
     all_elements = list(root.iter())
     unique_tags = set([element.tag for element in all_elements])
     return unique_tags
 
 
+def get_all_sub_elements_in_xml_root(root):
+    for child in root:
+        all_subs = list(child.iter())  # child.iter() yapınca alt elementleri de almamızı sağlıyor.
+        return set([sub.tag for sub in all_subs])
+        # for sub in child:
+        #     print(sub.tag)
+
+
 # Aşağıdaki çalışıyor...
-def change_price(manufacturer=None, increase_factor=None):
+def change_price(root, manufacturer=None, increase_factor=None):
     for product in root.findall('Urun'):
         product_name = product.find('Baslik').text
         for manufacturer_name in manufacturer:
