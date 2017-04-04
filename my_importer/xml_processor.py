@@ -32,6 +32,22 @@ def get_all_sub_elements_in_xml_root(root):
         #     print(sub.tag)
 
 
+def get_all_sub_elements_as_dict(root):
+    """
+    returns the dictionary array of the products
+    :param urunler: this is the all products as Element from root.getchildren()
+    :return: 
+    """
+    urunler = root.getchildren()
+    urunler_array = []
+    for urun in urunler:
+        all_sub_elements = list(urun.iter())
+        urun_as_dictionary = dict()
+        [urun_as_dictionary.update({sub.tag: sub.text}) for sub in all_sub_elements if not urun_as_dictionary.get(sub.tag)]
+        urunler_array.append(urun_as_dictionary)
+    return urunler_array
+
+
 # Aşağıdaki çalışıyor...
 def change_price(root, manufacturer=None, increase_factor=None):
     for product in root.findall('Urun'):

@@ -24,6 +24,32 @@ tasks-delete-this.add.apply_async(args=[1,2], kwargs={}, queue='amazon_queue')
 Or use automatic routing for certain task types.
 """
 
+
+"""
+Tüm sorgularda aşağıdaki Keyler ile başla, yani örneğin Mağaza_Kodu için XML_Field bulmak için :
+json_map.get("Mağaza_Kodu").get("XML_Field)
+
+ya da model için :
+json_map.get("Mağaza_Kodu").get("model)
+
+ya da local field için 
+
+"Magaza_Kodu"
+"Kategori": 
+"Alt_Kategori"
+"Urun_Tipi"
+"Urun_Adi"
+"KDV" 
+"Para_Birimi"
+"Alis_Fiyati"
+"Satis_Fiyati"
+"Barkod"
+"Kargo"
+"Urun_Resmi"
+"""
+
+
+
 # Udemy Complete Object Bootcamp" - "Jose PORTILLA"
 # TODO: Aşağıdaki fonksiyonda "list comprehension" kullanılabilir mi? - LECTURE 37
 # TODO: Aşağıdaki fonksiyonda "lambda expressions" kullanılabilir mi? get_cell_for_field() 'da kesin kullanılır. - L42
@@ -35,7 +61,7 @@ Or use automatic routing for certain task types.
 
 
 # @task(bind=True, name="Import_XML_File", rate_limit="10/h")
-def import_xml_file(self, xml_file_pk=None, import_map_pk=None):
+def import_xml_file(self, xml_file_pk=None, import_map_pk=None, default_category=None):
     """
     Bu task tüm import işlemini tek seferde yapacak. O nedenle rate için saate 10 adet yazdım.
     :param self: task 'in kendisi, daha sonra refere etmek için gerekli sanırım
@@ -44,8 +70,8 @@ def import_xml_file(self, xml_file_pk=None, import_map_pk=None):
     :return: import edilen ürüne ait ürün adını göndereceğiz.
     """
 
-    # xml_file_pk=34
-    # import_map_pk = 33
+    # xml_file_pk = 35
+    # import_map_pk = 34
 
     # 1- xml 'dosyasını aç rootu get_children() ile de tüm children elementleri al.
     # 2- import_map 'ten map json 'ı oluştur.
@@ -63,6 +89,7 @@ def import_xml_file(self, xml_file_pk=None, import_map_pk=None):
 
     # return a dictionary from the above string
     json_map = json.loads(import_map)
+    print(json_map)
     # print("type json_map:", type(json_map))  # bunun tipi dictionary imiş
 
     # product yaratabilmek için gerekli fieldları listele ve product 'ı yarat.
@@ -78,7 +105,7 @@ def import_xml_file(self, xml_file_pk=None, import_map_pk=None):
     variation_fields = [x for x in json_map if json_map[x].get("model") == "Variation"]
     processable_variation_list = list(map(lambda x: json_map[x], variation_fields))
     mapped_variation_fields = list(filter(lambda x: "XML_Field" in x, processable_variation_list))
-    print(mapped_variation_fields)
+    # print(mapped_variation_fields)
 
     # find all mapped fields
     all_mapped_fields = [x for x in json_map if json_map[x].get("XML_Field")]
@@ -110,35 +137,24 @@ def import_xml_file(self, xml_file_pk=None, import_map_pk=None):
     def set_product_type(product_instance, product_type_instance):
         product_instance.product_type = product_type_instance
 
-    # product_image için set func yazmaya gerek yok. çünkü image downloader yapacak o işi
-    # variation otomatik yaratılıyor o nedenle onun da fieldlarını set etmeliyim.
-
-    def get_xml_field_for_local(field, model):
-
-        # return a default field name list below which contains given field
-        field_name_list = [x for x in json_map if json_map[x].get('local_field') == field]
-
-        # return a dictionary list using above field name list
-        processable_object_list = list(map(lambda x: json_map[x], field_name_list))
-        # print(processable_object_list)
-
-        # return an object from above list which contains the model
-        target_object = [x for x in processable_object_list if x.get('model') == model][0]
-        # print(target_object)
-
-        # return XML_Field
-        return target_object.get("XML_Field")
-    # print(get_xml_field_for_local('name', 'Currency'))
-    # print(get_xml_field_for_local('title', 'Product'))
+    def get_map_field(field, subfield):
+        return json_map.get(field).get(subfield)
 
     def create_or_update_product_fields(all_product_elements):
         for product_element in all_product_elements:
-            xml_field_for_title = get_xml_field_for_local("title", "Product")
+            xml_field_for_title = get_map_field("Urun_Adi", "XML_Field")
             title = product_element.find(xml_field_for_title).text
             # 1- product instance yarat
-            product_instance, created = Product.objects.get_or_create(title=title)
-            variation_instance = product_instance.variation_set.all()[0]
-            print(variation_instance)
+            created = False
+            try:
+                product_instance = Product.objects.get(title=title)
+            except Product.DoesNotExist:
+                product_instance = Product(title=title)
+                created = True
+                # at this stage I don't want to save the product in db.
+                # so, I don't use Product.objects.create() method
+            # variation_instance = product_instance.variation_set.all()[0]  # there is no variation instance
+            # print(variation_instance)
             # 2- map edilmiş listeden XML_Field 'ı bul (TAG)
             for field in mapped_product_fields:
                 # 3- bulduğun TAG 'e ait değeri çek
@@ -155,46 +171,69 @@ def import_xml_file(self, xml_file_pk=None, import_map_pk=None):
 
                 # print("product save edildi.")
 
-            # 7- product 'a ait diğer değerleri gir. kategori, type, currency vb.
-            for field in processable_mapped_list:
-                if field.get("model") == 'Category':
-                    xml_field_name = get_xml_field_for_local("categories", "Category")
-                    print(xml_field_name)
-                    # get category from name and pass it to func
+            # check if mandatory fields have been available.
+            save_product = True
+            mandatory_field = None
 
-                elif field.get("model") == 'Currency':
-                    xml_field_name = get_xml_field_for_local("name", "Currency")
-                    print(xml_field_name)
-                    # get currency object and pass it to func
+            product_dictionary = xml_processor.get_all_sub_elements_as_dict(product_element)
+            kategori = get_map_field("Kategori", "XML_Field")
+            # print(kategori)
+            if not product_dictionary[0].get(kategori):
+                save_product = False
+                mandatory_field = "Kategori"
 
-                elif field.get("model") == 'ProductType':
-                    xml_field_name = get_xml_field_for_local("name", "Currency")
-                    print(xml_field_name)
+            # yukarıda false yapılmamışsa
+            if save_product:
+                product_instance.save()
 
-                elif field.get("model") == 'ProductImage':
-                    xml_field_name = get_xml_field_for_local("image", "ProductImage")
-                    print(xml_field_name)
-                    # burada image downloader task başlat
+                # artık aşağıdaki maddeleri girebiliriz. Çünkü mandatory field lar tamam.
+                # 7- product 'a ait diğer değerleri gir. kategori, type, currency vb.
+                for field in processable_mapped_list:
+                    if field.get("model") == 'Category':
+                        try:
+                            category_instance = Category.objects.get(title=product_dictionary[0].get(kategori))
+                            set_category(product_instance, category_instance)
+                            print("Kategori Bulundu.")
+                        except:
+                            print("Kategori Bulunamadı...")
 
-                elif field.get("model") == 'Variation':
 
-                    for field in mapped_variation_fields:
 
-                        xml_field = field.get("XML_Field")
-                        print("xml_field", xml_field)
+                    elif field.get("model") == 'Currency':
+                        xml_field_name = get_xml_field_for_local("name", "Currency")
+                        print(xml_field_name)
+                        # get currency object and pass it to func
 
-                        xml_field_value = product_element.find(xml_field).text
-                        print (xml_field_value)
-                        # 4- map edilmiş listeden field 'ı çek (local_field)
-                        local_field = field.get("local_field")
-                        print(local_field)
-                        # 5- set_attribute ile değerleri set et.
-                        if xml_field_value:
-                            setattr(variation_instance, local_field, xml_field_value)
+                    elif field.get("model") == 'ProductType':
+                        xml_field_name = get_xml_field_for_local("name", "ProductType")
+                        print(xml_field_name)
 
-            variation_instance.save()
-            product_instance.save()
+                    elif field.get("model") == 'ProductImage':
+                        xml_field_name = get_xml_field_for_local("image", "ProductImage")
+                        print(xml_field_name)
+                        # burada image downloader task başlat
 
+                    elif field.get("model") == 'Variation':
+
+                        for field in mapped_variation_fields:
+
+                            xml_field = field.get("XML_Field")
+                            print("xml_field", xml_field)
+
+                            xml_field_value = product_element.find(xml_field).text
+                            print (xml_field_value)
+                            # 4- map edilmiş listeden field 'ı çek (local_field)
+                            local_field = field.get("local_field")
+                            print(local_field)
+                            # 5- set_attribute ile değerleri set et.
+                            if xml_field_value:
+                                setattr(variation_instance, local_field, xml_field_value)
+
+            if save_product:
+                variation_instance.save()
+                product_instance.save()
+            else:
+                print("There is a missing mandatory field: %s.  It prevents saving product.", mandatory_field)
 
             # 8- otomatik olarak yaratılan variantı çek
             # 9- varianta ait değerleri set et ve save edip döngüden çık.
@@ -203,12 +242,158 @@ def import_xml_file(self, xml_file_pk=None, import_map_pk=None):
                 print("product created")
             else:
                 print("product_updated")
+
         print("task_completed")
 
 
     # create_or_update_product_fields(all_products)
 
     create_or_update_product_fields(all_products)
+
+
+def step01_prepare_xml_for_processing(xml_file_pk):
+    """
+      Bu task tüm import işlemini tek seferde yapacak. O nedenle rate için saate 10 adet yazdım.
+      :param self: task 'in kendisi, daha sonra refere etmek için gerekli sanırım
+      :param xml_file_pk: hangi xml 'i import edeceksek onu gönderiyoruz.
+      :return: import edilen ürüne ait ürün adını göndereceğiz.
+      """
+
+    # xml_file_pk = 35
+    # import_map_pk = 34
+    xml_file_object = ImporterFile.objects.get(pk=xml_file_pk)
+    xml_file_path = xml_file_object.get_file_path()
+    root = xml_processor.get_root(xml_file_path)
+    products_dictionary_array = xml_processor.get_all_sub_elements_as_dict(root)
+    return products_dictionary_array
+
+
+""" 
+    "Barkod": {"model": "Variation", "local_field": "product_barkod"},
+    "Alis_Fiyati": {"model": "Variation", "local_field": "buying_price"},
+    "Satis_Fiyati": {"model": "Variation", "local_field": "sale_price"},  
+    "Magaza_Kodu": {"model": "Variation", "local_field": "istebu_product_no"},
+    "Para_Birimi": {"model": "Currency", "local_field": "name"},  # variation.buying_currency olarak ekle!!!
+    "Kategori": {"model": "Category", "local_field": "categories"},  # product.categories olarak eklenecek !!!!
+    "Alt_Kategori": {"model": "Category", "local_field": "categories"}, # product.categories olarak eklenecek !!!
+    "Urun_Tipi": {"model": "ProductType", "local_field": "name"},  # product.product_type olarak ekle !!!
+    "Urun_Adi": {"model": "Product", "local_field": "title"},
+    "KDV": {"model": "Product", "local_field": "kdv"},
+    "Urun_Resmi": {"model": "ProductImage", "local_field": "image"},
+
+"""
+
+
+def step02_prepare_import_map(import_map_pk):
+    # return import_map field value as string
+    import_map_object = XMLImportMap.objects.get(pk=import_map_pk)
+    import_map = import_map_object.map
+
+    # return a dictionary from the above string
+    return json.loads(import_map)
+
+# buna gerek yok DRY prensibi zaten elimde json_map var istediğim veriyi çekebileceğim
+# def step03_prepare_xml_fields_arrarys(json_map):
+#     variation_fields = ["Barkod", "Alis_Fiyati", "Satis_Fiyati", "Magaza_Kodu"]
+#     currency_fields = ["Para_Birimi"]
+#     kategori_fields = ["Kategori", "Alt_Kategori"]
+#     product_type_fields = ["Urun_Tipi"]
+#     product_fields = ["Urun_Adi", "KDV"]
+#     product_picture_fields = ["Urun_Resmi"]
+#
+#     variation_xml_fields = [json_map.get(field).get("XML_Field") for field in variation_fields]
+#     variation_local_fields = [json_map.get(field).get("local_field") for field in variation_fields]
+#     # print(variation_xml_fields)
+#     variation_zip = zip(variation_xml_fields, variation_fields, variation_local_fields)
+#     variation_zipped_list = [a for a in variation_zip]
+#     # returns the following
+#     # [(None, 'Barkod', 'product_barkod'), (None, 'Alis_Fiyati', 'buying_price'),
+#     # ('Fiyat', 'Satis_Fiyati', 'sale_price'), ('Kod', 'Magaza_Kodu', 'istebu_product_no')]
+#
+#     currency_xml_fields = [json_map.get(field).get("XML_Field") for field in currency_fields]
+#     currency_local_fields = [json_map.get(field).get("local_field") for field in currency_fields]
+#     currency_zip = zip(currency_xml_fields, currency_fields, currency_local_fields)
+#     currency_zipped_list = [a for a in currency_zip]
+#
+#     kategori_xml_fields = [json_map.get(field).get("XML_Field") for field in kategori_fields]
+#     # print(kategori_xml_fields)
+#     product_type_xml_fields = [json_map.get(field).get("XML_Field") for field in product_type_fields]
+#     # print(product_type_xml_fields)
+#     product_xml_fields = [json_map.get(field).get("XML_Field") for field in product_fields]
+#     # print(product_xml_fields)
+#     product_picture_xml_fields = [json_map.get(field).get("XML_Field") for field in product_picture_fields
+#                                   if json_map.get(field).get("XML_Field") is not None]
+#     # print(product_picture_xml_fields)
+#
+#     return {
+#             "variation_xml_fields": variation_zipped_list,
+#             "currency_xml_fields": currency_zipped_list,
+#             # "kategori_xml_fields": kategori_xml_fields,
+#             # "product_type_xml_fields": product_type_xml_fields,
+#             # "product_xml_fields": product_xml_fields,
+#             # "product_picture_xml_fields": product_picture_xml_fields
+#             }
+
+
+def step03_process_products_dict_array(product_dict_array, json_map):
+    # variation_fields = ["Barkod", "Alis_Fiyati", "Satis_Fiyati", "Magaza_Kodu"]
+    # currency_fields = ["Para_Birimi"]
+    # kategori_fields = ["Kategori", "Alt_Kategori"]
+    # product_type_fields = ["Urun_Tipi"]
+    # product_fields = ["Urun_Adi", "KDV"]
+    # product_picture_fields = ["Urun_Resmi"]
+
+    for product_dict in product_dict_array:
+        row_dictionary = dict()
+        # print(product_dict)
+
+        def process_field(field):
+            xml_field = json_map.get(field).get("XML_Field")
+            xml_value = product_dict.get(xml_field)
+            if xml_value is not None:
+                xml_value = xml_value.strip()
+                if len(xml_value) >= 3:
+                    local_field = json_map.get(field).get("local_field")
+                    # print(barkod_xml_field, local_field)
+                    value_dict = {local_field: xml_value}
+                    row_dictionary[field] = value_dict
+                    # print(row_dictionary)
+                    return True
+            else:
+                # check if it is mandatory field
+                # process steps to break the execution
+                return False
+
+        process_field("Barkod")  # Not mandatory field Break is not necessary
+
+        if not process_field("Satis_Fiyati"):  # Mandatory Field break
+            print("No Satis_Fiyati, will break")
+            continue
+
+        if not process_field("Alis_Fiyati"):  # Not mandatory field Break is not necessary
+            # set field according to the Satis_Fiyati e.g. 0.95
+            pass
+
+        if not process_field("Magaza_Kodu"):  # Bu bizim vereceğimiz kod otomatik oluşmalı bence
+            # create mağaza kodu
+            pass
+
+        if not process_field("Para_Birimi"):
+            # set default as TL
+            pass
+
+        if not process_field("Kategori"):  # Mandatory field break necessary
+            # set default as TL
+            print("No Kategori, will break")
+            continue
+        print(row_dictionary)
+
+
+def run_all_steps():
+    products_dict_array = step01_prepare_xml_for_processing(35)
+    json_map = step02_prepare_import_map(34)
+    step03_process_products_dict_array(products_dict_array, json_map)
+
 
 @task(bind=True, name="Download Image", rate_limit="40/h")
 def download_image_for_product(self, image_link=None, product_id=None):

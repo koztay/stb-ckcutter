@@ -16,7 +16,7 @@
       <excludeFolder url="file://$MODULE_DIR$/staticfiles" />
       <excludeFolder url="file://$MODULE_DIR$/templating_files" />
     </content>
-    <orderEntry type="jdk" jdkName="Remote Python 3.5.2 Docker Compose (django at [/Users/kemal/PycharmProjects/ecommerce_istebu_cookiecutter/dev.yml])" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Remote Python 3.5.3 Docker Compose (django at [/Users/kemal/PycharmProjects/ecommerce_istebu_cookiecutter/dev.yml])" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">
