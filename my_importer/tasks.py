@@ -4,7 +4,7 @@ from celery.decorators import task
 
 from .models import XMLImportMap, ImporterFile
 from utils import image_downloader
-from products.models import Product, ProductType, Currency, Category
+from products.models import Product, ProductType, Currency, Category, Variation
 
 import json
 from . import xml_processor
@@ -292,48 +292,10 @@ def step02_prepare_import_map(import_map_pk):
     # return a dictionary from the above string
     return json.loads(import_map)
 
-# buna gerek yok DRY prensibi zaten elimde json_map var istediğim veriyi çekebileceğim
-# def step03_prepare_xml_fields_arrarys(json_map):
-#     variation_fields = ["Barkod", "Alis_Fiyati", "Satis_Fiyati", "Magaza_Kodu"]
-#     currency_fields = ["Para_Birimi"]
-#     kategori_fields = ["Kategori", "Alt_Kategori"]
-#     product_type_fields = ["Urun_Tipi"]
-#     product_fields = ["Urun_Adi", "KDV"]
-#     product_picture_fields = ["Urun_Resmi"]
-#
-#     variation_xml_fields = [json_map.get(field).get("XML_Field") for field in variation_fields]
-#     variation_local_fields = [json_map.get(field).get("local_field") for field in variation_fields]
-#     # print(variation_xml_fields)
-#     variation_zip = zip(variation_xml_fields, variation_fields, variation_local_fields)
-#     variation_zipped_list = [a for a in variation_zip]
-#     # returns the following
-#     # [(None, 'Barkod', 'product_barkod'), (None, 'Alis_Fiyati', 'buying_price'),
-#     # ('Fiyat', 'Satis_Fiyati', 'sale_price'), ('Kod', 'Magaza_Kodu', 'istebu_product_no')]
-#
-#     currency_xml_fields = [json_map.get(field).get("XML_Field") for field in currency_fields]
-#     currency_local_fields = [json_map.get(field).get("local_field") for field in currency_fields]
-#     currency_zip = zip(currency_xml_fields, currency_fields, currency_local_fields)
-#     currency_zipped_list = [a for a in currency_zip]
-#
-#     kategori_xml_fields = [json_map.get(field).get("XML_Field") for field in kategori_fields]
-#     # print(kategori_xml_fields)
-#     product_type_xml_fields = [json_map.get(field).get("XML_Field") for field in product_type_fields]
-#     # print(product_type_xml_fields)
-#     product_xml_fields = [json_map.get(field).get("XML_Field") for field in product_fields]
-#     # print(product_xml_fields)
-#     product_picture_xml_fields = [json_map.get(field).get("XML_Field") for field in product_picture_fields
-#                                   if json_map.get(field).get("XML_Field") is not None]
-#     # print(product_picture_xml_fields)
-#
-#     return {
-#             "variation_xml_fields": variation_zipped_list,
-#             "currency_xml_fields": currency_zipped_list,
-#             # "kategori_xml_fields": kategori_xml_fields,
-#             # "product_type_xml_fields": product_type_xml_fields,
-#             # "product_xml_fields": product_xml_fields,
-#             # "product_picture_xml_fields": product_picture_xml_fields
-#             }
 
+def process_dict(row_dictionary):
+    # print(row_dictionary)
+    pass
 
 def step03_process_products_dict_array(product_dict_array, json_map):
     # variation_fields = ["Barkod", "Alis_Fiyati", "Satis_Fiyati", "Magaza_Kodu"]
@@ -343,52 +305,117 @@ def step03_process_products_dict_array(product_dict_array, json_map):
     # product_fields = ["Urun_Adi", "KDV"]
     # product_picture_fields = ["Urun_Resmi"]
 
-    for product_dict in product_dict_array:
+    for number, product_dict in enumerate(product_dict_array):
         row_dictionary = dict()
         # print(product_dict)
 
-        def process_field(field):
+        # ileride field 'a ait is_mandatory ve default_value değerlerini de json_map içerisine entegre etme
+        # imkanı olursa 4x4  'lük bir xml importer 'ımız olur.
+
+        def calculate_default_alis_fiyati():
+            # ("%.2f" % a)
+            return round(float(row_dictionary.get('Satis_Fiyati').get('sale_price'))*0.95, 2)
+
+        def create_magazakodu(prefix, suffix):  # bunu bir kerelik çalıştır. Bu bizim için mağaza kodu oluşturuyor.
+            print("Çalıştım")
+
+            kod_query_set = Variation.objects.filter(istebu_product_no__icontains=prefix)
+            print(kod_query_set)
+            if kod_query_set:
+                kod_array = [int(kod.istebu_product_no[len(prefix):]) for kod in kod_query_set]
+                last_number = max(kod_array)
+                return prefix+(last_number+1)
+            else:
+                return prefix + str(int(suffix) + number)
+
+        def process_field(field, is_mandatory, default_value=None):
+
             xml_field = json_map.get(field).get("XML_Field")
             xml_value = product_dict.get(xml_field)
-            if xml_value is not None:
-                xml_value = xml_value.strip()
-                if len(xml_value) >= 3:
-                    local_field = json_map.get(field).get("local_field")
-                    # print(barkod_xml_field, local_field)
+            local_field = json_map.get(field).get("local_field")
+
+            if xml_value is not None:  # XML eşleştirmesi yapılmış.
+                xml_value = xml_value.strip()  # Eşleştirilen field XML 'den okunmuş.
+                if xml_value:  # Eşleştirilen field XML 'den başarıyla okunmuş. (2 rakamlı TL vs. ise ?)
+                    # strip edince '\n' karakterleri falan hepsi gidiyor. O nedenle >= vs. gibi bir checke gerek yok.
                     value_dict = {local_field: xml_value}
                     row_dictionary[field] = value_dict
-                    # print(row_dictionary)
+                    # print("xml value olarak bulup yazdım.", local_field, xml_value)
                     return True
-            else:
-                # check if it is mandatory field
-                # process steps to break the execution
+                else:  # XML 'den saçma bir değer okunmuş. Dolayısıyla row 'a yazılamaz.
+                    if default_value:  # zorunlu ya da değil default değer girilmiş mi bak
+                        value_dict = {local_field: default_value}
+                        row_dictionary[field] = value_dict  # varsa default değeri ekle
+                        # print("default tan bulup yazdım.", local_field, default_value)
+                        return True
+                    else:  # default değer yok.
+                        return False  # zorunlu ve default değer yoksa False döndür.
+
+            elif is_mandatory:  # (XML 'de eşleştirilmemiş ve zorunlu. Default değerleri yine girmeye çalış.)
+                if default_value:  # zorunlu ise default değer girilmiş mi bak
+                    value_dict = {local_field: default_value}
+                    row_dictionary[field] = value_dict  # default değeri ekle
+                    return True
+                else:  # Giremediyse yani hem zorunlu hem de default değer yok. Örneğin satış fiyatı...
+                    return False  # False döndür.
+
+            else:  # Hem eşleşmemiş hem de zorunlu da değilse
                 return False
 
-        process_field("Barkod")  # Not mandatory field Break is not necessary
+        if not process_field("Urun_Adi", True, default_value=None):  # default değer girilemez.
+            print("Urun adi does not exist, will break")
+            continue
 
-        if not process_field("Satis_Fiyati"):  # Mandatory Field break
+        if not process_field("Satis_Fiyati", True, default_value=None):  # default değer girilemez.
             print("No Satis_Fiyati, will break")
             continue
 
-        if not process_field("Alis_Fiyati"):  # Not mandatory field Break is not necessary
-            # set field according to the Satis_Fiyati e.g. 0.95
-            pass
-
-        if not process_field("Magaza_Kodu"):  # Bu bizim vereceğimiz kod otomatik oluşmalı bence
-            # create mağaza kodu
-            pass
-
-        if not process_field("Para_Birimi"):
-            # set default as TL
-            pass
-
-        if not process_field("Kategori"):  # Mandatory field break necessary
+        if not process_field("Kategori", True, default_value="Projeksiyon Cihazları"):  # Mandatory field break necessary
             # set default as TL
             print("No Kategori, will break")
             continue
-        print(row_dictionary)
+
+        if not process_field("Barkod", False, default_value=None):  # Not mandatory field Break is not necessary
+            # do nothing
+            pass
+
+        alis_fiyati = calculate_default_alis_fiyati()  # bunu fonksiyon olarak göndermeyi başaramadım bir türlü
+        if not process_field("Alis_Fiyati", True, default_value=alis_fiyati):
+            """
+            default değerin işleme alınabilmesi için mandatory = True olmalı.
+            """
+            # Not mandatory field Break is not necessary
+            # set field according to the Satis_Fiyati e.g. 0.95
+            print("Amına koyayım neden set etmiyor bu amcık ağızlı?")
+            buying_price = row_dictionary.get('Satis_Fiyati').get('sale_price')
+            continue
+
+        print("Mağaza Kodu:", create_magazakodu("PRJ", "1000"))  # Bunu ürünü save ederken çalıştırmak lazım...
+        if not process_field("Magaza_Kodu", False, default_value=None):  # Bu bizim vereceğimiz kod otomatik oluşmalı bence
+            # create mağaza kodu
+            pass
+
+        if not process_field("Para_Birimi", False, default_value=None):
+            # set default as TL
+            pass
+
+        if not process_field("Alt_Kategori", False, default_value=None):
+            # set it if it exists
+            pass
+
+        if not process_field("Urun_Tipi", False, default_value=None):
+            # set it if it exists
+            pass
+
+        if not process_field("Urun_Resmi", False, default_value=None):
+            # set it if it exists (it will create
+            pass
+
+        # buraya kadar break olmadan geldiyse process dict fonksiyonunu çalıştır
+        process_dict(row_dictionary)
 
 
+# ileride XLSX, XLS import içinde kullanılabilmesi için adını run_all_xml_steps şeklinde değiştirmek gerekebilir.
 def run_all_steps():
     products_dict_array = step01_prepare_xml_for_processing(35)
     json_map = step02_prepare_import_map(34)
