@@ -22,6 +22,7 @@ default_fields = {
     "Alt_Kategori": {"model": "Category", "local_field": "categories"}, # product.categories olarak eklenecek !!!
     "Urun_Tipi": {"model": "ProductType", "local_field": "name"},  # product.product_type olarak ekle !!!
     "Urun_Adi": {"model": "Product", "local_field": "title"},
+    "Aciklama": {"model": "Product", "local_field": "description"},
     "KDV": {"model": "Product", "local_field": "kdv"},
     "Para_Birimi": {"model": "Currency", "local_field": "name"},  # variation.buying_currency olarak ekle!!!
     "Alis_Fiyati": {"model": "Variation", "local_field": "buying_price"},
