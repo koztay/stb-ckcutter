@@ -172,6 +172,10 @@ def process_dict(self, row_dictionary, create_allowed):
         variation_barkod = row_dictionary.get("Barkod").get("product_barkod")
         variation_instance.product_barkod = variation_barkod
 
+    if row_dictionary.get("Stok"):
+        variation_stok = row_dictionary.get("Stok").get("inventory")
+        variation_instance.inventory = variation_stok
+
     # if row_dictionary.get("Magaza_Kodu"):
     #     variation_magaza_kodu = row_dictionary.get("Magaza_Kodu").get("istebu_product_no")
     #     variation_instance.istebu_product_no = variation_magaza_kodu
@@ -179,6 +183,7 @@ def process_dict(self, row_dictionary, create_allowed):
     #     variation_instance.istebu_product_no = create_magazakodu("PRJ", "1000")  # her xml için farklı olmalıç
 
     variation_instance.istebu_product_no = create_magazakodu("PRJ", "1000", variation_id=variation_instance.id)
+
 
     # zorunlu alan:
     variation_instance.buying_price = row_dictionary.get("Alis_Fiyati").get("buying_price")
@@ -189,8 +194,23 @@ def process_dict(self, row_dictionary, create_allowed):
     variation_buying_currency = row_dictionary.get("Para_Birimi").get("name")
     # DIKKAT!!! : önceden sistemde currency 'lerin tanımlı olması gerek... Değilse fonksiyonu sonlandır.
     if variation_buying_currency:
+        # NAME_CHOICES = (
+        #     ("TL", "TURK LIRASI"),
+        #     ("USD", "AMERIKAN DOLARI"),
+        #     ("EUR", "EURO"),
+        # )
+        # DATABASE 'deki değerler "TL", "USD, "EUR" olmalı. O nedenle sorgularken de öyle sorgulamalı.
+
+
+        currency_symbols = {
+            "TURK LIRASI": ["TL", "₺"],
+            "AMERIKAN DOLARI": ["USD", "$"],
+            "EURO": ["EUR", "EURO", "€"],
+        }
+
         try:
-            currency_instance = Currency.objects.get(name=variation_buying_currency)
+            currency_instance = Currency.objects.get(name=variation_buying_currency)  # TL, ₺ gibi bir değer dönecek
+            variation_instance.buying_currency = currency_instance
         except LookupError:
             pass  # buying currency set edilmemiş şekilde kaydet...
 
@@ -360,26 +380,28 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
                 new_url = img_url.replace("filigran", "urun")
                 row_dictionary["Urun_Resmi"]["image"] = new_url  # update etmelisin...
 
-        # if not process_field("Aciklama", False, default_value=None):
-        #     pass
+        if not process_field("Aciklama", False, default_value=None):
+            pass
 
+        if not process_field("Stok", False, default_value=None):
+            pass
         # buraya kadar break olmadan geldiyse process dict fonksiyonunu çalıştır
-        process_dict(row_dictionary, create_allowed)
+        process_dict.delay(row_dictionary, create_allowed)
 
 
 # ileride XLSX, XLS import içinde kullanılabilmesi için adını run_all_xml_steps şeklinde değiştirmek gerekebilir.
 # TODO : Bunun için en iyisi bir class yazmak. Ondan sonra da o class 'ın fonksiyonlarını yazarsın. Mesela :
 # TODO : drop_row_if_title_contains(), replace_text_in_img_url() vb. gibi.
 
-def run_all_steps(create_allowed=False):
-    products_dict_array = step01_prepare_xml_for_processing(35)[:50]  # 50 adet için test ediyoruz.
+def run_all_steps(xml_file_pk, import_map_pk, create_allowed=False):
+    products_dict_array = step01_prepare_xml_for_processing(xml_file_pk)[:50]  # 50 adet için test ediyoruz.
     # print(products_dict_array)
-    json_map = step02_prepare_import_map(34)
+    json_map = step02_prepare_import_map(import_map_pk)
     # print(json_map)
     step03_process_products_dict_array(products_dict_array, json_map, create_allowed)
 
 
-@task(bind=True, name="Download Image", rate_limit="40/h")
+@task(bind=True, name="Download Image", rate_limit="240/h") # please change me from 240 to 40 on production
 def download_image_for_product(self, image_link=None, product_id=None):
     result = "Hata! %s linkindeki resim indirilemedi:" % image_link
     try:

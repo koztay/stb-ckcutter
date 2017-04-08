@@ -1,5 +1,5 @@
 from django import forms
-from .models import ImporterFile
+from .models import ImporterFile, XMLImportMap
 
 
 PRODUCT_FIELD_CHOICES = (
@@ -9,6 +9,8 @@ PRODUCT_FIELD_CHOICES = (
     ("Alt_Kategori", "Alt Kategori"),
     ("Urun_Tipi", "Ürün Tipi"),
     ("Urun_Adi", "Ürün Adı"),
+    ("Aciklama", "Ürün Açıklaması"),
+    ("Stok", "Stok Adedi"),
     ("KDV", "KDV"),
     ("Para_Birimi", "Para Birimi"),
     ("Alis_Fiyati", "Alış Fiyatı"),
@@ -52,3 +54,11 @@ class ImporterFileForm(forms.ModelForm):
     class Meta:
         model = ImporterFile
         fields = ('description', 'file', )
+
+
+class ImporterMapSelectionForm(forms.Form):
+    import_map = forms.ModelChoiceField(queryset=XMLImportMap.objects.all())
+
+
+class ImporterXMLSelectionForm(forms.Form):
+    import_map = forms.ModelChoiceField(queryset=ImporterFile.objects.all())

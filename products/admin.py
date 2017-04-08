@@ -78,10 +78,10 @@ class ProductImageAdmin(admin.ModelAdmin):
     class Meta:
         model = ProductImage
 
-
+#
 # class ThumbnailInline(nested_admin.NestedStackedInline):
 #     model = Thumbnail
-#
+
 #
 # class ProductImageInline(nested_admin.NestedStackedInline):
 #     model = ProductImage
@@ -144,6 +144,7 @@ class CurrencyAdmin(admin.ModelAdmin):
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductImage, ProductImageAdmin)
+admin.site.register(Thumbnail)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(ProductFeatured)
 admin.site.register(ProductType)

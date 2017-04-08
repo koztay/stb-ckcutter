@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 from __future__ import absolute_import, unicode_literals
 
 import environ
+import os
 
 # (ecommerce_istebu_cookiecutter/config/settings/base.py - 3 = ecommerce_istebu_cookiecutter/)
 ROOT_DIR = environ.Path(__file__) - 3

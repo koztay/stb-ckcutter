@@ -1,9 +1,10 @@
-FROM python:3.5.2
+FROM python:3.5.3
 
 ENV PYTHONUNBUFFERED 1
 
 # Requirements have to be pulled and installed here, otherwise caching won't work
 COPY ./requirements /requirements
+RUN mkdir -p /static_root
 
 RUN pip install -r /requirements/production.txt \
     && groupadd -r django \
@@ -11,6 +12,10 @@ RUN pip install -r /requirements/production.txt \
 
 COPY . /app
 RUN chown -R django /app
+RUN chown -R django /requirements
+RUN chmod +x /requirements
+RUN chown -R django /static_root
+RUN chmod +x /static_root
 
 COPY ./compose/django/gunicorn.sh /gunicorn.sh
 COPY ./compose/django/entrypoint.sh /entrypoint.sh

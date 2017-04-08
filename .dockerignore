@@ -2,3 +2,20 @@
 !.coveragerc
 !.env
 !.pylintrc
+
+# ignore staticfiles directory
+staticfiles
+
+# ignore templaing_files directory
+templating_files
+
+# ignore deploy folder because in this case iti is not necessary
+deploy
+
+# ignore media directory
+*/media
+
+#*/XML_Works
+
+
+
