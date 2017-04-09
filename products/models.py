@@ -252,11 +252,18 @@ class ProductImage(models.Model):
         # img = self.image
         if self.image and hasattr(self.image, 'url'):
             img_url = self.image.url
-            # remove MEDIA_URL from img_url
-            img_url = img_url.replace(settings.MEDIA_URL, "/", 1)
-            # combine with media_root
-            img_path = settings.MEDIA_ROOT + img_url
-            return img_path
+
+            if "http" not in img_url:  # cloud kullanmıyoruz demektir
+                print("img_url", img_url)
+                # remove MEDIA_URL from img_url
+                img_url = img_url.replace(settings.MEDIA_URL, "/", 1)
+                # combine with media_root
+                img_path = settings.MEDIA_ROOT + img_url
+                print("img_path", img_url)
+                print("amazon 'da bu ikisi arasındaki fark nasıl acaba?")
+                return img_path
+            else:
+                return img_url
         else:
             return None  # None
 
