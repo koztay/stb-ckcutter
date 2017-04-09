@@ -1,4 +1,8 @@
 from __future__ import absolute_import, unicode_literals
+
+import shutil
+
+import urllib3
 from django.conf import settings
 from celery.decorators import task
 
@@ -143,7 +147,7 @@ def process_dict(self, row_dictionary, create_allowed):
 
     """
 
-    print(row_dictionary)
+    # print(row_dictionary)
     product_title = row_dictionary.get("Urun_Adi").get("title")
 
     created = False
@@ -154,7 +158,8 @@ def process_dict(self, row_dictionary, create_allowed):
     else:
         try:
             if Product.objects.all():
-                product_instance = Product.objects.all().get(title=product_title)
+                # active True olabilmesi için eksiksiz olarak fieldların tamamlanmış olması lazım...
+                product_instance = Product.objects.all().get(title=product_title, active=False)
             else:
                 print("I cannot query any products. Please add one manually or run the function with create=True")
                 return
@@ -245,7 +250,11 @@ def process_dict(self, row_dictionary, create_allowed):
         description = row_dictionary.get("Aciklama").get("description")
         if description:
             product_instance.description = description
+            print("açıklama alanını güncelledim.")
+        else:
+            print("açıklama alanını güncelleyemedim.")
 
+    product_instance.active = True
     product_instance.save()
     variation_instance.save()
 
@@ -272,6 +281,7 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
     # product_type_fields = ["Urun_Tipi"]
     # product_fields = ["Urun_Adi", "KDV"]
     # product_picture_fields = ["Urun_Resmi"]
+    print("processing product dictionary array")
 
     for number, product_dict in enumerate(product_dict_array):  # madem number göndermeyeceğiz o vakit neden
         row_dictionary = dict()
@@ -295,15 +305,16 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
                     # strip edince '\n' karakterleri falan hepsi gidiyor. O nedenle >= vs. gibi bir checke gerek yok.
                     value_dict = {local_field: xml_value}
                     row_dictionary[field] = value_dict
-                    # print("xml value olarak bulup yazdım.", local_field, xml_value)
+                    print("xml value olarak bulup yazdım.", local_field, xml_value)
                     return True
                 else:  # XML 'den saçma bir değer okunmuş. Dolayısıyla row 'a yazılamaz.
                     if default_value:  # zorunlu ya da değil default değer girilmiş mi bak
                         value_dict = {local_field: default_value}
                         row_dictionary[field] = value_dict  # varsa default değeri ekle
-                        # print("default tan bulup yazdım.", local_field, default_value)
+                        print("default tan bulup yazdım.", local_field, default_value)
                         return True
                     else:  # default değer yok.
+                        print("False döndürüyorum - 1")
                         return False  # zorunlu ve default değer yoksa False döndür.
 
             elif is_mandatory:  # (XML 'de eşleştirilmemiş ve zorunlu. Default değerleri yine girmeye çalış.)
@@ -312,9 +323,11 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
                     row_dictionary[field] = value_dict  # default değeri ekle
                     return True
                 else:  # Giremediyse yani hem zorunlu hem de default değer yok. Örneğin satış fiyatı...
+                    print("False döndürüyorum - 2")
                     return False  # False döndür.
 
             else:  # Hem eşleşmemiş hem de zorunlu da değilse
+                print("False döndürüyorum - 3")
                 return False
 
         if not process_field("Urun_Adi", True, default_value=None):  # default değer girilemez.
@@ -386,18 +399,43 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
         if not process_field("Stok", False, default_value=None):
             pass
         # buraya kadar break olmadan geldiyse process dict fonksiyonunu çalıştır
+        print("send process request for row dictionary")
         process_dict.delay(row_dictionary, create_allowed)
 
+    print("finsihed processing products")
 
 # ileride XLSX, XLS import içinde kullanılabilmesi için adını run_all_xml_steps şeklinde değiştirmek gerekebilir.
 # TODO : Bunun için en iyisi bir class yazmak. Ondan sonra da o class 'ın fonksiyonlarını yazarsın. Mesela :
 # TODO : drop_row_if_title_contains(), replace_text_in_img_url() vb. gibi.
 
-def run_all_steps(xml_file_pk, import_map_pk, create_allowed=False):
+
+# bunu task olarak tanımlayıp otomatiğe bağlayabilirim.
+def download_xml(xml_file_pk):
+
+    http = urllib3.PoolManager()
+    xml_file_object = ImporterFile.objects.get(pk=xml_file_pk)
+    url = xml_file_object.remote_url
+
+    file_path = xml_file_object.get_file_path()
+
+    with http.request('GET', url, preload_content=False) as resp, open(file_path, 'wb') as out_file:
+        if resp.status is 200:
+            shutil.copyfileobj(resp, out_file)
+        else:
+            raise ValueError('A very specific bad thing happened. Response code was not 200')
+
+    run_all_steps(xml_file_pk)  # eğer burada da hata çıkmazsa update edilmiş ve True döndürülmüş demektir.
+    return True
+
+
+def run_all_steps(xml_file_pk, create_allowed=False):
     products_dict_array = step01_prepare_xml_for_processing(xml_file_pk)[:50]  # 50 adet için test ediyoruz.
     # print(products_dict_array)
-    json_map = step02_prepare_import_map(import_map_pk)
-    # print(json_map)
+    xml_file_object = ImporterFile.objects.get(pk=xml_file_pk)
+    map_object = xml_file_object.import_map
+
+    json_map = step02_prepare_import_map(map_object.pk)
+    print("printing jason map", json_map)
     step03_process_products_dict_array(products_dict_array, json_map, create_allowed)
 
 

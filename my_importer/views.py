@@ -102,14 +102,15 @@ def xml_map_view(request):
         xml_file.save()
         print("xml_file_pk", xml_file_pk)
 
-        # start long running import task here...
-        run_all_steps(xml_file_pk, xml_import_map.pk, True)
+        # start long running import task here... # sadece burada yeni ürün yaratmaya izin veriyoruz. remote çekimde yok.
+        run_all_steps(xml_file_pk, True)
 
         return redirect("home")
 
     return render(request, "my_importer/xml-map.html", {'form': form, })
 
 
+# aşağıdakinde de manual çalışma yapıyoruz ve yeni ürün eklemeye izin veriyoruz.
 class TaskRunnerView(FormView):
     template_name = 'my_importer/start_task.html'
     form_class = ImporterXMLSelectionForm
@@ -122,7 +123,7 @@ class TaskRunnerView(FormView):
         xml_map_instance = file_instance.import_map
         print(xml_map_instance)
         print(xml_map_instance.pk)
-        run_all_steps(xml_file_instance.pk, xml_map_instance.pk, True)
+        run_all_steps(xml_file_instance.pk, True)
         return super(TaskRunnerView, self).form_valid(form)
 
 

@@ -55,7 +55,7 @@ class ImporterFile(models.Model):
             print("after :", file_url)
             # # combine with STATIC_ROOT location
             print("settings.STATIC_ROOT :", settings.STATIC_ROOT)
-            file_path = settings.STATIC_ROOT + "/" + file_url  # os.path.join does not joins what the fuck!!!!
+            file_path = settings.STATIC_ROOT + file_url  # os.path.join does not joins what the fuck!!!!
             print("file_path :", file_path)
 
             return file_path

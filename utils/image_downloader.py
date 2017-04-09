@@ -17,6 +17,7 @@ Ancak main image 'ları biz sitede kullanmıyoruz sanırım. Thumbnailler için 
 isimde ilk ürünün klasöründe kalıyor. Çünkü image_upload_to bu şekilde yapılmış.
 """
 
+
 # bu fonksiyon muhtemelen production 'da çalışmayacak.
 def download_image(url, product_id):
 
