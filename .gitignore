@@ -69,8 +69,9 @@ node_modules/
 
 # User-uploaded media
 ecommerce_istebu_cookiecutter/media/
-
-
-
 staticfiles/
 templating_files/
+
+# cloud-config
+core-os-cloud-config.yml
+create_coreos_droplet.sh

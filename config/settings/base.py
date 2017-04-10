@@ -46,7 +46,7 @@ DJANGO_APPS = [
     'django.contrib.flatpages',
 
     # Useful template tags:
-    # 'django.contrib.humanize',
+    'django.contrib.humanize',
 
     # Admin
     'django.contrib.admin',

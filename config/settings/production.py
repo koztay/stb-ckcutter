@@ -101,7 +101,7 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # BUNU Volume için yazmak zorundayız.
-STATIC_ROOT = "/static_root/"
+STATIC_ROOT = "/static_root"
 # COMPRESSOR
 # ------------------------------------------------------------------------------
 COMPRESS_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
@@ -209,3 +209,10 @@ ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+# celery settings
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'  # pickle yapmazsak importer çalışmıyor, json yapmazsak da kur çekme çalışmıyor.
+CELERY_RESULT_SERIALIZER = 'json'  # pickle yapmazsak importer çalışmıyor, json yapmazsak da kur çekme çalışmıyor.
+CELERY_TIMEZONE = TIME_ZONE

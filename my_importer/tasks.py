@@ -1,11 +1,8 @@
 from __future__ import absolute_import, unicode_literals
-
 import shutil
-
 import urllib3
-from django.conf import settings
+import time
 from celery.decorators import task
-
 
 from .models import XMLImportMap, ImporterFile
 from utils import image_downloader
@@ -283,8 +280,10 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
     # product_picture_fields = ["Urun_Resmi"]
     print("processing product dictionary array")
 
-    for number, product_dict in enumerate(product_dict_array):  # madem number göndermeyeceğiz o vakit neden
+    for product_dict in product_dict_array:  # madem number göndermeyeceğiz o vakit neden
         row_dictionary = dict()
+        # print("type_of product_dict", product_dict)
+        # print("type_of product_dict_array", product_dict_array)
         # print(product_dict)
         # ileride field 'a ait is_mandatory ve default_value değerlerini de json_map içerisine entegre etme
         # imkanı olursa 4x4  'lük bir xml importer 'ımız olur.
@@ -294,7 +293,7 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
             return round(float(row_dictionary.get('Satis_Fiyati').get('sale_price'))*0.95, 2)
 
         def process_field(field, is_mandatory, default_value=None):
-
+            # print("product_dict neymiş ? :", product_dict)
             xml_field = json_map.get(field).get("XML_Field")
             xml_value = product_dict.get(xml_field)
             local_field = json_map.get(field).get("local_field")
@@ -305,16 +304,16 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
                     # strip edince '\n' karakterleri falan hepsi gidiyor. O nedenle >= vs. gibi bir checke gerek yok.
                     value_dict = {local_field: xml_value}
                     row_dictionary[field] = value_dict
-                    print("xml value olarak bulup yazdım.", local_field, xml_value)
+                    # print("xml value olarak bulup yazdım.", local_field, xml_value)
                     return True
                 else:  # XML 'den saçma bir değer okunmuş. Dolayısıyla row 'a yazılamaz.
                     if default_value:  # zorunlu ya da değil default değer girilmiş mi bak
                         value_dict = {local_field: default_value}
                         row_dictionary[field] = value_dict  # varsa default değeri ekle
-                        print("default tan bulup yazdım.", local_field, default_value)
+                        # print("default tan bulup yazdım.", local_field, default_value)
                         return True
                     else:  # default değer yok.
-                        print("False döndürüyorum - 1")
+                        # print("False döndürüyorum - 1")
                         return False  # zorunlu ve default değer yoksa False döndür.
 
             elif is_mandatory:  # (XML 'de eşleştirilmemiş ve zorunlu. Default değerleri yine girmeye çalış.)
@@ -323,15 +322,15 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
                     row_dictionary[field] = value_dict  # default değeri ekle
                     return True
                 else:  # Giremediyse yani hem zorunlu hem de default değer yok. Örneğin satış fiyatı...
-                    print("False döndürüyorum - 2")
+                    # print("False döndürüyorum - 2")
                     return False  # False döndür.
 
             else:  # Hem eşleşmemiş hem de zorunlu da değilse
-                print("False döndürüyorum - 3")
+                # print("False döndürüyorum - 3")
                 return False
 
         if not process_field("Urun_Adi", True, default_value=None):  # default değer girilemez.
-            print("Urun adi does not exist, will break")
+            # print("Urun adi does not exist, will break")
             continue
         else:
             urun_adi = row_dictionary.get("Urun_Adi").get('title')  # yukarıda continue olduğu için burada and gereksiz.
@@ -343,12 +342,12 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
                 continue
 
         if not process_field("Satis_Fiyati", True, default_value=None):  # default değer girilemez.
-            print("No Satis_Fiyati, will break")
+            # print("No Satis_Fiyati, will break")
             continue
 
         if not process_field("Kategori", True, default_value="Projeksiyon Cihazları"):  # Mandatory field break necessary
             # set default as TL
-            print("No Kategori, will break")
+            # print("No Kategori, will break")
             continue
 
         if not process_field("Barkod", False, default_value=None):  # Not mandatory field Break is not necessary
@@ -362,8 +361,8 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
             """
             # Not mandatory field Break is not necessary
             # set field according to the Satis_Fiyati e.g. 0.95
-            print("Amına koyayım neden set etmiyor bu amcık ağızlı?")
-            buying_price = row_dictionary.get('Satis_Fiyati').get('sale_price')
+            # print("Amına koyayım neden set etmiyor bu amcık ağızlı?")
+            # buying_price = row_dictionary.get('Satis_Fiyati').get('sale_price')
             continue
 
         #  print("Mağaza Kodu:", create_magazakodu("PRJ", "1000", number))  # Bunu ürünü save ederken çalıştırmak lazım
@@ -402,7 +401,7 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
         print("send process request for row dictionary")
         process_dict.delay(row_dictionary, create_allowed)
 
-    print("finsihed processing products")
+    print("finished processing products")
 
 # ileride XLSX, XLS import içinde kullanılabilmesi için adını run_all_xml_steps şeklinde değiştirmek gerekebilir.
 # TODO : Bunun için en iyisi bir class yazmak. Ondan sonra da o class 'ın fonksiyonlarını yazarsın. Mesela :
@@ -410,6 +409,7 @@ def step03_process_products_dict_array(product_dict_array, json_map, create_allo
 
 
 # bunu task olarak tanımlayıp otomatiğe bağlayabilirim.
+@task(name="Remote XML Update")
 def download_xml(xml_file_pk):
 
     http = urllib3.PoolManager()
@@ -424,22 +424,27 @@ def download_xml(xml_file_pk):
         else:
             raise ValueError('A very specific bad thing happened. Response code was not 200')
 
-    run_all_steps(xml_file_pk)  # eğer burada da hata çıkmazsa update edilmiş ve True döndürülmüş demektir.
+    run_all_steps.delay(xml_file_pk)  # change back to False
+    # eğer burada da hata çıkmazsa update edilmiş ve True döndürülmüş demektir.
     return True
 
 
+@task(name="Run All Steps")
 def run_all_steps(xml_file_pk, create_allowed=False):
-    products_dict_array = step01_prepare_xml_for_processing(xml_file_pk)[:50]  # 50 adet için test ediyoruz.
-    # print(products_dict_array)
+    products_dict_array = step01_prepare_xml_for_processing(xml_file_pk)  # 50 adet için test ediyoruz.
+    # print(type(products_dict_array))
+    # for product in products_dict_array:
+    #     print(product)
+    #     print("This should be a dictionary")
     xml_file_object = ImporterFile.objects.get(pk=xml_file_pk)
     map_object = xml_file_object.import_map
 
     json_map = step02_prepare_import_map(map_object.pk)
-    print("printing jason map", json_map)
+    # print("printing jason map", json_map)
     step03_process_products_dict_array(products_dict_array, json_map, create_allowed)
 
 
-@task(bind=True, name="Download Image", rate_limit="240/h") # please change me from 240 to 40 on production
+@task(bind=True, name="Download Image", rate_limit="240/h")  # please change me from 240 to 40 on production
 def download_image_for_product(self, image_link=None, product_id=None):
     result = "Hata! %s linkindeki resim indirilemedi:" % image_link
     try:
@@ -449,119 +454,6 @@ def download_image_for_product(self, image_link=None, product_id=None):
 
     return result
 
-
-# This task has been added for testing purposes.
-@task(bind=True)
-def add(self, x, y):
-    try:
-        raise Exception()
-    except Exception as e:
-        self.retry(countdown=2, exc=e, max_retries=2)
-        # countdown kaç saniye beklemesini belirtiyor, max_retries ise adından belli kaç kez tekrarlanmasını.
-    return x + y
-
-
-@task(bind=True, name="Process XLS Row", rate_limit="20/m")
-def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_task olarak views 'da çalıştığı görüldü.
-    # Ancak task olarak çalışıp çalışmadığı test edilemedi.
-    """
-    Please do not forget to create worker with the following command, in command line:
-    celery -A ecommerce2 worker -l info
-    """
-    # pydevd.settrace('192.168.1.22', port=5678, stdoutToServer=True, stderrToServer=True)
-    importer_map = ProductImportMap.objects.get(pk=importer_map_pk)
-
-    def get_cell_for_field(field_name):
-        try:
-            field_object = importer_map.fields_set.get(product_field=field_name)
-            cell_value_index = field_object.get_xml_field()  # Adına get_xml_filed demişiz ama xls, xlsx için de aynısı.
-
-            cell_value = values[int(cell_value_index)]  # field eşleştirmeleri 0,1,2 gibi indeks değeri ile yapıldığı
-            # için sorun yok. Şimdilik indeks yerine hücreye ait başlık ile eşleştirme yapmayı çözemedim.
-        except:
-            cell_value = ""
-        return cell_value
-
-    def update_default_fields(product_instance=None):
-
-        variation_instance = product_instance.variation_set.all()[0]  # product save edilince otomatik yaratılıyor.
-
-        # default fileds models içerisinde tanımlı
-        for main_field in default_fields:
-            cell = get_cell_for_field(main_field)
-            print("cell_value :", cell)
-
-            # hücrenin Pruduct modelde mi, Variation modelde mi olduğunu bul
-            cell_value_model = default_fields[main_field]["model"]
-            print("cell_value_model: ", cell_value_model)
-
-            if cell_value_model is "Product":
-                print("attribute: ", default_fields[main_field]["field"])
-                print("value: ", cell)
-                attribute = default_fields[main_field]["field"]
-                print("attribute - bunun boş dönmesi gerek: ", attribute)
-                if attribute is 'categories':
-                    print("kategori yakaladım")
-                    try:
-                        category = Category.objects.get(title=cell)
-                        print("Kategori: ", category)
-                        product_instance.categories.add(category)
-                    except:
-                      print("kategori bulunamadı.")
-                else:
-                    setattr(product_instance, attribute, cell)
-                # setattr(product_instance, attribute, cell)
-
-            elif cell_value_model is "Variation":
-                print("attribute: ", default_fields[main_field]["field"])
-                print("value: ", cell)
-                setattr(variation_instance, default_fields[main_field]["field"], cell)
-
-            elif cell_value_model is "ProductType":
-                # product_type_name = default_fields[main_field]["field"]
-                # print("product_type_name :", product_type_name)
-                product_type_instance, created = ProductType.objects.get_or_create(name=cell)
-                product_instance.product_type = product_type_instance
-
-            elif cell_value_model is "Currency":
-                print("attribute: ", default_fields[main_field]["field"])
-                print("value: ", cell)
-                # Eğer currency veriatabanında yoksa o zaman ürünü ekleme. Dolayısıyla "Para Birimi" önceden eklenmeli.
-                try:
-                    currency_instance = Currency.objects.get(name=cell)
-                    variation_instance.buying_currency = currency_instance
-                except:
-                    print("Currency bulunamadı, %s eklenmedi!" % product.title)
-                    pass
-
-                print("variation_instance.buying_currency", variation_instance.buying_currency)
-
-            else:
-                print("Hata! Böyle bir model dönmemeli, cell_value_model: ", cell_value_model)
-
-        factor = float(settings.IMPORTER_SALE_PRICE_FACTOR)
-        product_instance.price = variation_instance.sale_price*factor
-
-        # ürünlerin fiyatı boş geliyor o nedenle factor kadar yükseltiyoruz...
-        product_instance.save()
-        variation_instance.save()
-
-    title = get_cell_for_field("Ürün Adı")
-    # product_type = ProductType.objects.get(name=importer_map.type)
-    product, product_created = Product.objects.get_or_create(title=title)
-
-    update_default_fields(product_instance=product)
-    # update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...
-    img_url = get_cell_for_field("Image")
-
-    print("IMG URL => :", img_url)
-    print('product.id neden görülmüyor baba?', product.id)
-    print('product.pk neden görülmüyor baba?', product.pk)
-    if product.productimage_set.all().count() == 0:  # image varsa boşu boşuna task ekleme.
-        print("Resim daha önce eklenmemiş. Download task çalıştırılacak. Yeni fonksiyon bu.")
-        download_image_for_product.delay(img_url, product.id)
-
-    return "%s update edildi." % product.title
 
 
 

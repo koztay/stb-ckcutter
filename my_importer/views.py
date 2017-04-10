@@ -103,7 +103,7 @@ def xml_map_view(request):
         print("xml_file_pk", xml_file_pk)
 
         # start long running import task here... # sadece burada yeni ürün yaratmaya izin veriyoruz. remote çekimde yok.
-        run_all_steps(xml_file_pk, True)
+        run_all_steps.delay(xml_file_pk, True)
 
         return redirect("home")
 
@@ -123,7 +123,7 @@ class TaskRunnerView(FormView):
         xml_map_instance = file_instance.import_map
         print(xml_map_instance)
         print(xml_map_instance.pk)
-        run_all_steps(xml_file_instance.pk, True)
+        run_all_steps.delay(xml_file_instance.pk, True)
         return super(TaskRunnerView, self).form_valid(form)
 
 

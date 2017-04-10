@@ -12,9 +12,9 @@ import random
 def create_new_thumb(media_path, instance, owner_slug, max_width, max_height):
     if media_path.startswith("http"):
         print("I will download the file and use it as local")
-        temporary_download_location = settings.STATIC_ROOT + "tmp"
+        temporary_download_location = settings.STATIC_ROOT + "/tmp"
         filename = media_path.split("/")[-1]
-        temporary_download_path = temporary_download_location + "/" + filename
+        temporary_download_path = temporary_download_location + filename
         print(temporary_download_path)
 
         # create tmp directory if not exists

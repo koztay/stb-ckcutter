@@ -50,11 +50,11 @@ class ImporterFile(models.Model):
         if self.file and hasattr(self.file, 'url'):
             file_url = self.file.url
             print("before :", file_url)
-            # # remove STATIC_URL from img_url in our case /static/
+            # remove STATIC_URL from img_url in our case /static/
             file_url = file_url.replace(settings.STATIC_URL, "/", 1)
             print("after :", file_url)
-            # # combine with STATIC_ROOT location
-            print("settings.STATIC_ROOT :", settings.STATIC_ROOT)
+            # # combine with STATIC_ROOT location in our case /static_root (Trailing slash koyma!!!!!!!!)
+
             file_path = settings.STATIC_ROOT + file_url  # os.path.join does not joins what the fuck!!!!
             print("file_path :", file_path)
 

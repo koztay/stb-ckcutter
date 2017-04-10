@@ -13,7 +13,7 @@
 #dvm use 1.10.3
 #docker -v
 
-eval $(docker-machine env karnas)
+eval $(docker-machine env istebu-core01)
 # eval $(docker-machine env istebu)
 # Stop and remove all containers
 docker stop $(docker ps -a -q)
@@ -23,7 +23,7 @@ docker rm $(docker ps -a -q)
 docker rmi -f $(docker images -q)
 
 # Delete all volumes
-docker volume ls -qf dangling=true | xargs docker volume rm
+# docker volume ls -qf dangling=true | xargs docker volume rm
 
 # Build with no-cache
 # docker-compose build
@@ -31,3 +31,6 @@ docker volume ls -qf dangling=true | xargs docker volume rm
 #docker-compose -f dev.yml build
 # Up containers
 #docker-compose up -d
+
+# docker remov dangling images
+# docker rmi $(docker images --quiet --filter "dangling=true")

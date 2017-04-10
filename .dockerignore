@@ -15,7 +15,8 @@ deploy
 # ignore media directory
 */media
 
-#*/XML_Works
+# */XML_Works
 
-
-
+# cloud-config / coreos creation
+core-os-cloud-config.yml
+create_coreos_droplet.sh

@@ -3,10 +3,12 @@ version: '2'
 volumes:
   postgres_data: {}
   postgres_backup: {}
+  static-data: {}
 
 services:
   postgres:
     build: ./compose/postgres
+    restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - postgres_backup:/backups
@@ -16,44 +18,73 @@ services:
     build:
       context: .
       dockerfile: ./compose/django/Dockerfile
+    restart: always
+    image: istebu_cookicutter/django
     user: django
     depends_on:
       - postgres
       - redis
+    volumes:
+      - static-data:/static_root
     command: /gunicorn.sh
     env_file: .env
 
   nginx:
     build: ./compose/nginx
+    restart: always
     depends_on:
       - django
-
+    volumes:
+      - static-data:/static_root
+    volumes_from:
+      - django
     ports:
       - "0.0.0.0:80:80"
 
 
+#  redis:
+#    image: redis:latest
+
   redis:
-    image: redis:latest
+    build: ./compose/redis
+    restart: always
+#    ports:
+#      - "6379"
+    command: redis-server /usr/local/etc/redis/redis.conf
 
   celeryworker:
-    build:
-      context: .
-      dockerfile: ./compose/django/Dockerfile
+# Aşağıdakileri commentleyip yaratılmış imajı kullandırtmazsan yeniden djangoyu build ediyor. Çok saçma...
+#    build:
+#      context: .
+#      dockerfile: ./compose/django/Dockerfile
+    restart: always
+    image: istebu_cookicutter/django
     user: django
     env_file: .env
     depends_on:
      - postgres
      - redis
-    command: celery -A ecommerce_istebu_cookiecutter.taskapp worker -l INFO
+    volumes:
+      - static-data:/static_root
+    volumes_from:
+      - django
+    command: celery -A ecommerce_istebu_cookiecutter.taskapp worker -l INFO -Ofair
 
   celerybeat:
-    build:
-      context: .
-      dockerfile: ./compose/django/Dockerfile
+# Aşağıdakileri commentleyip yaratılmış imajı kullandırtmazsan yeniden djangoyu build ediyor. Çok saçma...
+#    build:
+#      context: .
+#      dockerfile: ./compose/django/Dockerfile
+    restart: always
+    image: istebu_cookicutter/django
     user: django
     env_file: .env
     depends_on:
       - postgres
       - redis
-    command: celery -A ecommerce_istebu_cookiecutter.taskapp beat -l INFO
-
+    volumes:
+      - static-data:/static_root
+    volumes_from:
+      - django
+    command: celery -A ecommerce_istebu_cookiecutter.taskapp beat -l INFO -S django
+# -S django parametresini koymazsan çalışmıyor periyodik tasklar...
