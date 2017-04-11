@@ -407,8 +407,8 @@ class Thumbnail(models.Model):
         upload_to=thumbnail_location,
         max_length=2000)
 
-    def __unicode__(self):  # __str__(self):
-        return str(self.media.path)
+    def __str__(self):  # __str__(self):
+        return str(self.product.title + " " + self.type + " thumbnail image for main image with pk :" + str(self.main_image.pk))
 
 
 # ************************************************************************************************************ #

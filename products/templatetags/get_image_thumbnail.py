@@ -1,18 +1,19 @@
 from django import template
-from ..models import Product, THUMB_CHOICES
+from ..models import ProductImage, THUMB_CHOICES
 
 register = template.Library()
 
 
 @register.filter
-def get_thumbnail(obj, arg):
+def get_image_thumbnail(obj, arg):
     """
-    obj == Product instance
+    obj == ProductImage instance
 
     """
+    print("object_type :", type(obj))
     arg = arg.lower()
-    if not isinstance(obj, Product):
-        raise TypeError("This is not a valid product model.")
+    # if not isinstance(obj, ProductImage):
+    #     raise TypeError("This is not a valid productimage model.")
     choices = dict(THUMB_CHOICES)
     if not choices.get(arg):
         raise TypeError("This is not a valid type for this model.")

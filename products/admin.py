@@ -95,9 +95,10 @@ class ProductImageAdmin(admin.ModelAdmin):
 
 # // TODO: Product Search ekle.
 class ProductAdmin(admin.ModelAdmin):
-    search_fields = ['title', ]
-    list_display = ['__str__', 'product_no', 'price', ]
+    search_fields = ['title', 'product_no']
+    list_display = ['__str__', 'product_no', 'price', 'sale_price', 'stok', 'active', 'show_on_homepage']
     prepopulated_fields = {'slug': ('title',)}
+    list_editable = ['active', 'show_on_homepage', ]
     inlines = [
         ProductImageInline,
         VariationInline,
@@ -110,6 +111,16 @@ class ProductAdmin(admin.ModelAdmin):
     def product_no(self, obj):
         return obj.variation_set.all()[0].istebu_product_no
     product_no.admin_order_field = 'id'
+
+    def sale_price(self, obj):
+        return obj.variation_set.all()[0].sale_price
+
+    def stok(self, obj):
+        return obj.variation_set.all()[0].inventory
+
+    def queryset(self, request):
+        # Prefetch related objects
+        return super(ProductAdmin, self).queryset(request).select_related('variation')
 
 
 class CategoryInline(admin.TabularInline):

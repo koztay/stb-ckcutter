@@ -7,7 +7,7 @@ class ProductModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['title', 'micro_thumb', 'medium_thumb', 'sd_thumb', 'price', 'kdv']
+        fields = ['title', 'description', 'micro_thumb', 'medium_thumb', 'sd_thumb', 'price', 'kdv']
 
 
 class VariationModelSerializer(serializers.ModelSerializer):
@@ -15,5 +15,5 @@ class VariationModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Variation
-        fields = ['product', 'price', 'sale_price']
+        fields = ['product', 'price', 'sale_price', "inventory"]
 

@@ -1,17 +1,17 @@
-{% load get_thumbnail %}
+{% load get_image_thumbnail %}
 {% load humanize %}
 {% load jsonify %}
 {% for product in products %}
-
                                         <!-- start single product item -->
                                         <li>
                                             <figure>
-                                                {% if product|get_thumbnail:"medium" %}
-                                                <a class="aa-product-img" href='{{ product.get_absolute_url }}'>
-                                                    <img src='{{ product|get_thumbnail:"medium"}}'
-                                                    alt="{{ product.title|lower }} img" />
-                                                </a>
+                                                {% if product.productimage_set.all.count > 0 %}
+                                                    <a class="aa-product-img" href='{{ product.get_absolute_url }}'>
+                                                        <img src='{{ product.productimage_set.all.0 | get_image_thumbnail:"medium" }}'
+                                                        alt="{{ product.title|lower }} img" />
+                                                    </a>
                                                 {% endif %}
+
                                                 {# aşağıya id değeri veremiyoruz. çünkü aynı id'den bir sürü oluyor.  #}
 
                                         {#            <input type="hidden" name='item' value='{{ product.variation_set.first.id }}'/>#}
@@ -47,10 +47,10 @@
                                                    data-saleprice="{{ product.variation_set.first.sale_price }}"
                                                    data-url="{{ product.get_absolute_url }}"
                                                    data-description="{{ product.description|truncatechars:200}}"
-                                                   data-imagehd = '{{ product|get_thumbnail:"hd"}}'
-                                                   data-imagesd = '{{ product|get_thumbnail:"sd"}}'
-                                                   data-imagemedium = '{{ product|get_thumbnail:"medium"}}'
-                                                   data-imagemicro = '{{ product|get_thumbnail:"micro"}}'
+                                                   data-imagehd = '{{ product.productimage_set.all.0|get_image_thumbnail:"hd"}}'
+                                                   data-imagesd = '{{ product.productimage_set.all.0|get_image_thumbnail:"sd"}}'
+                                                   data-imagemedium = '{{ product.productimage_set.all.0|get_image_thumbnail:"medium"}}'
+                                                   data-imagemicro = '{{ product.productimage_set.all.0|get_image_thumbnail:"micro"}}'
                                                    data-category = "{{ product.get_main_category }}"
                                                    data-category_url = "{{ product.get_main_category.get_absolute_url }}"
                                                    data-variation_set = "{{ product.variation_set.all|jsonify }}"

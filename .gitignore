@@ -75,3 +75,6 @@ templating_files/
 # cloud-config
 core-os-cloud-config.yml
 create_coreos_droplet.sh
+
+# py-test cache files bu sanırım...
+.cache
