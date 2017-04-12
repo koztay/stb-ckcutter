@@ -280,22 +280,54 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
 
             success: function (data) {
                 var modal = $(this);
+
                 $('#modal-product-title').text(data['product']['title']);
-                $('#modal-main-img').attr('data-lens-image', data['thumbnails'][0]['hd_thumb']);
-                $('#modal-main-img').find('.simpleLens-big-image').attr('src', data['thumbnails'][0]['sd_thumb']);
-                $('#modal-thumb-1').attr('data-lens-image', data['thumbnails'][0]['hd_thumb']);
-                $('#modal-thumb-1').attr('data-big-image', data['thumbnails'][0]['sd_thumb']);
-                $('#modal-thumb-1').find('.simpleLens-thumbnail-wrapper').attr('src', data['thumbnails'][0]['micro_thumb']);
-                // Aşağıdaki döngü ile diğer thumbnailleri set ediyoruz.
-                for (var i = 2; i < 4; i++) {
-                    if (data['thumbnails'][i - 1]) {
-                        $('#modal-thumb-' + i).attr('data-lens-image', data['thumbnails'][i - 1]['hd_thumb']);
-                        $('#modal-thumb-' + i).attr('data-big-image', data['thumbnails'][i - 1]['sd_thumb']);
-                        $('#modal-thumb-' + i).find('.simpleLens-thumbnail-wrapper').attr('src', data['thumbnails'][i - 1]['micro_thumb']);
-                    }else{
-                        $('#modal-thumb-' + i).remove();
+                console.log("thumb array length:" + data['thumbnails'].length );
+                if (data['thumbnails'].length > 0 ){
+                    console.log("arkadaş neden sapıtıyor bu?");
+                    console.log(data['thumbnails'] );
+                    //$(slika2).attr('src', slika + '?' + new Date().getTime());
+                    $('.simpleLens-big-image-container').find('.simpleLens-lens-image').attr('data-lens-image', data['thumbnails'][0]['hd_thumb'] + '?_=' + new Date().getTime());
+                    console.log(data['thumbnails'][0]['hd_thumb'] + '?_=' + new Date().getTime());
+                    console.log("bunu neden yazmıyorsun?");
+                    $('.simpleLens-big-image-container').find('.simpleLens-big-image').attr('src', data['thumbnails'][0]['sd_thumb'] + '?_=' + new Date().getTime());
+                    $('#modal-thumb-1').attr('data-lens-image', data['thumbnails'][0]['hd_thumb'] + '?_=' + new Date().getTime());
+                    $('#modal-thumb-1').attr('data-big-image', data['thumbnails'][0]['sd_thumb'] + '?_=' + new Date().getTime());
+                    $('#modal-thumb-1').find('.simpleLens-thumbnail-wrapper').attr('src', data['thumbnails'][0]['micro_thumb'] + '?_=' + new Date().getTime());
+
+                    // Aşağıdaki döngü ile diğer thumbnailleri set ediyoruz.
+                    for (var i = 2; i < 4; i++) {
+                        $('#modal-thumb-' + i).show();
+                        if (data['thumbnails'][i - 1]) {
+                            //$('.simpleLens-big-image-container').attr('data-lens-image', data['thumbnails'][i-1]['hd_thumb'] + '?_=' + new Date().getTime());
+                            //$('.simpleLens-big-image-container').find('.simpleLens-big-image').attr('src', data['thumbnails'][i-1]['sd_thumb'] + '?_=' + new Date().getTime());
+                            $('#modal-thumb-' + i).attr('data-lens-image', data['thumbnails'][i - 1]['hd_thumb'] + '?_=' + new Date().getTime());
+                            $('#modal-thumb-' + i).attr('data-big-image', data['thumbnails'][i - 1]['sd_thumb'] + '?_=' + new Date().getTime());
+                            $('#modal-thumb-' + i).find('.simpleLens-thumbnail-wrapper').attr('src', data['thumbnails'][i - 1]['micro_thumb'] + '?_=' + new Date().getTime());
+                        }else{
+                            $('#modal-thumb-' + i).hide();
+                        }
                     }
+                }else{
+                    console.log("hepsini sıfırlıyorum.");
+                    //Burada resetlemiyoruz diye mi sapıtıyor?
+                    $('.simpleLens-big-image-container').find('.simpleLens-lens-image').attr('data-lens-image', "{% static 'img/view-slider/large/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('.simpleLens-big-image-container').find('.simpleLens-big-image').attr('src', "{% static 'img/view-slider/medium/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-1').attr('data-lens-image', "{% static 'img/view-slider/large/polo-shirt-1.png' %}"+ '?_=' + new Date().getTime());
+                    $('#modal-thumb-1').attr('data-big-image', "{% static 'img/view-slider/medium/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-1').find('.simpleLens-thumbnail-wrapper').attr('src', "{% static 'img/view-slider/thumbnail/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-2').attr('data-lens-image', "{% static 'img/view-slider/large/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-2').attr('data-big-image', "{% static 'img/view-slider/medium/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-2').find('.simpleLens-thumbnail-wrapper').attr('src', "{% static 'img/view-slider/thumbnail/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-3').attr('data-lens-image', "{% static 'img/view-slider/large/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-3').attr('data-big-image', "{% static 'img/view-slider/medium/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-3').find('.simpleLens-thumbnail-wrapper').attr('src', "{% static 'img/view-slider/thumbnail/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+
+                    console.log("hepsini sıfırladım, bitti.");
+
                 }
+
+
                 //artık class selectorlar ile çalışabiliriz, kendini tekrar eden birşey yok.
                 console.log(data);
                 console.log(data['variation']['sale_price']);
@@ -305,11 +337,11 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
                 $('#modal-sale-price').text(sale_price);
                 $('#modal-inventory').text(data['variation']['stok']);
 
-                // remove HTML content or append it...
-                if (isHTML(data['product']['description'])){
-                    $('#modal-description').remove()
+
+                if ( data['product']['description'].indexOf("table") > -1 ) {
+                    console.log("table elementi bulundu...");
+                    $('#modal-description').text("");
                 }else{
-                    $('#modal-description').text('');
                     $('#modal-description').append(data['product']['description']);
                 }
 
@@ -336,6 +368,7 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
                     return false;
                 }
                 /////
+                data = "";
             },
             error: function (response, error) {
                 console.log(response);
