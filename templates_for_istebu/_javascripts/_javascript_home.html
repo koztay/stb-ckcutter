@@ -263,6 +263,36 @@ function updateCartTotal() {
 
 }
 
+
+// quick view modal
+$('#quick-view-modal').on('show.bs.modal', function (event) {
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or
+    // other methods instead.
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var title = button.data('title'); // Extract info from data-* attributes
+    var product_pk = button.data('product_pk');
+    console.log(product_pk);
+    console.log("ajax çalıştı");
+        $.ajax({
+            type: "GET", // "POST"
+            url: "/api/products/" + product_pk,
+
+            success: function (data) {
+                console.log('success çalıştı');
+                console.log(data);
+            },
+            error: function (response, error) {
+                console.log(response);
+                console.log(error)
+
+            }
+        });
+
+
+});
+
+
 $(document).ready(function () {
     updateCartItemCount();
     getCartItems();

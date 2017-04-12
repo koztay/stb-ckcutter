@@ -3,7 +3,10 @@
 {% load jsonify %}
 {% for product in products %}
                                         <!-- start single product item -->
+
+
                                         <li>
+                                            <a class="aa-product-img" href=' {% url 'products_api:api_detail_view' pk=product.pk %}'>API_link</a>
                                             <figure>
                                                 {% if product.productimage_set.all.count > 0 %}
                                                     <a class="aa-product-img" href='{{ product.get_absolute_url }}'>
@@ -42,18 +45,7 @@
                                                 <a href="#" data-toggle2="tooltip" data-placement="top"
                                                    title="Quick View" data-toggle="modal"
                                                    data-target="#quick-view-modal"
-                                                   data-title="{{ product.title }}"
-                                                   data-price="{{ product.price }}"
-                                                   data-saleprice="{{ product.variation_set.first.sale_price }}"
-                                                   data-url="{{ product.get_absolute_url }}"
-                                                   data-description="{{ product.description|truncatechars:200}}"
-                                                   data-imagehd = '{{ product.productimage_set.all.0|get_image_thumbnail:"hd"}}'
-                                                   data-imagesd = '{{ product.productimage_set.all.0|get_image_thumbnail:"sd"}}'
-                                                   data-imagemedium = '{{ product.productimage_set.all.0|get_image_thumbnail:"medium"}}'
-                                                   data-imagemicro = '{{ product.productimage_set.all.0|get_image_thumbnail:"micro"}}'
-                                                   data-category = "{{ product.get_main_category }}"
-                                                   data-category_url = "{{ product.get_main_category.get_absolute_url }}"
-                                                   data-variation_set = "{{ product.variation_set.all|jsonify }}"
+                                                   data-product_pk="{{ product.id }}"
                                                 ><span class="fa fa-search"></span></a>
                                             </div>
                                             <!-- product badge -->

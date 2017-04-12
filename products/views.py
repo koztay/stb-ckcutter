@@ -21,16 +21,13 @@ from .mixins import StaffRequiredMixin, FilterMixin
 from .models import Product, Variation, Category
 
 
-template_vars = {
-
-}
-
-
 def xml_latest(request):
     """
     returns an XML of the most latest posts
     """
+    template_vars = dict()
     template_vars['products'] = Product.objects.all()
+    template_vars['host'] = request.get_host()
 
     # TODO: Burada henüz domain çalışmıyorkenki URL 'yi de koymayı unutma...
     if settings.DEBUG:

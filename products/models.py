@@ -114,6 +114,7 @@ class Product(models.Model):
         #         return img.image.url
         #     return img  # None
 
+
     def get_main_category(self):  # bu quickview 'da ürününü kategorisini göstermek için...
         categories = Category.objects.all().filter(product=self)
         for category in categories:
@@ -269,6 +270,24 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return self.product.title
+
+    @property
+    def micro_thumb(self):
+        micro_thumb = Thumbnail.objects.all().filter(main_image=self, type='micro').first()
+        print(micro_thumb.media.url)
+        return micro_thumb.media.url
+
+    @property
+    def medium_thumb(self):
+        medium_thumb = Thumbnail.objects.all().filter(main_image=self, type='medium').first()
+        print(medium_thumb.media.url)
+        return medium_thumb.media.url
+
+    @property
+    def sd_thumb(self):
+        sd_thumb = Thumbnail.objects.all().filter(main_image=self, type='sd').first()
+        print(sd_thumb.media.url)
+        return sd_thumb.media.url
 
 # ************************************************************************************************************ #
 

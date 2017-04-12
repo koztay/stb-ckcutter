@@ -5,9 +5,13 @@
   <product>
     <id>{{ product.id }}</id>
     <product_title><![CDATA[ {{ product.title }} ]]></product_title>
+    <product_description><![CDATA[ {{ product.description }} ]]></product_description>
     <product_price>{{ product.variation_set.first.sale_price }}</product_price>
     <product_image>{{ product|get_thumbnail:"sd"}}</product_image>
-    <product_url>{{ product.get_absolute_url }}</product_url>
+    <product_url>
+        {% if request.is_secure %}https://{% else %}http://{% endif %}{{host}}{{product.get_absolute_url}}
+    </product_url>
+    <stok_adedi>{{ product.variation_set.all.0.inventory }}</stok_adedi>
   </product>
   {% endfor %}
 </products>
