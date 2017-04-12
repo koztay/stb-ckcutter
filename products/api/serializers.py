@@ -6,19 +6,38 @@ from products.models import Product, Variation
 class ProductModelSerializer(serializers.ModelSerializer):
     thumbnails = serializers.SerializerMethodField()
     product = serializers.SerializerMethodField()
+    variation = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ['id', 'product', 'thumbnails', ]
+        fields = ['id', 'product', 'thumbnails', 'variation']
 
     def get_product(self, obj):
         product_id = obj.pk
         product = Product.objects.get(id=product_id)
-        product = {
+        product_json = {
             'id': product.pk,
             'title': product.title,
+            'description': product.description,
+            'kdv': product.kdv,
+            'price': product.price,
         }
-        return product
+        return product_json
+
+    def get_variation(self, obj):
+        product_id = obj.pk
+        product = Product.objects.get(id=product_id)
+        variation = product.variation_set.all()[0]
+        # burada ilk variation 'ı alıyoruz ama diğerlerini de
+        # alma imkanı var.
+        variation_json = {
+            'id': variation.id,
+            'title': variation.title,
+            'price': variation.price,
+            'sale_price': variation.sale_price,
+            'stok': variation.inventory
+        }
+        return variation_json
 
     def get_thumbnails(self, obj):
         product_id = obj.pk
@@ -30,6 +49,7 @@ class ProductModelSerializer(serializers.ModelSerializer):
         for image in images:
             product_image = {
                 'main_image': image.get_image_path(),
+                'hd_thumb': image.hd_thumb,
                 'sd_thumb': image.sd_thumb,
                 'medium_thumb': image.medium_thumb,
                 'micro_thumb': image.micro_thumb,

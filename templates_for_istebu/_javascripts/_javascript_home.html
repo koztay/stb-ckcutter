@@ -279,8 +279,63 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
             url: "/api/products/" + product_pk,
 
             success: function (data) {
-                console.log('success çalıştı');
+                var modal = $(this);
+                $('#modal-product-title').text(data['product']['title']);
+                $('#modal-main-img').attr('data-lens-image', data['thumbnails'][0]['hd_thumb']);
+                $('#modal-main-img').find('.simpleLens-big-image').attr('src', data['thumbnails'][0]['sd_thumb']);
+                $('#modal-thumb-1').attr('data-lens-image', data['thumbnails'][0]['hd_thumb']);
+                $('#modal-thumb-1').attr('data-big-image', data['thumbnails'][0]['sd_thumb']);
+                $('#modal-thumb-1').find('.simpleLens-thumbnail-wrapper').attr('src', data['thumbnails'][0]['micro_thumb']);
+                // Aşağıdaki döngü ile diğer thumbnailleri set ediyoruz.
+                for (var i = 2; i < 4; i++) {
+                    if (data['thumbnails'][i - 1]) {
+                        $('#modal-thumb-' + i).attr('data-lens-image', data['thumbnails'][i - 1]['hd_thumb']);
+                        $('#modal-thumb-' + i).attr('data-big-image', data['thumbnails'][i - 1]['sd_thumb']);
+                        $('#modal-thumb-' + i).find('.simpleLens-thumbnail-wrapper').attr('src', data['thumbnails'][i - 1]['micro_thumb']);
+                    }else{
+                        $('#modal-thumb-' + i).remove();
+                    }
+                }
+                //artık class selectorlar ile çalışabiliriz, kendini tekrar eden birşey yok.
                 console.log(data);
+                console.log(data['variation']['sale_price']);
+                var sale_price = data['variation']['sale_price'];
+                // humanize price ;
+                sale_price = sale_price.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + ' ,-₺';
+                $('#modal-sale-price').text(sale_price);
+                $('#modal-inventory').text(data['variation']['stok']);
+
+                // remove HTML content or append it...
+                if (isHTML(data['product']['description'])){
+                    $('#modal-description').remove()
+                }else{
+                    $('#modal-description').text('');
+                    $('#modal-description').append(data['product']['description']);
+                }
+
+
+                //modal.find('.simpleLens-big-image').attr("src", imagemedium);
+                //modal.find('.simpleLens-lens-image').attr('data-lens-image', imagehd);
+                //modal.find('.simpleLens-thumbnail-wrapper').attr('data-lens-image', imagemedium);
+                //modal.find('.simpleLens-thumbnail-wrapper').attr('data-big-image', imagemedium);
+                //modal.find('.simpleLens-thumbnail-wrapper').attr('src', imagemedium);
+                //modal.find('.category-url').attr("href", category_url);
+                //modal.find(".category-url").text(category);
+                if (data['variation']['stok']==0){
+                    $('#modal-add-to-cart').remove();
+                    $('#modal-info').text('Ürün geçici olarak temin edilememektedir.');
+                }
+
+                /////
+                function isHTML(str) {
+                    var a = document.createElement('div');
+                    a.innerHTML = str;
+                    for (var c = a.childNodes, i = c.length; i--; ) {
+                        if (c[i].nodeType == 1) return true;
+                    }
+                    return false;
+                }
+                /////
             },
             error: function (response, error) {
                 console.log(response);

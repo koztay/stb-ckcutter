@@ -43,3 +43,6 @@ figure {
     padding-bottom: 35px;
 }
 
+.simpleLens-thumbnails-container img{
+    max-width: 45px;
+}
