@@ -6,7 +6,6 @@
 
 
                                         <li>
-                                            <a class="aa-product-img" href=' {% url 'products_api:api_detail_view' pk=product.pk %}'>API_link</a>
                                             <figure>
                                                 {% if product.productimage_set.all.count > 0 %}
                                                     <a class="aa-product-img" href='{{ product.get_absolute_url }}'>

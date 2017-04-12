@@ -284,6 +284,9 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
                 $('#modal-product-title').text(data['product']['title']);
                 console.log("thumb array length:" + data['thumbnails'].length );
                 if (data['thumbnails'].length > 0 ){
+                    for (var i = 1; i < 4; i++) {
+                        $('#modal-thumb-' + i).show();
+                    }
                     console.log("arkadaş neden sapıtıyor bu?");
                     console.log(data['thumbnails'] );
                     //$(slika2).attr('src', slika + '?' + new Date().getTime());
@@ -297,7 +300,6 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
 
                     // Aşağıdaki döngü ile diğer thumbnailleri set ediyoruz.
                     for (var i = 2; i < 4; i++) {
-                        $('#modal-thumb-' + i).show();
                         if (data['thumbnails'][i - 1]) {
                             //$('.simpleLens-big-image-container').attr('data-lens-image', data['thumbnails'][i-1]['hd_thumb'] + '?_=' + new Date().getTime());
                             //$('.simpleLens-big-image-container').find('.simpleLens-big-image').attr('src', data['thumbnails'][i-1]['sd_thumb'] + '?_=' + new Date().getTime());
@@ -324,9 +326,11 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
                     $('#modal-thumb-3').find('.simpleLens-thumbnail-wrapper').attr('src', "{% static 'img/view-slider/thumbnail/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
 
                     console.log("hepsini sıfırladım, bitti.");
-
+                    //eğer hiç resim yoksa thumb gösterme...
+                    for (var i = 1; i < 4; i++) {
+                        $('#modal-thumb-' + i).hide();
+                    }
                 }
-
 
                 //artık class selectorlar ile çalışabiliriz, kendini tekrar eden birşey yok.
                 console.log(data);
