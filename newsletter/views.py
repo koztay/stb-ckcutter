@@ -42,6 +42,7 @@ def home(request):
         form instance oluştururken parantez içindeki parametreleri
         yazmazsak POST edildiğinde hiçbirşey eklenmiyor database'e.
         '''
+        print("formu submit edeceğim...")
         if form.is_valid():
             instance = form.save(commit=False)
             email = form.cleaned_data.get('email')
@@ -85,22 +86,6 @@ def home(request):
         "testimonials": testimonials,
         # "about_us_page": about_us_page,
     }
-
-    # if form.is_valid():
-    #     # form.save()
-    #     # print request.POST['email'] #not recommended
-    #     instance = form.save(commit=False)
-    #
-    #     full_name = form.cleaned_data.get("full_name")
-    #     if not full_name:
-    #         full_name = "New full name"
-    #     instance.full_name = full_name
-    #     # if not instance.full_name:
-    #     # 	instance.full_name = "Justin"
-    #     instance.save()
-    #     context = {
-    #         "title": "Thank you"
-    #     }
 
     return render(request, "home.html", context)
 

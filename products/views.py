@@ -9,6 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Context, loader
 from django.utils import timezone
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django_filters import FilterSet, CharFilter, NumberFilter
 
@@ -16,6 +17,8 @@ from django_filters import FilterSet, CharFilter, NumberFilter
 from analytics.models import ProductAnalytics
 from taggit.models import Tag
 
+from newsletter.models import SignUp
+from newsletter.forms import SignUpForm
 from .forms import VariationInventoryFormSet, ProductFilterForm
 from .mixins import StaffRequiredMixin, FilterMixin
 from .models import Product, Variation, Category
@@ -245,7 +248,25 @@ class ProductListView(FilterMixin, ListView):
         return qs
 
 
-class NewProductListView(FilterMixin, ListView):
+"""
+class MyDetailFormView(FormView, DetailView):
+    model = MyModel
+    form_class = MyFormClass
+    template_name = 'my_template.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(MyDetailFormView, self).get_context_data(**kwargs)
+        context['form'] = self.get_form()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        return FormView.post(self, request, *args, **kwargs)
+"""
+
+
+class NewProductListView(FilterMixin, FormView, ListView):
+    form_class = SignUpForm
+    success_url = "/"
     model = Product
     filter_class = ProductFilter
     paginate_by = 12
@@ -263,6 +284,7 @@ class NewProductListView(FilterMixin, ListView):
             context["object_list"] = paginated[2]
         context['queries'] = self.get_queries_without_page()
         context['categories'] = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
+        context['form'] = self.get_form()
         return context
 
     def get_queryset(self, *args, **kwargs):
@@ -288,6 +310,26 @@ class NewProductListView(FilterMixin, ListView):
         if "page" in queries_without_page:
             del queries_without_page['page']
         return queries_without_page
+
+    def post(self, request, *args, **kwargs):
+        return FormView.post(self, request, *args, **kwargs)
+
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        email = form.cleaned_data.get('email')
+        print(instance)
+        print(instance)
+        # Aynı e-posta ile kayıt olunmuş mu bak
+        if SignUp.objects.filter(email=email).exists():
+            # daha önce bu email ile kayıt olunmuş
+            messages.error(self.request, 'Bu e-posta ile daha önce kayıt olunmuş!', "danger")
+        else:
+            # daha önce kayıt olunmamış kaydedebilirsin.
+            instance.save()
+            messages.success(self.request, 'Haber bültenimize başarıyla kayıt oldunuz.')
+        return super(NewProductListView, self).form_valid(form)
+
+
 
 """
 class CheckTimeline(ListView):

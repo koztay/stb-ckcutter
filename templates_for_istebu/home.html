@@ -1,5 +1,9 @@
 {% extends '__base.html' %}
 
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
+
 {% block slider_section %}
     {% include 'visual_site_elements/sliders/sliders.html' with object_list=sliders %}
 {% endblock %}
