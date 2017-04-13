@@ -1,12 +1,19 @@
 from django.conf.urls import url
 
-from .views import ProductDetailView, ProductListView, VariationListView, product_list_by_tag, xml_latest
+from .views import (
+    ProductDetailView,
+    ProductListView,
+    NewProductListView,
+    VariationListView,
+    product_list_by_tag,
+    xml_latest,
+)
 
 urlpatterns = [
     # Examples:
     # url(r'^$', 'newsletter.views.home', name='home'),
-    # url(r'^$', 'products.views.product_list', name='products'),
-    url(r'^$', ProductListView.as_view(), name='products'),
+    # url(r'^$', product_list, name='products'),
+    url(r'^$', NewProductListView.as_view(), name='products'),
     url(r'^(?P<slug>[\w-]+)/$', ProductDetailView.as_view(), name='product_detail'),
     url(r'^tag/(?P<tag_slug>[-\w]+)/$', product_list_by_tag, name='product_list_by_tag'),
     # url(r'^(?P<pk>\d+)/$', ProductDetailView.as_view(), name='product_detail'),

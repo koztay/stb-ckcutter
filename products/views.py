@@ -121,12 +121,12 @@ class VariationListView(StaffRequiredMixin, ListView):
 
 
 class ProductFilter(FilterSet):
-    title = CharFilter(name='title', lookup_type='icontains', distinct=True)
-    category = CharFilter(name='categories__title', lookup_type='icontains', distinct=True)
+    title = CharFilter(name='title', lookup_expr='icontains', distinct=True)
+    category = CharFilter(name='categories__title', lookup_expr='icontains', distinct=True)
     # category_id = CharFilter(name='categories__id', lookup_type='icontains', distinct=True)
-    min_price = NumberFilter(name='variation__price', lookup_type='gte', distinct=True)  # (some_price__gte=somequery)
-    max_price = NumberFilter(name='variation__price', lookup_type='lte', distinct=True)
-    tag = CharFilter(name='tags__name', lookup_type='icontains', distinct=True)
+    min_price = NumberFilter(name='variation__sale_price', lookup_expr='gte', distinct=True)  # (some_price__gte=somequery)
+    max_price = NumberFilter(name='variation__sale_price', lookup_expr='lte', distinct=True)
+    tag = CharFilter(name='tags__name', lookup_expr='icontains', distinct=True)
 
     class Meta:
         model = Product
@@ -146,6 +146,7 @@ class ProductFilter(FilterSet):
 #     if ordering:
 #         qs = Product.objects.all().order_by(ordering)
 #     f = ProductFilter(request.GET, queryset=qs)
+#     print("queryset :", f.qs)
 #     return render(request, "products/product_list.html", {"object_list": f})
 
 
@@ -244,9 +245,76 @@ class ProductListView(FilterMixin, ListView):
         return qs
 
 
+class NewProductListView(FilterMixin, ListView):
+    model = Product
+    filter_class = ProductFilter
+    paginate_by = 12
+    queryset = Product.objects.all()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(NewProductListView, self).get_context_data(*args, **kwargs)
+        context["now"] = timezone.now()
+        context["query"] = self.request.GET.get("q")  # None
+        context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
+        paginated = self.paginate_queryset(context["filtered_products"], self.paginate_by)
+        context["paginator"] = paginated[0]
+        context["page_obj"] = paginated[1]
+        context["object_list"] = paginated[2]
+        context['queries'] = self.get_queries_without_page()
+        return context
+
+    def get_queryset(self, *args, **kwargs):
+        print("ana sınıf get_queryset")
+        qs = super(NewProductListView, self).get_queryset(*args, **kwargs)
+        query = self.request.GET.get("q")
+        if query:
+            qs = self.model.objects.filter(
+                Q(title__icontains=query) |
+                Q(description__icontains=query)
+            )
+            try:
+                qs2 = self.model.objects.filter(
+                    Q(price=query)
+                )
+                qs = (qs | qs2).distinct()
+            except:
+                pass
+        return qs
+
+    # This utility function removes page parameter for preserving the query parameters.
+    def get_queries_without_page(self):
+        queries_without_page = self.request.GET.copy()
+        if "page" in queries_without_page:
+            del queries_without_page['page']
+        return queries_without_page
+
+"""
+class CheckTimeline(ListView):
+
+    def get_queryset(self):
+        check = get_object_or_404(
+            DomainCheck.objects.active(), pk=self.kwargs['check'])
+        qs = CheckResult.objects.filter(domain_check=check)
+        results = CheckResultFilter(self.request.GET, queryset=qs, strict=True)
+        self._filters_valid = results.form.is_valid()
+        return results.qs.values('checked_on', 'response_time', 'status_code')
+
+    def render_to_response(self, context, **response_kwargs):
+        results = self.get_results(context)
+        if not getattr(self, '_filters_valid', False):
+            response_kwargs['status'] = 400
+        return JsonResponse(results, **response_kwargs)
+
+    def get_results(self, context):
+        results = list(context['object_list'])
+        return {
+            'results': results,
+        }
+
+
+"""
+
 import random  # related products için kullanılıyor...
-
-
 class ProductDetailView(DetailView):
     model = Product
 

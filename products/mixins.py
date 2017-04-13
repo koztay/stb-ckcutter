@@ -40,6 +40,7 @@ class FilterMixin(object):
     search_ordering_param = "ordering"
 
     def get_queryset(self, *args, **kwargs):
+        print("mixin sınıf get_queryset")
         try:
             qs = super(FilterMixin, self).get_queryset(*args, **kwargs)
             return qs
@@ -48,15 +49,16 @@ class FilterMixin(object):
 
     def get_context_data(self, *args, **kwargs):
         context = super(FilterMixin, self).get_context_data(*args, **kwargs)
+        print("mixin sınıf get_context_data")
         qs = self.get_queryset()
         ordering = self.request.GET.get(self.search_ordering_param)
 
         if ordering:
             qs = qs.order_by(ordering)
         filter_class = self.filter_class
-
         if filter_class:
             f = filter_class(self.request.GET, queryset=qs)
-            context["object_list"] = f
-
+            # f = UserFilter(request.GET, queryset=User.objects.all()) # bunda da bir sıkıntı yok...
+            context["filtered_products"] = f.qs
+            print("her zaman aynı içerik dönüyor gibi", len(context["filtered_products"]))
         return context
