@@ -256,15 +256,16 @@ class NewProductListView(FilterMixin, ListView):
         context["now"] = timezone.now()
         context["query"] = self.request.GET.get("q")  # None
         context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
-        paginated = self.paginate_queryset(context["filtered_products"], self.paginate_by)
-        context["paginator"] = paginated[0]
-        context["page_obj"] = paginated[1]
-        context["object_list"] = paginated[2]
+        if context.get('filtered_products'):
+            paginated = self.paginate_queryset(context["filtered_products"], self.paginate_by)
+            context["paginator"] = paginated[0]
+            context["page_obj"] = paginated[1]
+            context["object_list"] = paginated[2]
         context['queries'] = self.get_queries_without_page()
+        context['categories'] = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
         return context
 
     def get_queryset(self, *args, **kwargs):
-        print("ana sınıf get_queryset")
         qs = super(NewProductListView, self).get_queryset(*args, **kwargs)
         query = self.request.GET.get("q")
         if query:

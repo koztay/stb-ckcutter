@@ -8,7 +8,7 @@
      <title>{% block title %} İştebu! | Yaşamınızı Kolaylaştırır {% endblock %}</title>
     {% include '_head_css.html' %}
 </head>
-<body>
+<body {% block class %} {% endblock %}>
 <!-- wpf loader Two -->
 <div id="wpf-loader-two">
     <div class="wpf-loader-two-inner">
@@ -27,6 +27,8 @@
 {#{% block messages %} {% endblock %}#}
 
 {% block slider_section %} {% endblock %}
+
+{% block generic_page_header %} {% endblock %}
 
 {% block content %} {% endblock %}
 

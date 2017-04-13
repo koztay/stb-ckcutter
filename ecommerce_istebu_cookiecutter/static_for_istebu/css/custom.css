@@ -46,3 +46,7 @@ figure {
 .simpleLens-thumbnails-container img{
     max-width: 45px;
 }
+
+#aa-product-category .aa-product-catg-content .aa-product-catg-body .aa-product-catg li {
+  margin: 0 0 10px 10px; !important;
+}
