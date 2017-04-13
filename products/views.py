@@ -7,6 +7,7 @@ from django.http import Http404
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Context, loader
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
@@ -46,48 +47,41 @@ def xml_latest(request):
     return HttpResponse(t.render(c), content_type="text/xml")
 
 
-# aşağıdaki view filtreleri context olarak gönderemiyor. Dolayısıyla
-def product_list_by_tag(request, tag_slug=None):
-    object_list = Product.objects.all()  # This is automatically returns active products.
-    tag = None
-    if tag_slug:
-        tag = get_object_or_404(Tag, slug=tag_slug)
-        object_list = object_list.filter(tags__in=[tag])
-    paginator = Paginator(object_list, 9)  # 3 products in each page
-    page = request.GET.get('page')
-    try:
-        products = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer deliver the first page
-        products = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range deliver the last page of results
-        products = paginator.page(paginator.num_pages)
-
-    return render(request, 'products/product_list.html', {'page': page,
-                                                          'page_products': products,
-                                                          'tag': tag,
-                                                          'section': "Products"})
-
-
-class CategoryListView(ListView):
-    model = Category
-    queryset = Category.objects.all()
-    template_name = "products/products.html"
-    # product_list.html vardı burada, tabii object olarak product göndermiyordu ve hata veriyordu.
+# # aşağıdaki view filtreleri context olarak gönderemiyor. Dolayısıyla
+# def product_list_by_tag(request, tag_slug=None):
+#     object_list = Product.objects.all()  # This is automatically returns active products.
+#     tag = None
+#     if tag_slug:
+#         tag = get_object_or_404(Tag, slug=tag_slug)
+#         object_list = object_list.filter(tags__in=[tag])
+#     paginator = Paginator(object_list, 9)  # 3 products in each page
+#     page = request.GET.get('page')
+#     try:
+#         products = paginator.page(page)
+#     except PageNotAnInteger:
+#         # If page is not an integer deliver the first page
+#         products = paginator.page(1)
+#     except EmptyPage:
+#         # If page is out of range deliver the last page of results
+#         products = paginator.page(paginator.num_pages)
+#
+#     return render(request, 'products/product_list.html', {'page': page,
+#                                                           'page_products': products,
+#                                                           'tag': tag,
+#                                                           'section': "Products"})
 
 
-class CategoryDetailView(DetailView):
-    model = Category
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(CategoryDetailView, self).get_context_data(*args, **kwargs)
-        obj = self.get_object()
-        product_set = obj.product_set.all()
-        default_products = obj.default_category.all()
-        products = (product_set | default_products).distinct()
-        context["products"] = products
-        return context
+# class CategoryDetailView(DetailView):
+#     model = Category
+#
+#     def get_context_data(self, *args, **kwargs):
+#         context = super(CategoryDetailView, self).get_context_data(*args, **kwargs)
+#         obj = self.get_object()
+#         product_set = obj.product_set.all()
+#         default_products = obj.default_category.all()
+#         products = (product_set | default_products).distinct()
+#         context["products"] = products
+#         return context
 
 
 class VariationListView(StaffRequiredMixin, ListView):
@@ -248,25 +242,36 @@ class ProductListView(FilterMixin, ListView):
         return qs
 
 
-"""
-class MyDetailFormView(FormView, DetailView):
-    model = MyModel
-    form_class = MyFormClass
-    template_name = 'my_template.html'
+# Artık bu view 'ı her yerde kullanabiliriz.
+class SignupFormView(FormView):
+    form_class = SignUpForm
+    success_url = reverse_lazy('products:products')
 
-    def get_context_data(self, **kwargs):
-        context = super(MyDetailFormView, self).get_context_data(**kwargs)
+    def get_context_data(self, *args, **kwargs):
+        context = super(SignupFormView, self).get_context_data(*args, **kwargs)
         context['form'] = self.get_form()
         return context
 
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        email = form.cleaned_data.get('email')
+        print(instance)
+        print(instance)
+        # Aynı e-posta ile kayıt olunmuş mu bak
+        if SignUp.objects.filter(email=email).exists():
+            # daha önce bu email ile kayıt olunmuş
+            messages.error(self.request, 'Bu e-posta ile daha önce kayıt olunmuş!', "danger")
+        else:
+            # daha önce kayıt olunmamış kaydedebilirsin.
+            instance.save()
+            messages.success(self.request, 'Haber bültenimize başarıyla kayıt oldunuz.')
+        return super(SignupFormView, self).form_valid(form)
+
     def post(self, request, *args, **kwargs):
         return FormView.post(self, request, *args, **kwargs)
-"""
 
 
-class NewProductListView(FilterMixin, FormView, ListView):
-    form_class = SignUpForm
-    success_url = "/"
+class NewProductListView(FilterMixin, SignupFormView, ListView):
     model = Product
     filter_class = ProductFilter
     paginate_by = 12
@@ -284,7 +289,7 @@ class NewProductListView(FilterMixin, FormView, ListView):
             context["object_list"] = paginated[2]
         context['queries'] = self.get_queries_without_page()
         context['categories'] = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
-        context['form'] = self.get_form()
+        context['tags'] = Tag.objects.all()
         return context
 
     def get_queryset(self, *args, **kwargs):
@@ -302,6 +307,7 @@ class NewProductListView(FilterMixin, FormView, ListView):
                 qs = (qs | qs2).distinct()
             except:
                 pass
+        print("qs neymiş :", qs)
         return qs
 
     # This utility function removes page parameter for preserving the query parameters.
@@ -311,53 +317,48 @@ class NewProductListView(FilterMixin, FormView, ListView):
             del queries_without_page['page']
         return queries_without_page
 
-    def post(self, request, *args, **kwargs):
-        return FormView.post(self, request, *args, **kwargs)
 
-    def form_valid(self, form):
-        instance = form.save(commit=False)
-        email = form.cleaned_data.get('email')
-        print(instance)
-        print(instance)
-        # Aynı e-posta ile kayıt olunmuş mu bak
-        if SignUp.objects.filter(email=email).exists():
-            # daha önce bu email ile kayıt olunmuş
-            messages.error(self.request, 'Bu e-posta ile daha önce kayıt olunmuş!', "danger")
-        else:
-            # daha önce kayıt olunmamış kaydedebilirsin.
-            instance.save()
-            messages.success(self.request, 'Haber bültenimize başarıyla kayıt oldunuz.')
-        return super(NewProductListView, self).form_valid(form)
+# bu da yine otomatik listeliyor
+class CategoryDetailView(NewProductListView):
 
-
-
-"""
-class CheckTimeline(ListView):
-
-    def get_queryset(self):
-        check = get_object_or_404(
-            DomainCheck.objects.active(), pk=self.kwargs['check'])
-        qs = CheckResult.objects.filter(domain_check=check)
-        results = CheckResultFilter(self.request.GET, queryset=qs, strict=True)
-        self._filters_valid = results.form.is_valid()
-        return results.qs.values('checked_on', 'response_time', 'status_code')
-
-    def render_to_response(self, context, **response_kwargs):
-        results = self.get_results(context)
-        if not getattr(self, '_filters_valid', False):
-            response_kwargs['status'] = 400
-        return JsonResponse(results, **response_kwargs)
-
-    def get_results(self, context):
-        results = list(context['object_list'])
-        return {
-            'results': results,
-        }
+    def get_context_data(self, *args, **kwargs):
+        context = super(CategoryDetailView, self).get_context_data(*args, **kwargs)
+        slug = self.kwargs["slug"]
+        category = Category.objects.filter(slug=slug)
+        qs = self.get_queryset()
+        if slug:
+            products = qs.filter(categories=category).distinct()
+            context["object_list"] = products
+        if context.get('object_list'):
+            paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
+            context["paginator"] = paginated[0]
+            context["page_obj"] = paginated[1]
+            context["object_list"] = paginated[2]
+        return context
 
 
-"""
+# bu view tag üzerine tıklanınca filter yapıyor
+class ProductListTagFilterView(NewProductListView):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductListTagFilterView, self).get_context_data(*args, **kwargs)
+        tag_slug = self.kwargs["tag_slug"]
+        print(tag_slug)
+        qs = self.get_queryset()
+        if tag_slug:
+            tag = get_object_or_404(Tag, slug=tag_slug)
+            context['object_list'] = qs.filter(tags__in=[tag])
+        if context.get('object_list'):
+            paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
+            context["paginator"] = paginated[0]
+            context["page_obj"] = paginated[1]
+            context["object_list"] = paginated[2]
+        return context
+
 
 import random  # related products için kullanılıyor...
+
+
 class ProductDetailView(DetailView):
     model = Product
 

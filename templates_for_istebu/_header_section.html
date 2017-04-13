@@ -104,7 +104,12 @@
                         <!-- / cart box -->
                         <!-- search box -->
                         <div class="aa-search-box">
-                            <form method="GET" role="search" action='{% url "products:products" %}'>
+                            <form method="GET" role="search"
+                                    {% if request.path == home %}
+                                        action='{% url "products:products" %}'
+                                    {% else %}
+                                        action=''
+                                    {% endif %}>
                                 <input type="text" id="" placeholder="Ara" name="q"
                                 value='{{ request.GET.q }}'>
                                 <button type="submit"><span class="fa fa-search"></span></button>

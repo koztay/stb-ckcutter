@@ -1,4 +1,8 @@
 {% extends '__base.html' %}
+
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
 <!-- !Important notice -->
 <!-- Only for product page body tag have to added .productPage class -->
 {% block class %} class="productPage" {% endblock %}
@@ -18,7 +22,7 @@
     <div class="container">
         <div class="row">
             {% include 'products/_products_right_column.html' with object_list=object_list %}
-            {% include 'products/_products_left_column.html' %}
+            {% include 'products/_products_left_column.html' with categories=categories %}
          </div>
     </div>
 </section>

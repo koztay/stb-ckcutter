@@ -2,26 +2,22 @@
                 <aside class="aa-sidebar">
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
-                        <h3>Category</h3>
+                        <h3>Kategoriler</h3>
                         <ul class="aa-catg-nav">
-                            <li><a href="#">Men</a></li>
-                            <li><a href="">Women</a></li>
-                            <li><a href="">Kids</a></li>
-                            <li><a href="">Electornics</a></li>
-                            <li><a href="">Sports</a></li>
+                            {% for category in categories %}
+                                <li><a href="{{ category.get_absolute_url }}">{{ category.title }}</a></li>
+                            {% endfor %}
                         </ul>
                     </div>
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
-                        <h3>Tags</h3>
+                        <h3>Etiketler</h3>
                         <div class="tag-cloud">
-                            <a href="#">Fashion</a>
-                            <a href="#">Ecommerce</a>
-                            <a href="#">Shop</a>
-                            <a href="#">Hand Bag</a>
-                            <a href="#">Laptop</a>
-                            <a href="#">Head Phone</a>
-                            <a href="#">Pen Drive</a>
+                            {% for tag in tags %}
+                                {% if tag.name %}
+                                    <a href="{% url "products:product_list_by_tag" tag_slug=tag.slug %}">{{ tag.name }}</a>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                     <!-- single sidebar -->
@@ -38,24 +34,6 @@
                             </form>
                         </div>
 
-                    </div>
-                    <!-- single sidebar -->
-                    <div class="aa-sidebar-widget">
-                        <h3>Shop By Color</h3>
-                        <div class="aa-color-tag">
-                            <a class="aa-color-green" href="#"></a>
-                            <a class="aa-color-yellow" href="#"></a>
-                            <a class="aa-color-pink" href="#"></a>
-                            <a class="aa-color-purple" href="#"></a>
-                            <a class="aa-color-blue" href="#"></a>
-                            <a class="aa-color-orange" href="#"></a>
-                            <a class="aa-color-gray" href="#"></a>
-                            <a class="aa-color-black" href="#"></a>
-                            <a class="aa-color-white" href="#"></a>
-                            <a class="aa-color-cyan" href="#"></a>
-                            <a class="aa-color-olive" href="#"></a>
-                            <a class="aa-color-orchid" href="#"></a>
-                        </div>
                     </div>
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">

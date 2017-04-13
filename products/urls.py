@@ -5,8 +5,9 @@ from .views import (
     ProductListView,
     NewProductListView,
     VariationListView,
-    product_list_by_tag,
+    # product_list_by_tag,
     xml_latest,
+    ProductListTagFilterView,
 )
 
 urlpatterns = [
@@ -15,7 +16,8 @@ urlpatterns = [
     # url(r'^$', product_list, name='products'),
     url(r'^$', NewProductListView.as_view(), name='products'),
     url(r'^(?P<slug>[\w-]+)/$', ProductDetailView.as_view(), name='product_detail'),
-    url(r'^tag/(?P<tag_slug>[-\w]+)/$', product_list_by_tag, name='product_list_by_tag'),
+    # url(r'^tag/(?P<tag_slug>[-\w]+)/$', product_list_by_tag, name='product_list_by_tag'),
+    url(r'^tag/(?P<tag_slug>[-\w]+)/$', ProductListTagFilterView.as_view(), name='product_list_by_tag'),
     # url(r'^(?P<pk>\d+)/$', ProductDetailView.as_view(), name='product_detail'),
     url(r'^(?P<pk>\d+)/inventory/$', VariationListView.as_view(), name='product_inventory'),
     url(r'^xml/latest.xml', xml_latest, name='products_xml'),

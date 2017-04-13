@@ -38,7 +38,8 @@
 {#  </nav>#}
 {#{% endif %}#}
 {% if is_paginated %}
-<div class="aa-product-catg-pagination">
+    {% if paginator.num_pages > 1 %}
+                    <div class="aa-product-catg-pagination">
                         <nav>
                             <ul class="pagination">
                                 {% if page_obj.has_previous %}
@@ -76,4 +77,5 @@
                             </ul>
                         </nav>
                     </div>
+        {% endif %}
 {% endif %}
