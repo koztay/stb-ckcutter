@@ -3,8 +3,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # from datetime import datetime
 from django.db.models import Q, Max, Min, Count, Sum
-from django.http import Http404
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Context, loader
 from django.urls import reverse_lazy
@@ -25,10 +24,38 @@ from .mixins import StaffRequiredMixin, FilterMixin
 from .models import Product, Variation, Category
 
 
+"""
+from django.http import HttpResponse
+from django.template import loader, Context
+
+def some_view(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+    # The data is hard-coded here, but you could load it from a database or
+    # some other source.
+    csv_data = (
+        ('First row', 'Foo', 'Bar', 'Baz'),
+        ('Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"),
+    )
+
+    t = loader.get_template('my_template_name.txt')
+    c = Context({
+        'data': csv_data,
+    })
+    response.write(t.render(c))
+    return response
+
+
+"""
+
+
 def xml_latest(request):
     """
     returns an XML of the most latest posts
     """
+
     template_vars = dict()
     template_vars['products'] = Product.objects.all()
     template_vars['host'] = request.get_host()
@@ -44,8 +71,11 @@ def xml_latest(request):
     t = loader.get_template('products/xml/products.xml')
     c = Context(template_vars)
 
-    return HttpResponse(t.render(c), content_type="text/xml")
-
+    # return HttpResponse(t.render(c), content_type="text/xml")
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(t.render(c), content_type='text/xml')
+    response['Content-Disposition'] = 'attachment; filename="istebu.xml"'
+    return response
 
 # # aşağıdaki view filtreleri context olarak gönderemiyor. Dolayısıyla
 # def product_list_by_tag(request, tag_slug=None):
@@ -289,6 +319,7 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, ListView):
     model = Product
     filter_class = ProductFilter
     paginate_by = 12
+    paginate_orphans = 10  # maximum gözüken sayfa sayısı
     queryset = Product.objects.all()
 
     def get_context_data(self, *args, **kwargs):
@@ -299,6 +330,8 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, ListView):
         if context.get('filtered_products'):
             paginated = self.paginate_queryset(context["filtered_products"], self.paginate_by)
             context["paginator"] = paginated[0]
+            context["page"] = paginated[0].get_page()
+            print("page_nedir?", context["page"])
             context["page_obj"] = paginated[1]
             context["object_list"] = paginated[2]
         context['queries'] = self.get_queries_without_page()

@@ -8,7 +8,6 @@ volumes:
 services:
   postgres:
     build: ./compose/postgres
-    restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - postgres_backup:/backups
@@ -18,7 +17,6 @@ services:
     build:
       context: .
       dockerfile: ./compose/django/Dockerfile
-    restart: always
     image: istebu_cookicutter/django
     user: django
     depends_on:
@@ -31,7 +29,6 @@ services:
 
   nginx:
     build: ./compose/nginx
-    restart: always
     depends_on:
       - django
     volumes:
@@ -46,11 +43,8 @@ services:
 #    image: redis:latest
 
   redis:
-    build: ./compose/redis
-    restart: always
-#    ports:
-#      - "6379"
-    command: redis-server /usr/local/etc/redis/redis.conf
+    image: redis:latest
+
 
   celeryworker:
 # Aşağıdakileri commentleyip yaratılmış imajı kullandırtmazsan yeniden djangoyu build ediyor. Çok saçma...

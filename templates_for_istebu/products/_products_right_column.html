@@ -33,6 +33,17 @@
                         {% include '_products_section/_quick_view_modal.html' %}
                         <!-- / quick view modal -->
                     </div>
+{#                    {% if is_paginated %}{% load paginator %}{% paginator 3 %}{% endif %}#}
+{##}
+{#                    {% if object_list %}#}
+{#                    <ul>#}
+{#                        {% for photo in object_list %}#}
+{#                            <li />{{ photo.name }}#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
+{#                    {% endif %}#}
+{##}
+{#                    {% if is_paginated %}{% load paginator %}{% paginator 3 %}{% endif %}#}
                     {% include "_pagination.html" %}
                 </div>
             </div>

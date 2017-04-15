@@ -17,8 +17,8 @@ class HomeView(SignupFormView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
         context['featured_image'] = ProductFeatured.objects.filter(active=True).order_by("?").first()
-        context['products'] = Product.objects.all().order_by("?")[:16]
-        context['products2'] = Product.objects.all().order_by("?")[:8]
+        context['products'] = Product.objects.all().filter(variation__inventory__gt=0).order_by("?")[:16]
+        context['products2'] = Product.objects.all().filter(variation__inventory__gt=0).order_by("?")[:8]
         context['sliders'] = SliderImage.objects.all().filter(active=True)
         context['horizontal_banner'] = HorizontalBanner.objects.all().filter(active=True).order_by("?").first()
         context['categories'] = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')

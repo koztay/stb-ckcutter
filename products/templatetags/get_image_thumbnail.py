@@ -10,7 +10,7 @@ def get_image_thumbnail(obj, arg):
     obj == ProductImage instance
 
     """
-    print("object_type :", type(obj))
+    # print("object_type :", type(obj))
     arg = arg.lower()
     # if not isinstance(obj, ProductImage):
     #     raise TypeError("This is not a valid productimage model.")

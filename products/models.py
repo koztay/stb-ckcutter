@@ -88,7 +88,7 @@ class Product(models.Model):
     objects = ProductManager()
 
     class Meta:
-        ordering = ["-title"]
+        ordering = ["-variation__inventory", "id", "title", ]
 
     def __str__(self):  # def __str__(self):
         return self.title
@@ -274,25 +274,25 @@ class ProductImage(models.Model):
     @property
     def micro_thumb(self):
         micro_thumb = Thumbnail.objects.all().filter(main_image=self, type='micro').first()
-        print(micro_thumb.media.url)
+        # print(micro_thumb.media.url)
         return micro_thumb.media.url
 
     @property
     def medium_thumb(self):
         medium_thumb = Thumbnail.objects.all().filter(main_image=self, type='medium').first()
-        print(medium_thumb.media.url)
+        # print(medium_thumb.media.url)
         return medium_thumb.media.url
 
     @property
     def sd_thumb(self):
         sd_thumb = Thumbnail.objects.all().filter(main_image=self, type='sd').first()
-        print(sd_thumb.media.url)
+        # print(sd_thumb.media.url)
         return sd_thumb.media.url
 
     @property
     def hd_thumb(self):
         hd_thumb = Thumbnail.objects.all().filter(main_image=self, type='hd').first()
-        print(hd_thumb.media.url)
+        # print(hd_thumb.media.url)
         return hd_thumb.media.url
 
 # ************************************************************************************************************ #
