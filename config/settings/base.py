@@ -61,8 +61,9 @@ THIRD_PARTY_APPS = [
     'data_importer',
     'django_celery_beat',
     'django_celery_results',
+    'django_cleanup',
     'django_filters',
-    'formtools',
+    # 'formtools',
     'rest_framework',
     'taggit',
 

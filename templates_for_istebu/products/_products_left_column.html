@@ -1,3 +1,4 @@
+{% load get_image_thumbnail %}
 <div class="col-lg-3 col-md-3 col-sm-4 col-md-pull-9">
                 <aside class="aa-sidebar">
                     <!-- single sidebar -->
@@ -37,59 +38,45 @@
                     </div>
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
-                        <h3>Recently Views</h3>
+                        <h3>Son Gezilenler</h3>
                         <div class="aa-recently-views">
                             <ul>
-                                <li>
-                                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-2.jpg"></a>
+                                {% for product in last_visited_item_list %}
+                                    <li>
+                                    {% if product.productimage_set.all.count > 0 %}
+                                        <a href='{{ product.get_absolute_url }}' class="aa-cartbox-img">
+                                            <img alt="{{ product.title|lower }} img"
+                                                 src='{{ product.productimage_set.all.0 | get_image_thumbnail:"micro" }}'/>
+                                        </a>
+                                    {% endif %}
                                     <div class="aa-cartbox-info">
-                                        <h4><a href="#">Product Name</a></h4>
-                                        <p>1 x $250</p>
+                                        <h4><a href='{{ product.get_absolute_url }}'>{{ product.title }}</a></h4>
+                                        <p>{{ product.variation_set.first.sale_price }}</p>
                                     </div>
-                                </li>
-                                <li>
-                                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-1.jpg"></a>
-                                    <div class="aa-cartbox-info">
-                                        <h4><a href="#">Product Name</a></h4>
-                                        <p>1 x $250</p>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-2.jpg"></a>
-                                    <div class="aa-cartbox-info">
-                                        <h4><a href="#">Product Name</a></h4>
-                                        <p>1 x $250</p>
-                                    </div>
-                                </li>
+                                    </li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
-                        <h3>Top Rated Products</h3>
+                        <h3>En Popüler Ürünler</h3>
                         <div class="aa-recently-views">
                             <ul>
-                                <li>
-                                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-2.jpg"></a>
+                                {% for product in most_popular_products %}
+                                    <li>
+                                    {% if product.productimage_set.all.count > 0 %}
+                                        <a class="aa-cartbox-img" href='{{ product.get_absolute_url }}'>
+                                            <img src='{{ product.productimage_set.all.0 | get_image_thumbnail:"micro" }}'
+                                            alt="{{ product.title|lower }} img" />
+                                        </a>
+                                    {% endif %}
                                     <div class="aa-cartbox-info">
-                                        <h4><a href="#">Product Name</a></h4>
-                                        <p>1 x $250</p>
+                                        <h4><a href='{{ product.get_absolute_url }}'>{{ product.title }}</a></h4>
+                                        <p>{{ product.variation_set.first.sale_price }}</p>
                                     </div>
-                                </li>
-                                <li>
-                                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-1.jpg"></a>
-                                    <div class="aa-cartbox-info">
-                                        <h4><a href="#">Product Name</a></h4>
-                                        <p>1 x $250</p>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-2.jpg"></a>
-                                    <div class="aa-cartbox-info">
-                                        <h4><a href="#">Product Name</a></h4>
-                                        <p>1 x $250</p>
-                                    </div>
-                                </li>
+                                    </li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>

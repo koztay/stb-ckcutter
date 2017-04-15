@@ -242,6 +242,20 @@ class ProductListView(FilterMixin, ListView):
         return qs
 
 
+class LatestProducts(ListView):
+    model = Product
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(LatestProducts, self).get_context_data(*args, **kwargs)
+        qs = Product.objects.all()
+        # TODO: Buraya son gezilenleri listeleyen bir algoritma yaz.
+        if self.request.session.get('last_visited_item_list'):
+            last_visited_items = [Product.objects.get(pk=pk) for pk in self.request.session.get('last_visited_item_list')]
+            context['last_visited_item_list'] = last_visited_items[:3]
+
+        return context
+
+
 # Artık bu view 'ı her yerde kullanabiliriz.
 class SignupFormView(FormView):
     form_class = SignUpForm
@@ -271,7 +285,7 @@ class SignupFormView(FormView):
         return FormView.post(self, request, *args, **kwargs)
 
 
-class NewProductListView(FilterMixin, SignupFormView, ListView):
+class NewProductListView(FilterMixin, SignupFormView, LatestProducts, ListView):
     model = Product
     filter_class = ProductFilter
     paginate_by = 12
@@ -290,6 +304,11 @@ class NewProductListView(FilterMixin, SignupFormView, ListView):
         context['queries'] = self.get_queries_without_page()
         context['categories'] = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
         context['tags'] = Tag.objects.all()
+
+        # most popular products
+        most_viewed_product_list = Product.objects.annotate(num_views=Sum('productanalytics__count')).filter(num_views__gt=0).order_by('-num_views')
+        context['most_popular_products'] = most_viewed_product_list[:3]
+
         return context
 
     def get_queryset(self, *args, **kwargs):
@@ -358,9 +377,41 @@ class ProductListTagFilterView(NewProductListView):
 
 import random  # related products için kullanılıyor...
 
+
 class ProductDetailView(DetailView):
     model = Product
 
+    def get_context_data(self, **kwargs):
+        context = super(ProductDetailView, self).get_context_data(**kwargs)
+        instance = self.get_object()
+
+        # add count to analytics:
+        analytics_object, created = ProductAnalytics.objects.get_or_create(product=instance)
+        if self.request.user.is_authenticated():
+            analytics_object.user = self.request.user  # burda sapıttı habire kamil yazdı durdu...
+        analytics_object.add_count()
+        analytics_object.save()
+
+        # add products to visited list
+        # eğer liste varsa gezdiği ürün listede mi bak:
+        if self.request.session.get('last_visited_item_list'):
+            if instance.pk not in self.request.session.get('last_visited_item_list'):
+                if 0 <= len(self.request.session.get('last_visited_item_list')) < 3:
+                    self.request.session['last_visited_item_list'].append(instance.pk)
+                    self.request.session.modified = True
+                    print("3 'ten küçük ya da hiç yok", len(self.request.session.get('last_visited_item_list')))
+                    print(self.request.session.get('last_visited_item_list'))
+                else:
+                    del self.request.session.get('last_visited_item_list')[0]
+                    self.request.session['last_visited_item_list'].append(instance.pk)
+                    self.request.session.modified = True
+                    print(self.request.session.get('last_visited_item_list'))
+        else:
+            self.request.session['last_visited_item_list'] = []
+            self.request.session['last_visited_item_list'].append(instance.pk)
+            self.request.session.modified = True
+
+        return context
     # def get_context_data(self, *args, **kwargs):
     #     context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
     #     instance = self.get_object()

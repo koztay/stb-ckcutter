@@ -12,6 +12,7 @@
   </component>
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/deploy" />
       <excludeFolder url="file://$MODULE_DIR$/ecommerce_istebu_cookiecutter/media" />
       <excludeFolder url="file://$MODULE_DIR$/staticfiles" />

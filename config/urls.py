@@ -15,12 +15,12 @@ from orders.views import (
     OrderList,
     OrderDetail)
 
-from newsletter.views import home, contact
+from newsletter.views import HomeView, ContactView
 from my_importer.views import xml_upload_view, xml_map_view, TaskRunnerView
 
 urlpatterns = [
-    url(r'^$', home, name='home'),
-    url(r'^contact/$', contact, name='contact'),
+    url(r'^$', HomeView.as_view(), name='home'),
+    url(r'^contact/$', ContactView.as_view(), name='contact'),
     # url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
                   url(r'^hakkimizda/$', views.flatpage, {'url': '/hakkimizda/'}, name='hakkimizda'),

@@ -1,93 +1,77 @@
 from django.conf import settings
-from django.contrib import messages
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render
-from django.contrib.flatpages import views
+from django.views.generic import TemplateView, FormView
 
 from products.models import ProductFeatured, Product, Category
 from visual_site_elements.models import SliderImage, Promotion, HorizontalBanner, Testimonial
-from .forms import ContactForm, SignUpForm
-from .models import SignUp
+from .forms import ContactForm
+from products.views import SignupFormView
 
 
-# Create your views here.
-def home(request):
-    title = 'Sign Up Now'
+class HomeView(SignupFormView, TemplateView):
+    template_name = 'home.html'
+    success_url = reverse_lazy('home')
 
-    featured_image = ProductFeatured.objects.filter(active=True).order_by("?").first()
-    products = Product.objects.all().order_by("?")[:16]
-    products2 = Product.objects.all().order_by("?")[:8]
-    sliders = SliderImage.objects.all().filter(active=True)
-    horizontal_banner = HorizontalBanner.objects.all().filter(active=True).order_by("?").first()
-    categories = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
-    # sol taraftaki promosyon için rastgele bir promosyon seç:
-    promotion_left = Promotion.objects.all().filter(active=True).order_by("?").first()
+    def get_context_data(self, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
+        context['featured_image'] = ProductFeatured.objects.filter(active=True).order_by("?").first()
+        context['products'] = Product.objects.all().order_by("?")[:16]
+        context['products2'] = Product.objects.all().order_by("?")[:8]
+        context['sliders'] = SliderImage.objects.all().filter(active=True)
+        context['horizontal_banner'] = HorizontalBanner.objects.all().filter(active=True).order_by("?").first()
+        context['categories'] = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
+        context['testimonials'] = Testimonial.objects.filter(active=True).order_by("?")[:3]
+        # sol taraftaki promosyon için rastgele bir promosyon seç:
+        promotion_left = Promotion.objects.all().filter(active=True).order_by("?").first()
+        try:
+            promotions_right = Promotion.objects.all().exclude(id=promotion_left.id).filter(active=True).order_by("?")[:4]
+            promotions = (promotion_left, promotions_right)
+        except:
+            promotions = None
+            pass
+        context['promotions'] = promotions
 
-    # sol taraf için seçilen promosyonu aşağıdaki listeden çıkar ve kalanlar arasından ilk 4 'ü al, rastgele sırala.
-    try:
-        promotions_right = Promotion.objects.all().exclude(id=promotion_left.id).filter(active=True).order_by("?")[:4]
-        promotions = (promotion_left, promotions_right)
-    except:
-        promotions = None
-        pass
+        return context
 
-    testimonials = Testimonial.objects.filter(active=True).order_by("?")[:3]
 
-    if request.method == "POST":
-        form = SignUpForm(request.POST)
+# Artık bu view 'ı her yerde kullanabiliriz.
+class ContactView(FormView):
+    form_class = ContactForm
+    template_name = 'contact.html'
+    success_url = reverse_lazy('products:products')  # Buraya kendi URL 'sini yazalım.
 
-        '''
-        form = SignUpForm()
-        form instance oluştururken parantez içindeki parametreleri
-        yazmazsak POST edildiğinde hiçbirşey eklenmiyor database'e.
-        '''
-        print("formu submit edeceğim...")
-        if form.is_valid():
-            instance = form.save(commit=False)
-            email = form.cleaned_data.get('email')
+    def get_context_data(self, **kwargs):
+        context = super(ContactView, self).get_context_data(**kwargs)
 
-            # Aynı e-posta ile kayıt olunmuş mu bak
-            if SignUp.objects.filter(email=email).exists():
-                # daha önce bu email ile kayıt olunmuş
-                messages.error(request, 'Bu e-posta ile daha önce kayıt olunmuş!', "danger")
-            else:
-                # daha önce kayıt olunmamış kaydedebilirsin.
-                instance.save()
-                messages.success(request, 'Haber bültenimize başarıyla kayıt oldunuz.')
+        title_align_center = False
 
-                # try:
-                #     sign_upped = SignUp.objects.filter(email=email).exists()
-                #     if sign_upped:
-                #         messages.error(request, 'Bu e-posta ile daha önce kayıt olunmuş!', "danger")
-                #     else:
-                #         instance.save()
-                #         messages.success(request, 'Haber bültenimize başarıyla kayıt oldunuz.')
-                # except:
-                #     pass
+        context['form'] = self.get_form()
+        context['title'] = "Bize Yazın"
+        context['title_align_center'] = title_align_center,
+        context['section'] = "İletişim"
+        return context
 
-        else:
-            messages.error(request, 'Hatalı e-posta girdiniz.!', "danger")
-    else:
-        form = SignUpForm()
+    def form_valid(self, form):
+        email = form.cleaned_data.get('email')
+        full_name = form.cleaned_data.get('full_name')
+        message = form.cleaned_data.get('message')
+        subject = 'Site Contact Form'
+        # from_email = settings.EMAIL_HOST_USER
+        from_email = "info@karnas.com.tr"
+        to_email = [from_email, 'koztay@me.com']
+        contact_message = '%s: %s via %s' % (full_name, message, email)
 
-   # about_us_page = reverse(views.flatpage, kwargs={'url': '/hakkimizda/'})
+        send_mail(subject,
+                  contact_message,
+                  from_email,
+                  to_email,
+                  fail_silently=True)
+        return super(ContactView, self).form_valid(form)
 
-    context = {
-        "title": title,
-        "form": form,
-        "featured_image": featured_image,
-        "products": products,
-        "products2": products2,
-        "sliders": sliders,
-        "promotions": promotions,
-        "categories": categories,
-        "horizontal_banner": horizontal_banner,
-        "testimonials": testimonials,
-        # "about_us_page": about_us_page,
-    }
-
-    return render(request, "home.html", context)
+    def post(self, request, *args, **kwargs):
+        return FormView.post(self, request, *args, **kwargs)
 
 
 def contact(request):
@@ -138,38 +122,3 @@ def contact(request):
     }
 
     return render(request, "contact.html", context)
-# def contact(request):
-#     title = 'Contact Us'
-#     title_align_center = True
-#     form = ContactForm(request.POST or None)
-#     if form.is_valid():
-#         # for key, value in form.cleaned_data.iteritems():
-#         # 	print key, value
-#         # 	#print form.cleaned_data.get(key)
-#         form_email = form.cleaned_data.get("email")
-#         form_message = form.cleaned_data.get("message")
-#         form_full_name = form.cleaned_data.get("full_name")
-#         # print email, message, full_name
-#         subject = 'Site contact form'
-#         from_email = settings.EMAIL_HOST_USER
-#         to_email = [from_email, 'youotheremail@email.com']
-#         contact_message = "%s: %s via %s" % (
-#             form_full_name,
-#             form_message,
-#             form_email)
-#         some_html_message = """
-#         <h1>hello</h1>
-#         """
-#         send_mail(subject,
-#                   contact_message,
-#                   from_email,
-#                   to_email,
-#                   html_message=some_html_message,
-#                   fail_silently=True)
-#
-#     context = {
-#         "form": form,
-#         "title": title,
-#         "title_align_center": title_align_center,
-#     }
-#     return render(request, "forms.html", context)

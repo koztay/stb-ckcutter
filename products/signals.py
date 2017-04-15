@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, pre_delete
 from django.dispatch import receiver
 from uuslug import slugify
 
@@ -11,6 +11,12 @@ from products.models import (Variation,
                              Thumbnail,
                              ProductImage)
 from utils import thumbnail_creator
+from django_cleanup import cleanup
+
+
+def image_pre_delete_receiver_for_cleanup(sender, instance, *args, **kwargs):
+    instance.refresh_from_db()
+    cleanup.refresh(instance)
 
 
 # TODO: bu signal içerisinde kar marjı varsa price 'ı update et, yoksa, kar marjını bulup kaydet.
@@ -173,6 +179,8 @@ post_save.connect(productimage_post_save_receiver_for_thumbnail, sender=ProductI
 post_save.connect(product_post_save_receiver_for_attributes, sender=Product)
 post_save.connect(product_post_save_receiver_for_variation, sender=Product)
 post_save.connect(attribute_type_post_save_receiver, sender=AttributeType)
+pre_delete.connect(image_pre_delete_receiver_for_cleanup, sender=Thumbnail)
+pre_delete.connect(image_pre_delete_receiver_for_cleanup, sender=ProductImage)
 
 
 # TODO : Bunu normal olarak product ve kategori post save olarak yaratamaz mıyız? (mixin vb. yöntemle)
