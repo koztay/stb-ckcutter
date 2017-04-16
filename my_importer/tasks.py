@@ -259,7 +259,7 @@ def process_dict(self, row_dictionary, create_allowed):
         if product_picture:
             if product_instance.productimage_set.all().count() == 0:  # image varsa boşu boşuna task ekleme.
                 print("Resim daha önce eklenmemiş. Download task çalıştırılacak. Yeni fonksiyon bu.")
-                download_image_for_product.delay(product_picture, product_instance.id)
+                download_xml_image_for_product.delay(product_picture, product_instance.id)
 
     if created:
         return "%s sisteme eklendi." % product_instance.title
@@ -443,8 +443,8 @@ def run_all_steps(xml_file_pk, create_allowed=False):
     step03_process_products_dict_array(products_dict_array, json_map, create_allowed)
 
 
-@task(bind=True, name="Download Image", rate_limit="240/h")  # please change me from 240 to 40 on production
-def download_image_for_product(self, image_link=None, product_id=None):
+@task(bind=True, name="Download XML Image", rate_limit="240/h")  # please change me from 240 to 40 on production
+def download_xml_image_for_product(self, image_link=None, product_id=None):
     result = "Hata! %s linkindeki resim indirilemedi:" % image_link
     try:
         result = image_downloader.download_image(image_link, product_id)

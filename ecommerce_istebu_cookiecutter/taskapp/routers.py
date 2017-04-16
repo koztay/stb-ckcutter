@@ -9,7 +9,11 @@ def route_task(name, args, kwargs, options, task=None, **kw):
         return {'exchange': 'xml_updater',
                 'exchange_type': 'direct',
                 'routing_key': 'xml_updater'}
-    elif name == 'my_importer.tasks.download_image_for_product':
+    elif name == 'my_importer.tasks.download_xml_image_for_product':
+        return {'exchange': 'xml_updater',
+                'exchange_type': 'direct',
+                'routing_key': 'image_downloader'}
+    elif name == 'importer.tasks.download_image_for_product':
         return {'exchange': 'xml_updater',
                 'exchange_type': 'direct',
                 'routing_key': 'image_downloader'}
