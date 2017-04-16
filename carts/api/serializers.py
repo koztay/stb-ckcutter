@@ -24,9 +24,9 @@ class CartModelSerializer(serializers.ModelSerializer):
                     'product_id': cart_item.item.product.pk,
                     'product_url': cart_item.item.get_absolute_url(),
                     'product_title': cart_item.item.product.title,
-                    'sale_price': cart_item.item.sale_price,
+                    'sale_price': cart_item.item.get_sale_price(),
                     'quantity': cart_item.quantity,
-                    'sub_total': cart_item.quantity * cart_item.item.sale_price,
+                    'sub_total': cart_item.quantity * cart_item.item.get_sale_price(),
                     # 'image': cart_item.item.product.micro_thumb,
                 }
                 # aşağıdaki try blok ajax all'un hata HTTP 500 hatası vermesini engelliyor.

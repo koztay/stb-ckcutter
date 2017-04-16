@@ -359,8 +359,8 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
                 console.log(data['variation']['sale_price']);
                 var sale_price = data['variation']['sale_price'];
                 // humanize price ;
-                sale_price = sale_price.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + ' ,-₺';
-                $('#modal-sale-price').text(sale_price);
+{#                sale_price = sale_price.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + ' ,-₺';#}
+                $('#modal-sale-price').text(sale_price + ',-₺');
                 if(data['variation']['stok'] > 0){
                     $('#modal-inventory').text("Stok mevcut");
                 }else{

@@ -216,14 +216,14 @@ class Variation(models.Model):
     # aşağıdaki revizyon ile düzelttim bakalım düzgün çalışacak mı?
     def get_sale_price(self):
         if self.sale_price is not None:
-            return self.sale_price * Decimal(self.buying_currency.value)
+            return "%.2f" % (self.sale_price * Decimal(self.buying_currency.value))
         elif self.price is not None:
-            return self.price * Decimal(self.buying_currency.value)
+            return "%.2f" % (self.price * Decimal(self.buying_currency.value))
         else:
-            return self.product.price * Decimal(self.buying_currency.value)
+            return "%.2f" % (self.product.price * Decimal(self.buying_currency.value))
 
     def get_product_price(self):
-        return self.product.price * Decimal(self.buying_currency.value)
+        return "%.2f" % (self.product.price * Decimal(self.buying_currency.value))
 
     def get_html_price(self):
         if self.sale_price is not None:

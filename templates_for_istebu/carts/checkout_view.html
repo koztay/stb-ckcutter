@@ -39,7 +39,7 @@
         </div>
         <div class='col-sm-6'>
             <p class='lead'>Login to Continue</p>
-            <form method='POST' action="{% url 'auth_login' %}"> {% csrf_token %}
+            <form method='POST' action="{% url 'account_login' %}"> {% csrf_token %}
                 {{ login_form|crispy }}
 
                 <input type='hidden' name='next' value='{{ next_url }}'/>
@@ -47,7 +47,7 @@
             </form>
             <p class='text-center'>
 
-            <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
+            <p>{% trans "Forgot password" %}? <a href="{% url 'account_reset_password' %}">{% trans "Reset it" %}</a>!</p>
             <p>{% trans "Not member" %}? <a href="{% url 'about' %}">{% trans "Register" %}</a>!</p>
             </p>
 
@@ -92,4 +92,8 @@
     {% endif %}
 
 
+{% endblock %}
+
+{% block javascript_section %}
+    {% include '_javascripts/_javascript_home.html' %}
 {% endblock %}

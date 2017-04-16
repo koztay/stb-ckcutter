@@ -36,8 +36,8 @@ class ProductModelSerializer(serializers.ModelSerializer):
         variation_json = {
             'id': variation.id,
             'title': variation.title,
-            'price': variation.price,
-            'sale_price': variation.sale_price,
+            'price': variation.get_product_price(),
+            'sale_price': variation.get_sale_price(),
             'stok': variation.inventory
         }
         return variation_json
