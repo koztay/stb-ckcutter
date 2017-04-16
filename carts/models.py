@@ -30,7 +30,7 @@ def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
     print("cart_item_pre_save_receiver çalıştı")
     qty = instance.quantity
     if int(qty) >= 1:
-        price = instance.item.get_price()
+        price = instance.item.get_sale_price()
         line_item_total = Decimal(qty) * Decimal(price)
         instance.line_item_total = line_item_total
 

@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -59,8 +60,8 @@ class ProductManager(models.Manager):
         return self.get_queryset().active()
 
     def get_related(self, instance):
-        products_one = self.get_queryset().filter(categories__in=instance.categories.all())
-        products_two = self.get_queryset().filter(default=instance.default)
+        products_one = self.get_queryset().filter(categories__in=instance.categories.all()).filter(variation__inventory__gte=0)
+        products_two = self.get_queryset().filter(default=instance.default).filter(variation__inventory__gte=0)
         qs = (products_one | products_two).exclude(id=instance.id).distinct()
         return qs
 
@@ -213,20 +214,25 @@ class Variation(models.Model):
 
     # eğer ürünü import ederek eklemişsek variation'ın hem price hem de sale price kısmı empty geliyordu.
     # aşağıdaki revizyon ile düzelttim bakalım düzgün çalışacak mı?
-    def get_price(self):
+    def get_sale_price(self):
         if self.sale_price is not None:
-            return self.sale_price
+            return self.sale_price * Decimal(self.buying_currency.value)
         elif self.price is not None:
-            return self.price
+            return self.price * Decimal(self.buying_currency.value)
         else:
-            return self.product.price
+            return self.product.price * Decimal(self.buying_currency.value)
+
+    def get_product_price(self):
+        return self.product.price * Decimal(self.buying_currency.value)
 
     def get_html_price(self):
         if self.sale_price is not None:
-            html_text = "<span class='sale-price'>%s</span> <span class='og-price'>%s</span>" % (self.sale_price,
-                                                                                                 self.price)
+            if self.get_sale_price() < self.get_product_price():
+                html_text = '<span class="aa-product-price">%s ,-₺</span> <span class="aa-product-price"><del>%s ,-₺</del></span>' % (self.get_sale_price(), self.get_product_price())
+            else:
+                html_text = "<span class='aa-product-price'>%s ,-₺</span>" % self.get_sale_price()
         else:
-            html_text = "<span class='price'>%s</span>" % self.price
+            html_text = "<span class='aa-product-price'>%s ,-₺</span>" % self.get_product_price()
         return mark_safe(html_text)
 
     def get_absolute_url(self):

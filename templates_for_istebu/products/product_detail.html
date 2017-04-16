@@ -45,10 +45,10 @@
                                 <div class="aa-product-view-content">
                                     <h3>{{ object.title }}</h3>
                                     <div class="aa-price-block">
-                                        <span class="aa-product-view-price">{{ object.variation_set.first.sale_price }} ,-₺</span>
+                                        <span class="aa-product-view-price">{{ object.variation_set.first.get_html_price }}</span>
                                         <p class="aa-product-avilability">Stok Durumu:
                                             <span>
-                                                {% if object.variation_set.first.inventory.count > 0 %}
+                                                {% if object.variation_set.all.0.inventory > 0 %}
                                                     Stok mevcut
                                                 {% else %}
                                                     Stokta yok
@@ -89,7 +89,12 @@
                                         </p>
                                     </div>
                                     <div class="aa-prod-view-bottom">
-                                        <a class="aa-add-to-cart-btn" data-productid="{{ object.pk }}" href="#">Sepete At</a>
+                                        {% if object.variation_set.all.0.inventory > 0 %}
+                                            <a id="detail-add-to-cart" class="aa-add-to-cart-btn" data-productid="{{ object.pk }}" href="#">Sepete At</a>
+                                        {% else %}
+                                            <p>Ürün geçici olarak temin edilememektedir.</p>
+                                        {% endif %}
+
 {#                                        <a class="aa-add-to-cart-btn" href="#">Wishlist</a>#}
 {#                                        <a class="aa-add-to-cart-btn" href="#">Compare</a>#}
                                     </div>

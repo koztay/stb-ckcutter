@@ -21,6 +21,9 @@ class ProductModelSerializer(serializers.ModelSerializer):
             'description': product.description,
             'kdv': product.kdv,
             'price': product.price,
+            'url': product.get_absolute_url(),
+            'category': product.get_main_category().title,
+            'category_url': product.get_main_category().get_absolute_url(),
         }
         return product_json
 

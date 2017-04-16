@@ -91,7 +91,7 @@ $('#modal-add-to-cart').click( function(e) {
 );
 
 // product detail 'de çalışan da bu...
-$('.aa-add-to-cart-btn').click( function(e) {
+$('#detail-add-to-cart').click( function(e) {
     e.preventDefault();
     console.log('Add to cart clicklendi');
     var product_id = this.dataset['productid'];
@@ -169,7 +169,6 @@ function getCartItems() {
         type: "GET",
         url: "{% url 'cart_api:api_cartitems_list' %}",
         success: function (data) {
-            console.log("ajax call başarılı. hata bundan sonra...");
             var cart_total = 0;
             //console.log(data);
             if (data.length > 0) {
@@ -362,7 +361,12 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
                 // humanize price ;
                 sale_price = sale_price.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + ' ,-₺';
                 $('#modal-sale-price').text(sale_price);
-                $('#modal-inventory').text(data['variation']['stok']);
+                if(data['variation']['stok'] > 0){
+                    $('#modal-inventory').text("Stok mevcut");
+                }else{
+                    $('#modal-inventory').text("Stokta yok");
+                }
+
 
 
                 if ( data['product']['description'].indexOf("table") > -1 ) {
@@ -397,6 +401,9 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
                 /////
 
                 $("#modal-add-to-cart").attr('data-productid', product_pk);
+                $("#modal-view-details").attr('href', data['product']['url']);
+                $("#kategori").text(data['product']['category']);
+                $("#kategori").attr('href', data['product']['category_url']);
 
                 data = "";
             },
