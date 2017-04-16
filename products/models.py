@@ -114,7 +114,6 @@ class Product(models.Model):
         #         return img.image.url
         #     return img  # None
 
-
     def get_main_category(self):  # bu quickview 'da ürününü kategorisini göstermek için...
         categories = Category.objects.all().filter(product=self)
         for category in categories:

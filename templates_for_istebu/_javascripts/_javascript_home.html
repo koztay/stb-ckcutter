@@ -60,11 +60,7 @@ function showFlashMessage(message) {
 
 }
 
-// bu anasayfadaki herhangi bir ürüne tıklandığında çalışan fonksiyon...
-$('.aa-add-card-btn').click( function(e) {
-    e.preventDefault();
-    var product_id = this.dataset['productid'];
-    //console.log('Add to cart clicklendi, product_id:', product_id);
+function addProductTocart(product_id) {
     $.ajax({
         type: "GET", // "POST"
         url: "{% url 'cart' %}",
@@ -83,7 +79,33 @@ $('.aa-add-card-btn').click( function(e) {
         }
     });
     return false;
+}
+
+// bu da aynı fonksiyonun quickview vb'inde çalışanı...
+$('#modal-add-to-cart').click( function(e) {
+    e.preventDefault();
+    console.log('Add to cart clicklendi');
+    var product_id = this.dataset['productid'];
+    addProductTocart(product_id);
+    }
+);
+
+// product detail 'de çalışan da bu...
+$('.aa-add-to-cart-btn').click( function(e) {
+    e.preventDefault();
+    console.log('Add to cart clicklendi');
+    var product_id = this.dataset['productid'];
+    addProductTocart(product_id);
+    } );
+//aa-add-to-cart-btn
+// bu anasayfadaki herhangi bir ürüne tıklandığında çalışan fonksiyon...
+$('.aa-add-card-btn').click( function(e) {
+    e.preventDefault();
+    console.log('Add to cart clicklendi');
+    var product_id = this.dataset['productid'];
+    addProductTocart(product_id);
 } );
+
 
 function removeProduct(product) {
     var product_id = product.id;
@@ -147,6 +169,7 @@ function getCartItems() {
         type: "GET",
         url: "{% url 'cart_api:api_cartitems_list' %}",
         success: function (data) {
+            console.log("ajax call başarılı. hata bundan sonra...");
             var cart_total = 0;
             //console.log(data);
             if (data.length > 0) {
@@ -189,7 +212,7 @@ function getCartItems() {
                     cart_total += object.sub_total;
 
                     $(list).appendTo('#cartbox-summary').show(1000);
-                    console.log('list = ', list);
+                    //console.log('list = ', list);
 
 
                 });
@@ -372,6 +395,9 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
                     return false;
                 }
                 /////
+
+                $("#modal-add-to-cart").attr('data-productid', product_pk);
+
                 data = "";
             },
             error: function (response, error) {

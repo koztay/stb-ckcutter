@@ -18,6 +18,7 @@ class CartModelSerializer(serializers.ModelSerializer):
             cart_items = cart.cartitem_set.all()
             print(cart_items)
             cart_items_array = []
+
             for cart_item in cart_items:
                 item_in_cart = {
                     'product_id': cart_item.item.product.pk,
@@ -26,7 +27,13 @@ class CartModelSerializer(serializers.ModelSerializer):
                     'sale_price': cart_item.item.sale_price,
                     'quantity': cart_item.quantity,
                     'sub_total': cart_item.quantity * cart_item.item.sale_price,
-                    'image': cart_item.item.product.micro_thumb,
+                    # 'image': cart_item.item.product.micro_thumb,
                 }
+                # aşağıdaki try blok ajax all'un hata HTTP 500 hatası vermesini engelliyor.
+                try:
+                    item_in_cart['image'] = cart_item.item.product.micro_thumb
+                except:
+                    pass
+
                 cart_items_array.append(item_in_cart)
             return cart_items_array

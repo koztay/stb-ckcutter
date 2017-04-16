@@ -155,8 +155,7 @@ def process_dict(self, row_dictionary, create_allowed):
     else:
         try:
             if Product.objects.all():
-                # active True olabilmesi için eksiksiz olarak fieldların tamamlanmış olması lazım...
-                product_instance = Product.objects.all().get(title=product_title, active=False)
+                product_instance = Product.objects.all().get(title=product_title)
             else:
                 print("I cannot query any products. Please add one manually or run the function with create=True")
                 return

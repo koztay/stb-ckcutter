@@ -411,13 +411,18 @@ class ProductListTagFilterView(NewProductListView):
 import random  # related products için kullanılıyor...
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(SignupFormView, DetailView):
     model = Product
+
+    def get_success_url(self):
+        instance = self.get_object()
+        return reverse_lazy('products:product_detail', kwargs={'slug': instance.slug})
 
     def get_context_data(self, **kwargs):
         context = super(ProductDetailView, self).get_context_data(**kwargs)
         instance = self.get_object()
-
+        context["related"] = sorted(Product.objects.get_related(instance)[:8], key=lambda x: random.random())
+        print("related_products :", context["related"])
         # add count to analytics:
         analytics_object, created = ProductAnalytics.objects.get_or_create(product=instance)
         if self.request.user.is_authenticated():
@@ -445,95 +450,3 @@ class ProductDetailView(DetailView):
             self.request.session.modified = True
 
         return context
-    # def get_context_data(self, *args, **kwargs):
-    #     context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
-    #     instance = self.get_object()
-    #
-    #     # #### NEW CODE ####
-    #     # if self.request.session.get('last_visit'):
-    #     #     # The session has a value for the last visit
-    #     #     last_visit_time = self.request.session.get('last_visit')
-    #     #     visits = self.request.session.get('visits', 0)
-    #     #
-    #     #     if (datetime.now() - datetime.strptime(last_visit_time[:-7], "%Y-%m-%d %H:%M:%S")).days > 0:
-    #     #         self.request.session['visits'] = visits + 1
-    #     #         self.request.session['last_visit'] = str(datetime.now())
-    #     # else:
-    #     #     # The get returns None, and the session does not have a value for the last visit.
-    #     #     self.request.session['last_visit'] = str(datetime.now())
-    #     #     self.request.session['visits'] = 1
-    #     #
-    #     # print(self.request.session.get('visits'))
-    #     # print(self.request.session.get('last_visit'))
-    #     # #### END NEW CODE ####
-    #
-    #     if self.request.session.get('last_visited_item_list'):
-    #         if instance not in self.request.session.get('last_visited_item_list'):
-    #             if 0 <= len(self.request.session.get('last_visited_item_list')) < 3:
-    #                 self.request.session['last_visited_item_list'].append(instance)
-    #                 self.request.session.modified = True
-    #                 print("3 'ten küçük ya da hiç yok", len(self.request.session.get('last_visited_item_list')))
-    #                 print(self.request.session.get('last_visited_item_list'))
-    #             else:
-    #                 del self.request.session.get('last_visited_item_list')[0]
-    #                 self.request.session['last_visited_item_list'].append(instance)
-    #                 self.request.session.modified = True
-    #                 print(self.request.session.get('last_visited_item_list'))
-    #     else:
-    #         self.request.session['last_visited_item_list'] = []
-    #         self.request.session['last_visited_item_list'].append(instance)
-    #         self.request.session.modified = True
-    #
-    #     # print last item
-    #     # order_by("-title")
-    #
-    #     # ben user authenticated olmasa da view sayısını arttıracağım...
-    #     # if self.request.user.is_authenticated():
-    #     #     tag = self.get_object()
-    #     #     new_view = TagView.objects.add_count(self.request.user, tag)
-    #
-    #     # yukarıdaki gibi herhangi bir değişkene de atmaya gerek yok.
-    #     if self.request.user.is_authenticated():
-    #         user = self.request.user  # eğer user login olmuşsa
-    #     else:
-    #         user = self.request.user.id  # eğer user login olmamışsa
-    #     analytics, created = ProductAnalytics.objects.get_or_create(user=user, product=instance)
-    #     analytics.add_count()
-    #
-    #
-    #     context["related"] = sorted(Product.objects.get_related(instance)[:8], key=lambda x: random.random())
-    #     return context
-
-
-# detail view 'ı CBV olarak yazdık...
-# def product_detail_view_func(request, id):
-#     # product_instance = Product.objects.get(id=id)
-#     product_instance = get_object_or_404(Product, id=id)
-#     try:
-#         product_instance = Product.objects.get(id=id)
-#     except Product.DoesNotExist:
-#         raise Http404
-#     except:
-#         raise Http404
-#
-#     template = "products/product_detail.html"
-#     context = {
-#         "object": product_instance
-#     }
-#     return render(request, template, context)
-
-
-# Aşağıdaki de slug view olarak function based view...
-# def detail_slug_view(request, slug=None):
-#     product = Product.objects.get(slug=slug)
-#     try:
-#         product = get_object_or_404(Product, slug=slug)
-#     except Product.MultipleObjectsReturned:
-#         product = Product.objects.filter(slug=slug).order_by("-title").first()
-#     # print slug
-#     # product = 1
-#     template = "products/product_detail.html"
-#     context = {
-#         "object": product
-#     }
-#     return render(request, template, context)
