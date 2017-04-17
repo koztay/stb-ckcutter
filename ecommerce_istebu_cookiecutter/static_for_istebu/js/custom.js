@@ -29,7 +29,7 @@ jQuery(function ($) {
 
 
     /* ----------------------------------------------------------- */
-    /*  1. CARTBOX 
+    /*  1. CARTBOX
      /* ----------------------------------------------------------- */
 
     jQuery(".aa-cartbox").hover(function () {
@@ -47,16 +47,16 @@ jQuery(function ($) {
     jQuery('[data-toggle2="tooltip"]').tooltip();
 
     /* ----------------------------------------------------------- */
-    /*  3. PRODUCT VIEW SLIDER 
+    /*  3. PRODUCT VIEW SLIDER
      /* ----------------------------------------------------------- */
 
-    jQuery('#demo-1 .simpleLens-thumbnails-container img').simpleGallery({
-        loading_image: 'static/img/view-slider/loading.gif'
-    });
-
-    jQuery('#demo-1 .simpleLens-big-image').simpleLens({
-        loading_image: 'static/img/view-slider/loading.gif'
-    });
+    // jQuery('#demo-1 .simpleLens-thumbnails-container img').simpleGallery({
+    //     loading_image: 'static/img/view-slider/loading.gif'
+    // });
+    //
+    // jQuery('#demo-1 .simpleLens-big-image').simpleLens({
+    //     loading_image: 'static/img/view-slider/loading.gif'
+    // });
 
     /* ----------------------------------------------------------- */
     /*  4. POPULAR PRODUCT SLIDER (SLICK SLIDER)
@@ -296,12 +296,12 @@ jQuery(function ($) {
     /*  11. PRELOADER
      /* ----------------------------------------------------------- */
 
-    jQuery(window).load(function () { // makes sure the whole site is loaded      
-        jQuery('#wpf-loader-two').delay(200).fadeOut('slow'); // will fade out      
+    jQuery(window).load(function () { // makes sure the whole site is loaded
+        jQuery('#wpf-loader-two').delay(200).fadeOut('slow'); // will fade out
     })
 
     /* ----------------------------------------------------------- */
-    /*  12. GRID AND LIST LAYOUT CHANGER 
+    /*  12. GRID AND LIST LAYOUT CHANGER
      /* ----------------------------------------------------------- */
 
     jQuery("#list-catg").click(function (e) {
