@@ -20,3 +20,6 @@ deploy
 # cloud-config / coreos creation
 core-os-cloud-config.yml
 create_coreos_droplet.sh
+
+# postgres_backups
+postgres_backups

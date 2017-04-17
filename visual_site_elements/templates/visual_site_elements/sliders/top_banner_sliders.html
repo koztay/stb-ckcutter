@@ -1,0 +1,20 @@
+<!-- catg header banner section -->
+<section id="aa-catg-head-banner">
+    <div id="sequence" class="seq" style="max-height: 300px;">
+            <div class="seq-screen">
+                <ul class="seq-canvas">
+
+                {% for slide in object_list %}
+                    {% include "visual_site_elements/sliders/single_slide.html" with slide=slide %}
+                {% endfor %}
+
+                </ul>
+            </div>
+            <!-- slider navigation btn -->
+            <fieldset class="seq-nav" aria-controls="sequence" aria-label="Slider buttons">
+                <a type="button" class="seq-prev" aria-label="Previous"><span class="fa fa-angle-left"></span></a>
+                <a type="button" class="seq-next" aria-label="Next"><span class="fa fa-angle-right"></span></a>
+            </fieldset>
+        </div>
+</section>
+<!-- / catg header banner section -->

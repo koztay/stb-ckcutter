@@ -6,7 +6,7 @@ from django.db import models
 
 from ckeditor.widgets import CKEditorWidget
 
-from .models import SliderImage, Promotion, PromotionThumbnail, HorizontalBanner, Testimonial
+from .models import SliderImage, Promotion, PromotionThumbnail, HorizontalBanner, Testimonial, HorizontalTopBanner
 
 
 # FlatPages CKEditor integration
@@ -36,4 +36,5 @@ class PromotionAdmin(admin.ModelAdmin):
 admin.site.register(SliderImage)
 admin.site.register(Promotion, PromotionAdmin)
 admin.site.register(HorizontalBanner)
+admin.site.register(HorizontalTopBanner)
 admin.site.register(Testimonial)

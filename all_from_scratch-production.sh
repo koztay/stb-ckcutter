@@ -13,7 +13,7 @@
 #dvm use 1.10.3
 #docker -v
 
-eval $(docker-machine env istebu-core01)
+eval $(docker-machine env $1)
 # eval $(docker-machine env istebu)
 # Stop and remove all containers
 docker stop $(docker ps -a -q)

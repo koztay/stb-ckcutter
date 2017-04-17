@@ -15,10 +15,11 @@ from django_filters import FilterSet, CharFilter, NumberFilter
 
 
 from analytics.models import ProductAnalytics
-from taggit.models import Tag
-
 from newsletter.models import SignUp
 from newsletter.forms import SignUpForm
+from taggit.models import Tag
+from visual_site_elements.models import HorizontalTopBanner
+
 from .forms import VariationInventoryFormSet, ProductFilterForm
 from .mixins import StaffRequiredMixin, FilterMixin
 from .models import Product, Variation, Category
@@ -337,6 +338,8 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, ListView):
         context['queries'] = self.get_queries_without_page()
         context['categories'] = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
         context['tags'] = Tag.objects.all()
+        context['banners'] = HorizontalTopBanner.objects.filter(category__title="Projeksiyon Cihazları")
+        print(context['banners'])
 
         # most popular products
         most_viewed_product_list = Product.objects.annotate(num_views=Sum('productanalytics__count')).filter(num_views__gt=0).order_by('-num_views')

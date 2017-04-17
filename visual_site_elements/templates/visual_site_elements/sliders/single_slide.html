@@ -2,14 +2,17 @@
 
 <li>
     <div class="seq-model">
-        <img data-seq src="{{ slide.image.url }}" alt="Men slide img"/>
+        <a href="{{ slide.url }}"><img data-seq src="{{ slide.image.url }}" alt="{{ slide.title }} img"/></a>
     </div>
-    <div class="seq-title">
-        <span data-seq>{{ slide.campaign }}</span>
-        <h2 data-seq> {{ slide.title }} </h2>
-        <p data-seq> {{ slide.sub_title }} </p>
-        <a data-seq href="{{ slide.url }}" class="aa-shop-now-btn aa-secondary-btn">ALIŞVERİŞE BAŞLA</a>
-    </div>
+        <div class="seq-title">
+            {% if show_text %}
+            <span data-seq>{{ slide.campaign }}</span>
+            <h2 data-seq> {{ slide.title }} </h2>
+            <p data-seq> {{ slide.sub_title }} </p>
+            <a data-seq href="{{ slide.url }}" class="aa-shop-now-btn aa-secondary-btn">ALIŞVERİŞE BAŞLA</a>
+            {% endif %}
+        </div>
+
 </li>
 
 

@@ -78,3 +78,8 @@ create_coreos_droplet.sh
 
 # py-test cache files bu sanırım...
 .cache
+
+# postgres_backups
+postgres_backups
+
+eval.sh
