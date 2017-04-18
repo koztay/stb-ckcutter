@@ -51,3 +51,10 @@ figure {
   margin: 0 0 10px 10px; !important;
 }
 
+.pagination > li.active > a {
+    z-index: 3;
+    color: #fff; !important;
+    cursor: default;
+    background-color: #37c6f5;
+    border-color: #37c6f5;
+}

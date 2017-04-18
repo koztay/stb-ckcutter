@@ -21,9 +21,11 @@ from .tasks import run_all_steps
 default_fields = {
     "IGNORE": {"model": "NA", "local_field": "NA"},
     "Magaza_Kodu": {"model": "Variation", "local_field": "istebu_product_no"},
+    "Vendor_Urun_Kodu": {"model": "Variation", "local_field": "vendor_product_no"},  # urun eşleşmesi bu kod ile olacak
     "Kategori": {"model": "Category", "local_field": "categories"},  # product.categories olarak eklenecek !!!!
-    "Alt_Kategori": {"model": "Category", "local_field": "categories"}, # product.categories olarak eklenecek !!!
+    "Alt_Kategori": {"model": "Category", "local_field": "categories"},  # product.categories olarak eklenecek !!!
     "Urun_Tipi": {"model": "ProductType", "local_field": "name"},  # product.product_type olarak ekle !!!
+    "Marka": {"model": "AttributeValue", "local_field": "value"},  # value for AtrributeType.type == "Marka"
     "Urun_Adi": {"model": "Product", "local_field": "title"},
     "Aciklama": {"model": "Product", "local_field": "description"},
     "Stok": {"model": "Variation", "local_field": "inventory"},

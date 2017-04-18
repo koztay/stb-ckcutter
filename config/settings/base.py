@@ -63,7 +63,7 @@ THIRD_PARTY_APPS = [
     'django_celery_results',
     'django_cleanup',
     'django_filters',
-    # 'formtools',
+    'pure_pagination',
     'rest_framework',
     'taggit',
 
@@ -329,3 +329,9 @@ CKEDITOR_UPLOAD_PATH = 'ck_uploads/'
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
 
 
+PAGINATION_SETTINGS = {
+    'PAGE_RANGE_DISPLAYED': 4,
+    'MARGIN_PAGES_DISPLAYED': 2,
+
+    'SHOW_FIRST_PAGE_WHEN_INVALID': True,
+}

@@ -147,7 +147,7 @@ def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *ar
         # hd_max = (width, height)
         hd_max = (900, 900)
         sd_max = (600, 600)
-        mid_max = (350, 300)  # bunu yatayda 350 pixelin altına ayarlayınca zoom lens sapıtıyor.
+        mid_max = (250, 300)  # bunu yatayda 350 pixelin altına ayarlayınca zoom lens sapıtıyor.
         micro_max = (150, 150)
 
         media_path = instance.get_image_path()

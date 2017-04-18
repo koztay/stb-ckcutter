@@ -13,6 +13,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django_filters import FilterSet, CharFilter, NumberFilter
 
+from pure_pagination.mixins import PaginationMixin
 
 from analytics.models import ProductAnalytics
 from newsletter.models import SignUp
@@ -316,7 +317,7 @@ class SignupFormView(FormView):
         return FormView.post(self, request, *args, **kwargs)
 
 
-class NewProductListView(FilterMixin, SignupFormView, LatestProducts, ListView):
+class NewProductListView(FilterMixin, SignupFormView, LatestProducts, PaginationMixin, ListView):
     model = Product
     filter_class = ProductFilter
     paginate_by = 12

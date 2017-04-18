@@ -153,9 +153,14 @@ class CurrencyAdmin(admin.ModelAdmin):
     readonly_fields = ('value', 'updated')
 
 
+class ThumbnailAdmin(admin.ModelAdmin):
+    list_filter = ('type', )
+    search_fields = ['type', 'width', 'height']
+
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductImage, ProductImageAdmin)
-admin.site.register(Thumbnail)
+admin.site.register(Thumbnail, ThumbnailAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(ProductFeatured)
 admin.site.register(ProductType)
