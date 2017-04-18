@@ -1,5 +1,10 @@
 {% load staticfiles %}
 <script>
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 // bu fonksiyon custom_message.js dosyasımda idi...
 function showFlashMessage(message) {
     //console.log("showFlashMessaje çalıştı");
@@ -166,8 +171,13 @@ function getCartItems() {
                     product_title.attr('href', object.product_url);
                     product_image.find('img').attr('src', object.image);
                     product_image.attr('href', object.product_url);
-                    product_fiyat.text(object.sale_price + ' ,-₺');
+
+                    var formatted_sale_price = numberWithCommas(object.sale_price);
+                    //console.log(formatted_sale_price);
+
+                    product_fiyat.text(formatted_sale_price + ' ,-₺');
                     product_adet.text(object.quantity);
+
 
                     cart_total += parseFloat(object.sub_total);
                     //console.log("cart_total: ", cart_total);
@@ -188,7 +198,10 @@ function getCartItems() {
                 cart_summary.append(total_section);
             }
 
-            $("#total-rakam").text(parseFloat(cart_total).toFixed(2) + ' ₺');
+            var formatted_total_price = numberWithCommas(parseFloat(cart_total).toFixed(2));
+            //console.log(formatted_total_price);
+
+            $("#total-rakam").text(formatted_total_price + ' ,-₺');
             //console.log($("#total-rakam").text(parseFloat(cart_total).toFixed(2) + ' ₺'));
             if (cart_total == 0) {
                 //console.log('sepet boş da niye seçemiyor?');
@@ -322,8 +335,9 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
                 console.log(data['variation']['sale_price']);
                 var sale_price = data['variation']['sale_price'];
                 // humanize price ;
+                var formatted_sale_price = numberWithCommas(sale_price);
 {#                sale_price = sale_price.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + ' ,-₺';#}
-                $('#modal-sale-price').text(sale_price + ',-₺');
+                $('#modal-sale-price').text(formatted_sale_price + ',-₺');
                 if(data['variation']['stok'] > 0){
                     $('#modal-inventory').text("Stok mevcut");
                 }else{

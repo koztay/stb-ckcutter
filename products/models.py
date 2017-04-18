@@ -214,25 +214,26 @@ class Variation(models.Model):
 
     # eğer ürünü import ederek eklemişsek variation'ın hem price hem de sale price kısmı empty geliyordu.
     # aşağıdaki revizyon ile düzelttim bakalım düzgün çalışacak mı?
+    # "{:,.2f}".format(value) => thousands seperator işlevi sağlıyor
     def get_sale_price(self):
         if self.sale_price is not None:
-            return "%.2f" % (self.sale_price * Decimal(self.buying_currency.value))
+            return self.sale_price * Decimal(self.buying_currency.value)
         elif self.price is not None:
-            return "%.2f" % (self.price * Decimal(self.buying_currency.value))
+            return self.price * Decimal(self.buying_currency.value)
         else:
-            return "%.2f" % (self.product.price * Decimal(self.buying_currency.value))
+            return self.product.price * Decimal(self.buying_currency.value)
 
     def get_product_price(self):
-        return "%.2f" % (self.product.price * Decimal(self.buying_currency.value))
+        return self.product.price * Decimal(self.buying_currency.value)
 
     def get_html_price(self):
         if self.sale_price is not None:
             if self.get_sale_price() < self.get_product_price():
-                html_text = '<span class="aa-product-price">%s ,-₺</span> <span class="aa-product-price"><del>%s ,-₺</del></span>' % (self.get_sale_price(), self.get_product_price())
+                html_text = '<span class="aa-product-price">%s ,-₺</span> <span class="aa-product-price"><del>%s ,-₺</del></span>' % ("{:,.2f}".format(float(self.get_sale_price())), "{:,.2f}".format(float(self.get_product_price())))
             else:
-                html_text = "<span class='aa-product-price'>%s ,-₺</span>" % self.get_sale_price()
+                html_text = "<span class='aa-product-price'>%s ,-₺</span>" % "{:,.2f}".format(float(self.get_sale_price()))
         else:
-            html_text = "<span class='aa-product-price'>%s ,-₺</span>" % self.get_product_price()
+            html_text = "<span class='aa-product-price'>%s ,-₺</span>" % "{:,.2f}".format(float(self.get_product_price()))
         return mark_safe(html_text)
 
     def get_absolute_url(self):
