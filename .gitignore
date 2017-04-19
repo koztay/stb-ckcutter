@@ -82,4 +82,10 @@ create_coreos_droplet.sh
 # postgres_backups
 postgres_backups
 
+# ignore this trial file
 eval.sh
+
+# ignore xls, xlsx files
+*.xls
+*.xlsx
+

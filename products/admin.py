@@ -69,7 +69,7 @@ class ProductImageInline(admin.StackedInline):
 
 
 class ProductImageAdmin(admin.ModelAdmin):
-    search_fields = ['product__title', ]
+    search_fields = ['product__title', 'thumbnail__width']
 
     inlines = [
         ThumbnailInline,
@@ -77,6 +77,12 @@ class ProductImageAdmin(admin.ModelAdmin):
 
     class Meta:
         model = ProductImage
+
+
+class ThumbnailAdmin(admin.ModelAdmin):
+    list_filter = ('type',)
+    search_fields = ['type', 'width', 'height']
+
 
 #
 # class ThumbnailInline(nested_admin.NestedStackedInline):
@@ -152,10 +158,6 @@ class CurrencyAdmin(admin.ModelAdmin):
     list_display = ('name', 'value', 'updated')
     readonly_fields = ('value', 'updated')
 
-
-class ThumbnailAdmin(admin.ModelAdmin):
-    list_filter = ('type', )
-    search_fields = ['type', 'width', 'height']
 
 
 admin.site.register(Product, ProductAdmin)

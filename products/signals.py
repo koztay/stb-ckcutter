@@ -15,8 +15,11 @@ from django_cleanup import cleanup
 
 
 def image_pre_delete_receiver_for_cleanup(sender, instance, *args, **kwargs):
-    instance.refresh_from_db()
-    cleanup.refresh(instance)
+    try:
+        instance.refresh_from_db()
+        cleanup.refresh(instance)
+    except:
+        pass
 
 
 # TODO: bu signal içerisinde kar marjı varsa price 'ı update et, yoksa, kar marjını bulup kaydet.
