@@ -205,6 +205,8 @@ class Variation(models.Model):
     buying_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     buying_price_tl = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)  # calculated field.
     sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
+    gittigidiyor_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
+    n11_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     inventory = models.IntegerField(null=True, blank=True)  # refer none == unlimited amount
     product_barkod = models.CharField(max_length=100, null=True, blank=True)
     istebu_product_no = models.CharField(max_length=100, null=True, blank=True)
