@@ -64,7 +64,7 @@ def step01_prepare_xml_for_processing(xml_file_pk):
       :param self: task 'in kendisi, daha sonra refere etmek için gerekli sanırım
       :param xml_file_pk: hangi xml 'i import edeceksek onu gönderiyoruz.
       :return: import edilen ürüne ait ürün adını göndereceğiz.
-      """
+    """
 
     # xml_file_pk = 35
     # import_map_pk = 34

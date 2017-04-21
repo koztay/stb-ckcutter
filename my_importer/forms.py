@@ -1,7 +1,7 @@
 from django import forms
 from .models import ImporterFile, XMLImportMap
 
-
+# TODO: utils.importer 'dan çek bu değerleri
 PRODUCT_FIELD_CHOICES = (
     ("IGNORE", "Ignore This Field"),
     ("Magaza_Kodu", "Mağaza Kodu"),
@@ -15,6 +15,8 @@ PRODUCT_FIELD_CHOICES = (
     ("Para_Birimi", "Para Birimi"),
     ("Alis_Fiyati", "Alış Fiyatı"),
     ("Satis_Fiyati", "Satış Fiyatı"),
+    ("N11_Satis_Fiyatı", "N11 Satış Fiyatı"),
+    ("Gittigidiyor_Satis_Fiyatı", "Gittigidiyor Satış Fiyatı"),
     ("Barkod", "Barkod"),
     ("Kargo", "Kargo"),
     ("Urun_Resmi", "Ürün Resmi"),

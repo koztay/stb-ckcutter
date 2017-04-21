@@ -15,32 +15,32 @@ from .forms import XMLFileMappingForm, ImporterFileForm, ImporterXMLSelectionFor
 from .models import XMLImportMap, ImporterFile
 from .xml_processor import get_root, get_all_sub_elements_in_xml_root
 from .tasks import run_all_steps
+from utils.importer import default_fields
+
 
 # Create your views here.
 # DEFAULT_PRODUCT_FIELDS
-default_fields = {
-    "IGNORE": {"model": "NA", "local_field": "NA"},
-    "Magaza_Kodu": {"model": "Variation", "local_field": "istebu_product_no"},
-    "Vendor_Urun_Kodu": {"model": "Variation", "local_field": "vendor_product_no"},  # urun eşleşmesi bu kod ile olacak
-    "Kategori": {"model": "Category", "local_field": "categories"},  # product.categories olarak eklenecek !!!!
-    "Alt_Kategori": {"model": "Category", "local_field": "categories"},  # product.categories olarak eklenecek !!!
-    "Urun_Tipi": {"model": "ProductType", "local_field": "name"},  # product.product_type olarak ekle !!!
-    "Marka": {"model": "AttributeValue", "local_field": "value"},  # value for AtrributeType.type == "Marka"
-    "Urun_Adi": {"model": "Product", "local_field": "title"},
-    "Aciklama": {"model": "Product", "local_field": "description"},
-    "Stok": {"model": "Variation", "local_field": "inventory"},
-    "KDV": {"model": "Product", "local_field": "kdv"},
-    "Para_Birimi": {"model": "Currency", "local_field": "name"},  # variation.buying_currency olarak ekle!!!
-    "Alis_Fiyati": {"model": "Variation", "local_field": "buying_price"},
-    "Satis_Fiyati": {"model": "Variation", "local_field": "sale_price"},
-    "Barkod": {"model": "Variation", "local_field": "product_barkod"},
-    "Kargo": {"model": "NA", "local_field": "NA"},
-    "Urun_Resmi": {"model": "ProductImage", "local_field": "image"},
-}
+# default_fields = {
+#     "IGNORE": {"model": "NA", "local_field": "NA"},
+#     "Magaza_Kodu": {"model": "Variation", "local_field": "istebu_product_no"},
+#     "Vendor_Urun_Kodu": {"model": "Variation", "local_field": "vendor_product_no"},  # urun eşleşmesi bu kod ile
+#     "Kategori": {"model": "Category", "local_field": "categories"},  # product.categories olarak eklenecek !!!!
+#     "Alt_Kategori": {"model": "Category", "local_field": "categories"},  # product.categories olarak eklenecek !!!
+#     "Urun_Tipi": {"model": "ProductType", "local_field": "name"},  # product.product_type olarak ekle !!!
+#     "Marka": {"model": "AttributeValue", "local_field": "value"},  # value for AtrributeType.type == "Marka"
+#     "Urun_Adi": {"model": "Product", "local_field": "title"},
+#     "Aciklama": {"model": "Product", "local_field": "description"},
+#     "Stok": {"model": "Variation", "local_field": "inventory"},
+#     "KDV": {"model": "Product", "local_field": "kdv"},
+#     "Para_Birimi": {"model": "Currency", "local_field": "name"},  # variation.buying_currency olarak ekle!!!
+#     "Alis_Fiyati": {"model": "Variation", "local_field": "buying_price"},
+#     "Satis_Fiyati": {"model": "Variation", "local_field": "sale_price"},
+#     "Barkod": {"model": "Variation", "local_field": "product_barkod"},
+#     "Kargo": {"model": "NA", "local_field": "NA"},
+#     "Urun_Resmi": {"model": "ProductImage", "local_field": "image"},
+# }
 
 """
-
-
     # yukarıdaki default field 'ı related products için gerekli. Algoritmayı incelemedim ama daha
     # iyi bir yol bulunabilir. // TODO: Bu field 'a gerek olmayacak şekilde düzenleme yap.
     slug = models.SlugField(blank=True, unique=True, max_length=1000)  # unique=True)

@@ -89,3 +89,4 @@ eval.sh
 *.xls
 *.xlsx
 
+rm_cached.sh

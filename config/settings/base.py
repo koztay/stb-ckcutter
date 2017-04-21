@@ -104,7 +104,8 @@ MIDDLEWARE = [
 # MIGRATIONS CONFIGURATION
 # ------------------------------------------------------------------------------
 MIGRATION_MODULES = {
-    'sites': 'ecommerce_istebu_cookiecutter.contrib.sites.migrations'
+    'sites': 'ecommerce_istebu_cookiecutter.contrib.sites.migrations',
+    'data_importer': 'data_importer.django_migrations',
 }
 
 # DEBUG
@@ -335,3 +336,4 @@ PAGINATION_SETTINGS = {
 
     'SHOW_FIRST_PAGE_WHEN_INVALID': True,
 }
+
