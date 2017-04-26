@@ -85,8 +85,13 @@ postgres_backups
 # ignore this trial file
 eval.sh
 
-# ignore xls, xlsx files
+# ignore xls, xlsx, xml files
 *.xls
 *.xlsx
+*.xml
 
+# miscellaneous files
 rm_cached.sh
+utils/n11_urunler.xml
+utils/n11_urunler2.xml
+utils/run_xml_importer.py
