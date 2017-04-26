@@ -2,8 +2,9 @@ from __future__ import absolute_import, unicode_literals
 from django.conf import settings
 from celery.decorators import task
 
-from .models import default_fields, ProductImportMap
+from .models import ProductImportMap
 from utils import image_downloader
+from utils.importer import default_fields
 from products.models import Product, ProductType, Currency, Category
 
 
@@ -38,7 +39,8 @@ def download_image_for_product(self, image_link=None, product_id=None):
     try:
         result = image_downloader.download_image(image_link, product_id)
     except Exception as e:
-        self.retry(countdown=120, exc=e, max_retries=2)
+        print("There will be retry code here.")
+        # self.retry(countdown=120, exc=e, max_retries=2)
 
     return result
 
@@ -89,9 +91,9 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
             print("cell_value_model: ", cell_value_model)
 
             if cell_value_model is "Product":
-                print("attribute: ", default_fields[main_field]["field"])
+                print("attribute: ", default_fields[main_field]["local_field"])
                 print("value: ", cell)
-                attribute = default_fields[main_field]["field"]
+                attribute = default_fields[main_field]["local_field"]
                 print("attribute - bunun boş dönmesi gerek: ", attribute)
                 if attribute is 'categories':
                     print("kategori yakaladım")
@@ -106,18 +108,18 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
                 # setattr(product_instance, attribute, cell)
 
             elif cell_value_model is "Variation":
-                print("attribute: ", default_fields[main_field]["field"])
+                print("attribute: ", default_fields[main_field]["local_field"])
                 print("value: ", cell)
-                setattr(variation_instance, default_fields[main_field]["field"], cell)
+                setattr(variation_instance, default_fields[main_field]["local_field"], cell)
 
             elif cell_value_model is "ProductType":
-                # product_type_name = default_fields[main_field]["field"]
+                # product_type_name = default_fields[main_field]["local_field"]
                 # print("product_type_name :", product_type_name)
                 product_type_instance, created = ProductType.objects.get_or_create(name=cell)
                 product_instance.product_type = product_type_instance
 
             elif cell_value_model is "Currency":
-                print("attribute: ", default_fields[main_field]["field"])
+                print("attribute: ", default_fields[main_field]["local_field"])
                 print("value: ", cell)
                 # Eğer currency veriatabanında yoksa o zaman ürünü ekleme. Dolayısıyla "Para Birimi" önceden eklenmeli.
                 try:
@@ -139,13 +141,13 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
         product_instance.save()
         variation_instance.save()
 
-    title = get_cell_for_field("Ürün Adı")
+    title = get_cell_for_field("Urun_Adi")
     # product_type = ProductType.objects.get(name=importer_map.type)
     product, product_created = Product.objects.get_or_create(title=title)
 
     update_default_fields(product_instance=product)
     # update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...
-    img_url = get_cell_for_field("Image")
+    img_url = get_cell_for_field("Urun_Resmi")
 
     print("IMG URL => :", img_url)
     print('product.id neden görülmüyor baba?', product.id)

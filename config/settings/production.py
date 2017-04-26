@@ -218,3 +218,6 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'  # pickle yapmazsak importer çalışmıyor, json yapmazsak da kur çekme çalışmıyor.
 CELERY_RESULT_SERIALIZER = 'json'  # pickle yapmazsak importer çalışmıyor, json yapmazsak da kur çekme çalışmıyor.
 CELERY_TIMEZONE = TIME_ZONE
+
+# IMPORTER APP USES IT FOR EXCEL IMPORT
+IMPORTER_SALE_PRICE_FACTOR = 1.0

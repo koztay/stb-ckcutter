@@ -282,26 +282,33 @@ class ProductImage(models.Model):
     @property
     def micro_thumb(self):
         micro_thumb = Thumbnail.objects.all().filter(main_image=self, type='micro').first()
-        # print(micro_thumb.media.url)
-        return micro_thumb.media.url
+        if micro_thumb:
+            return micro_thumb.media.url
+        else:
+            return "Image has no Micro Thumbnail"
 
     @property
     def medium_thumb(self):
         medium_thumb = Thumbnail.objects.all().filter(main_image=self, type='medium').first()
-        # print(medium_thumb.media.url)
-        return medium_thumb.media.url
+        if medium_thumb:
+            return medium_thumb.media.url
+        else:
+            return "Image has no Medium Thumbnail"
 
     @property
     def sd_thumb(self):
         sd_thumb = Thumbnail.objects.all().filter(main_image=self, type='sd').first()
-        # print(sd_thumb.media.url)
-        return sd_thumb.media.url
-
+        if sd_thumb:
+            return sd_thumb.media.url
+        else:
+            return "Image has no SD Thumbnail"
     @property
     def hd_thumb(self):
         hd_thumb = Thumbnail.objects.all().filter(main_image=self, type='hd').first()
-        # print(hd_thumb.media.url)
-        return hd_thumb.media.url
+        if hd_thumb:
+            return hd_thumb.media.url
+        else:
+            return "Image has no HD Thumbnail"
 
 # ************************************************************************************************************ #
 

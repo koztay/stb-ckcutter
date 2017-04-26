@@ -66,6 +66,7 @@ node_modules/
 
 # virtual environments
 .env
+.env_staging
 
 # User-uploaded media
 ecommerce_istebu_cookiecutter/media/
