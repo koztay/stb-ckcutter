@@ -102,6 +102,9 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
                         product_instance.categories.add(category)
                     except:
                       print("kategori bulunamadı.")
+                elif attribute is 'title':
+                    print("pas geçilecek.")
+                    pass  # Title ise boş geç çünkü ben set ettim aşağıda...
                 else:
                     setattr(product_instance, attribute, cell)
                 # setattr(product_instance, attribute, cell)
@@ -141,16 +144,19 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
         variation_instance.save()
 
     title = get_cell_for_field("Urun_Adi")
-    vendor_urun_kodu = get_cell_for_field("Vendor_Urun_Kodu")
+    vendor_urun_kodu = get_cell_for_field("Vendor_Urun_Kodu")  # bunu eşleştirdim.
+    print("vendor kod :", vendor_urun_kodu)
     istebu_magaza_kodu = get_cell_for_field("Magaza_Kodu")
-
+    print("magaza kod :", istebu_magaza_kodu)
     # magaza kodu alanı varsa import edilen dokümanda o zaman magaza kodunu kullan
     if vendor_urun_kodu:
+        print("vendor kod var burada bulması lazım ürünü...")
         product, product_created = Product.objects.get_or_create(vendor_product_no=vendor_urun_kodu)
         if product_created:
-            product.istebu_product_no = vendor_urun_kodu  # burada excel 'den çekerek
+            print("buraya sadece product yaratılmışsa düşmesi lazım...")
             product.title = title
     else:
+        print("vendor kod yok eşleşecek alan sadece title")
         # product_type = ProductType.objects.get(name=importer_map.type)
         product, product_created = Product.objects.get_or_create(title=title)
 
