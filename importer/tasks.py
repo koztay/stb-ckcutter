@@ -142,6 +142,9 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
         variation_instance.save()
 
     title = get_cell_for_field("Urun_Adi")
+    magaza_kodu = get_cell_for_field("Magaza_Kodu")
+    if magaza_kodu:
+        product, product_created = Product.objects.get_or_create(title=title)
     # product_type = ProductType.objects.get(name=importer_map.type)
     product, product_created = Product.objects.get_or_create(title=title)
 
@@ -149,9 +152,9 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
     # update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...
     img_url = get_cell_for_field("Urun_Resmi")
 
-    print("IMG URL => :", img_url)
-    print('product.id neden görülmüyor baba?', product.id)
-    print('product.pk neden görülmüyor baba?', product.pk)
+    # print("IMG URL => :", img_url)
+    # print('product.id neden görülmüyor baba?', product.id)
+    # print('product.pk neden görülmüyor baba?', product.pk)
     if product.productimage_set.all().count() == 0:  # image varsa boşu boşuna task ekleme.
         print("Resim daha önce eklenmemiş. Download task çalıştırılacak. Yeni fonksiyon bu.")
         download_image_for_product.delay(img_url, product.id)

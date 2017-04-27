@@ -15,6 +15,15 @@ class ProductModelSerializer(serializers.ModelSerializer):
     def get_product(self, obj):
         product_id = obj.pk
         product = Product.objects.get(id=product_id)
+
+        main_category = product.get_main_category()
+        if main_category:
+            category = main_category.title
+            category_url = category.get_absolute_url()
+        else:
+            category = "No category"
+            category_url = None
+
         product_json = {
             'id': product.pk,
             'title': product.title,
@@ -22,8 +31,8 @@ class ProductModelSerializer(serializers.ModelSerializer):
             'kdv': product.kdv,
             'price': product.price,
             'url': product.get_absolute_url(),
-            'category': product.get_main_category().title,
-            'category_url': product.get_main_category().get_absolute_url(),
+            'category': category,
+            'category_url': category_url,
         }
         return product_json
 

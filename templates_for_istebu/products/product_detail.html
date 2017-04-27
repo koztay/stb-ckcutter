@@ -28,11 +28,11 @@
                                             <div class="simpleLens-big-image-container"><a
                                                     data-lens-image="{{ object.productimage_set.all.0 | get_image_thumbnail:"hd" }}"
                                                     class="simpleLens-lens-image"><img
-                                                    src="{{ object.productimage_set.all.0 | get_image_thumbnail:"medium" }}"
+                                                    src="{{ object.productimage_set.all.0 | get_image_thumbnail:"sd" }}"
                                                     class="simpleLens-big-image"></a></div>
                                         </div>
                                         <div class="simpleLens-thumbnails-container">
-                                            <a data-big-image="{{ object.productimage_set.all.0 | get_image_thumbnail:"medium" }}"
+                                            <a data-big-image="{{ object.productimage_set.all.0 | get_image_thumbnail:"sd" }}"
                                                data-lens-image="{{ object.productimage_set.all.0 | get_image_thumbnail:"hd" }}"
                                                class="simpleLens-thumbnail-wrapper" href="#">
                                                 <img src="{{ object.productimage_set.all.0 | get_image_thumbnail:"micro" }}">

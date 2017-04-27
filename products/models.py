@@ -85,6 +85,7 @@ class Product(models.Model):
     # taggable manager ile ilgili bir hata veriyor test edilemiyor.
     kdv = models.FloatField(default=18.0)
     desi = models.IntegerField(default=1)
+    istebu_product_no = models.CharField(max_length=100, null=True, blank=True)
 
     objects = ProductManager()
 
@@ -203,13 +204,13 @@ class Variation(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     buying_currency = models.ForeignKey(Currency, null=True, blank=True)  # null means TL
     buying_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
-    buying_price_tl = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)  # calculated field.
+    # buying_price_tl = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)  # calculated field.
     sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     gittigidiyor_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     n11_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     inventory = models.IntegerField(null=True, blank=True)  # refer none == unlimited amount
     product_barkod = models.CharField(max_length=100, null=True, blank=True)
-    istebu_product_no = models.CharField(max_length=100, null=True, blank=True)
+    # istebu_product_no = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -279,6 +280,7 @@ class ProductImage(models.Model):
     def __str__(self):
         return self.product.title
 
+    # // Aşağıdakiler için parametre olarak 'type' alan tek bir fonksiyon yazaydın ya...
     @property
     def micro_thumb(self):
         micro_thumb = Thumbnail.objects.all().filter(main_image=self, type='micro').first()
@@ -302,6 +304,7 @@ class ProductImage(models.Model):
             return sd_thumb.media.url
         else:
             return "Image has no SD Thumbnail"
+
     @property
     def hd_thumb(self):
         hd_thumb = Thumbnail.objects.all().filter(main_image=self, type='hd').first()
