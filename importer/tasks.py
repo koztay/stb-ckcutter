@@ -142,11 +142,16 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
         variation_instance.save()
 
     title = get_cell_for_field("Urun_Adi")
-    magaza_kodu = get_cell_for_field("Magaza_Kodu")
-    if magaza_kodu:
+    vendor_urun_kodu = get_cell_for_field("Vendor_Urun_Kodu")
+
+    # magaza kodu alanı varsa import edilen dokümanda o zaman magaza kodunu kullan
+    if vendor_urun_kodu:
+        product, product_created = Product.objects.get_or_create(istebu_product_no=vendor_urun_kodu)
+        if product_created:
+            product.title = title
+    else:
+        # product_type = ProductType.objects.get(name=importer_map.type)
         product, product_created = Product.objects.get_or_create(title=title)
-    # product_type = ProductType.objects.get(name=importer_map.type)
-    product, product_created = Product.objects.get_or_create(title=title)
 
     update_default_fields(product_instance=product)
     # update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...

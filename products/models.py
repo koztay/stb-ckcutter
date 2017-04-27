@@ -86,7 +86,7 @@ class Product(models.Model):
     kdv = models.FloatField(default=18.0)
     desi = models.IntegerField(default=1)
     istebu_product_no = models.CharField(max_length=100, null=True, blank=True)
-
+    vendor_product_no = models.CharField(max_length=100, null=True, blank=True)
     objects = ProductManager()
 
     class Meta:
@@ -204,13 +204,11 @@ class Variation(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     buying_currency = models.ForeignKey(Currency, null=True, blank=True)  # null means TL
     buying_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
-    # buying_price_tl = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)  # calculated field.
     sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     gittigidiyor_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     n11_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     inventory = models.IntegerField(null=True, blank=True)  # refer none == unlimited amount
     product_barkod = models.CharField(max_length=100, null=True, blank=True)
-    # istebu_product_no = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.title
