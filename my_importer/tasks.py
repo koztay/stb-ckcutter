@@ -181,7 +181,7 @@ def process_dict(self, row_dictionary, create_allowed):
     #     variation_magaza_kodu = row_dictionary.get("Magaza_Kodu").get("istebu_product_no")
     #     variation_instance.istebu_product_no = variation_magaza_kodu
     # elif variation_instance.istebu_product_no is None:
-    #     variation_instance.istebu_product_no = create_magazakodu("PRJ", "1000")  # her xml için farklı olmalıç
+    #     variation_instance.istebu_product_no = create_magazakodu("PRJ", "1000")  # her xml için farklı olmalı
 
     variation_instance.istebu_product_no = create_magazakodu("PRJ", "1000", variation_id=variation_instance.id)
 

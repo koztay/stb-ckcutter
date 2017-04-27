@@ -39,8 +39,7 @@ def download_image_for_product(self, image_link=None, product_id=None):
     try:
         result = image_downloader.download_image(image_link, product_id)
     except Exception as e:
-        print("There will be retry code here.")
-        # self.retry(countdown=120, exc=e, max_retries=2)
+        self.retry(countdown=120, exc=e, max_retries=2)
 
     return result
 
@@ -143,15 +142,23 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
 
     title = get_cell_for_field("Urun_Adi")
     vendor_urun_kodu = get_cell_for_field("Vendor_Urun_Kodu")
+    istebu_magaza_kodu = get_cell_for_field("Magaza_Kodu")
 
     # magaza kodu alanı varsa import edilen dokümanda o zaman magaza kodunu kullan
     if vendor_urun_kodu:
-        product, product_created = Product.objects.get_or_create(istebu_product_no=vendor_urun_kodu)
+        product, product_created = Product.objects.get_or_create(vendor_product_no=vendor_urun_kodu)
         if product_created:
+            product.istebu_product_no = vendor_urun_kodu  # burada excel 'den çekerek
             product.title = title
     else:
         # product_type = ProductType.objects.get(name=importer_map.type)
         product, product_created = Product.objects.get_or_create(title=title)
+
+    # Artık product yaratıldı. O nedenle magaza kodu için aşağıdaki kontrolü böyle yapabiliriz.
+    if istebu_magaza_kodu:
+        product.istebu_product_no = istebu_magaza_kodu
+    else:
+        product.istebu_product_no = vendor_urun_kodu  # buraya vendor urun kodunu yazmak ne derece doğru?
 
     update_default_fields(product_instance=product)
     # update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...

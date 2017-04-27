@@ -98,11 +98,10 @@ class ThumbnailAdmin(admin.ModelAdmin):
 #     model = ProductImage
 #     inlines = [ThumbnailInline]
 
-
 # // TODO: Product Search ekle.
 class ProductAdmin(admin.ModelAdmin):
-    search_fields = ['title', 'variation__istebu_product_no']
-    list_display = ['__str__', 'product_no', 'price', 'sale_price', 'stok', 'active', 'show_on_homepage']
+    search_fields = ['title', 'istebu_product_no']
+    list_display = ['__str__', 'istebu_product_no', 'price', 'sale_price', 'stok', 'active', 'show_on_homepage']
     prepopulated_fields = {'slug': ('title',)}
     list_editable = ['active', 'show_on_homepage', ]
     inlines = [
@@ -113,10 +112,6 @@ class ProductAdmin(admin.ModelAdmin):
 
     class Meta:
         model = Product
-
-    def product_no(self, obj):
-        return obj.variation_set.all()[0].istebu_product_no
-    product_no.admin_order_field = 'id'
 
     def sale_price(self, obj):
         return obj.variation_set.all()[0].sale_price
