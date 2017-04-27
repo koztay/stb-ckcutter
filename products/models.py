@@ -132,26 +132,26 @@ class Product(models.Model):
         print(number_of_views)
         return number_of_views
 
-    @property
-    def micro_thumb(self):
-        first_image = ProductImage.objects.all().filter(product=self).first()
-        micro_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='micro').first()
-        # print(micro_thumb.media.url)
-        return micro_thumb.media.url
-
-    @property
-    def medium_thumb(self):
-        first_image = ProductImage.objects.all().filter(product=self).first()
-        medium_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='medium').first()
-        # print(medium_thumb.media.url)
-        return medium_thumb.media.url
-
-    @property
-    def sd_thumb(self):
-        first_image = ProductImage.objects.all().filter(product=self).first()
-        sd_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='sd').first()
-        # print(sd_thumb.media.url)
-        return sd_thumb.media.url
+    # @property
+    # def micro_thumb(self):
+    #     first_image = ProductImage.objects.all().filter(product=self).first()
+    #     micro_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='micro').first()
+    #     # print(micro_thumb.media.url)
+    #     return micro_thumb.media.url
+    #
+    # @property
+    # def medium_thumb(self):
+    #     first_image = ProductImage.objects.all().filter(product=self).first()
+    #     medium_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='medium').first()
+    #     # print(medium_thumb.media.url)
+    #     return medium_thumb.media.url
+    #
+    # @property
+    # def sd_thumb(self):
+    #     first_image = ProductImage.objects.all().filter(product=self).first()
+    #     sd_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='sd').first()
+    #     # print(sd_thumb.media.url)
+    #     return sd_thumb.media.url
 
 
     # bu metodu import edilince save ederken valueset parametresini göndermek için override ettik.
@@ -282,7 +282,7 @@ class ProductImage(models.Model):
     @property
     def micro_thumb(self):
         micro_thumb = Thumbnail.objects.all().filter(main_image=self, type='micro').first()
-        if micro_thumb:
+        if micro_thumb.media:
             return micro_thumb.media.url
         else:
             return "Image has no Micro Thumbnail"
@@ -290,7 +290,7 @@ class ProductImage(models.Model):
     @property
     def medium_thumb(self):
         medium_thumb = Thumbnail.objects.all().filter(main_image=self, type='medium').first()
-        if medium_thumb:
+        if medium_thumb.media:
             return medium_thumb.media.url
         else:
             return "Image has no Medium Thumbnail"
@@ -298,7 +298,7 @@ class ProductImage(models.Model):
     @property
     def sd_thumb(self):
         sd_thumb = Thumbnail.objects.all().filter(main_image=self, type='sd').first()
-        if sd_thumb:
+        if sd_thumb.media:
             return sd_thumb.media.url
         else:
             return "Image has no SD Thumbnail"
@@ -306,7 +306,7 @@ class ProductImage(models.Model):
     @property
     def hd_thumb(self):
         hd_thumb = Thumbnail.objects.all().filter(main_image=self, type='hd').first()
-        if hd_thumb:
+        if hd_thumb.media:
             return hd_thumb.media.url
         else:
             return "Image has no HD Thumbnail"

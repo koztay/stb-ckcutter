@@ -19,7 +19,7 @@ class ProductModelSerializer(serializers.ModelSerializer):
         main_category = product.get_main_category()
         if main_category:
             category = main_category.title
-            category_url = category.get_absolute_url()
+            category_url = main_category.get_absolute_url()
         else:
             category = "No category"
             category_url = None
