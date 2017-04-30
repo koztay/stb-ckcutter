@@ -94,7 +94,7 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
                 print("value: ", cell)
                 attribute = default_fields[main_field]["local_field"]
                 print("attribute - bunun boş dönmesi gerek: ", attribute)
-                if attribute is 'categories':
+                if attribute is 'categories':  # Burası hiç çalışmıyor, hiç True dönmüyor...
                     print("kategori yakaladım")
                     try:
                         category = Category.objects.get(title=cell)
@@ -132,6 +132,14 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
                     pass
 
                 print("variation_instance.buying_currency", variation_instance.buying_currency)
+
+            elif cell_value_model is "Category":
+                try:
+                    category = Category.objects.get(title=cell)
+                    print("Kategori: ", category)
+                    product_instance.categories.add(category)
+                except:
+                    print("Kategori bulunamadı lütfen ekleyin : ", category)
 
             else:
                 print("Hata! Böyle bir model dönmemeli, cell_value_model: ", cell_value_model)
@@ -175,9 +183,13 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
     # print('product.pk neden görülmüyor baba?', product.pk)
     if product.productimage_set.all().count() == 0:  # image varsa boşu boşuna task ekleme.
         print("Resim daha önce eklenmemiş. Download task çalıştırılacak. Yeni fonksiyon bu.")
-        download_image_for_product.delay(img_url, product.id)
+        # download_image_for_product.delay(img_url, product.id)
+        download_image_for_product.apply_async(args=[img_url, product.id], kwargs={}, queue='images')
 
-    return "%s update edildi." % product.title
+    if product_created:
+        return "%s veritabanına eklendi." % product.title
+    else:
+        return "%s update edildi." % product.title
 
 
 

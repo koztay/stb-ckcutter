@@ -24,7 +24,7 @@ services:
     environment:
       - POSTGRES_USER=ecommerce_istebu_cookiecutter
       - USE_DOCKER=yes
-      - DJANGO_ALLOWED_HOSTS=192.168.99.101
+      - DJANGO_ALLOWED_HOSTS=192.168.99.100
     volumes:
       - .:/app
     ports:

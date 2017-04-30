@@ -62,7 +62,8 @@ services:
       - static-data:/static_root
     volumes_from:
       - django
-    command: celery -A ecommerce_istebu_cookiecutter.taskapp worker -l INFO -Ofair
+    command: celery -A ecommerce_istebu_cookiecutter.taskapp worker -Q images,xml,default -l INFO -Ofair
+#    command: celeryd-multi start 2 -Q:1 default -Q:2 images -Q:3 xml -c:1 1 -c:2 1 c:3 1 --loglevel=INFO -Ofair
 
   celerybeat:
 # Aşağıdakileri commentleyip yaratılmış imajı kullandırtmazsan yeniden djangoyu build ediyor. Çok saçma...

@@ -71,7 +71,7 @@ def search_and_replace(func):
     return func_wrapper
 
 
-class BaseParser(object):
+class BaseParser:
     def __init__(self, file_path, xpath_for_products, dropping_words, replacing_words):
         """ 
         This class is base class for the xml file or excel file to be imported. It parses the source and sends the row 
@@ -93,7 +93,7 @@ class BaseParser(object):
 
     # We want to make process_file function must be implemented on the descendants, so we raise NotImplementedError
     def process_file(self, *args, **kwargs):
-        raise NotImplementedError('Implement process_file() method for your parser')
+        raise NotImplementedError('subclasses of BaseParser must Implement process_file() method')
 
 
 class XMLParser(BaseParser):
@@ -108,7 +108,7 @@ class XMLParser(BaseParser):
         return root
 
 
-class BaseImporter(object):
+class BaseImporter:
     # default_fields tek bir merkezden yönetilir böylece...
 
     def __init__(self, default_db_fields, row_object):
@@ -145,3 +145,19 @@ class BaseImporter(object):
             return default_field.get('model'), default_field.get('local_field')
         else:
             return None
+
+    # Aşağıdaki şekilde field processing fonksiyonu ile process etsek daha mı iyi olur?
+    def process_product_field(self):
+        pass
+
+    def process_variation_field(self):
+        pass
+
+    def process_category_field(self):
+        pass
+
+    def process_product_type_field(self):
+        pass
+
+    def process_currency_field(self):
+        pass
