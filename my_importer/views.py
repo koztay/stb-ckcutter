@@ -53,7 +53,7 @@ from utils.importer import default_fields
 """
 
 
-# step - 1
+# step - 1 - Dosyayı Upload etmemizi sağlıyor.
 def xml_upload_view(request):
     if request.method == 'POST':
         form = ImporterFileForm(request.POST, request.FILES)
@@ -78,7 +78,7 @@ def xml_upload_view(request):
     })
 
 
-# step - 2
+# step - 2 - Upload edilen dosyayı map etmemizi sağlıyor. Ancak buna gerek yok.
 def xml_map_view(request):
     xml_tag_count = request.session.get('total_xml_tag_count')
     xml_elements = []

@@ -32,6 +32,13 @@ class ProductImportMap(models.Model):
 
 
 class Fields(models.Model):
+    """
+    import ast
+    ast.literal_eval("{'muffin' : 'lolz', 'foo' : 'kitty'}")
+    {'muffin': 'lolz', 'foo': 'kitty'}
+    
+    Yukarıdaki örnekten herhangi bir eşleştirme yapamadığımız yerler için default değer tanımlayabiliriz.
+    """
     map = models.ForeignKey(ProductImportMap, blank=True, null=True)
     product_field = models.CharField(max_length=20, blank=True, null=True)  # bizdeki
     #  eşleşeceği field

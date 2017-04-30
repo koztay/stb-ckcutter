@@ -105,11 +105,11 @@ def step02_prepare_import_map(import_map_pk):
 # prefixi içeren bir magaza kodu var mı? Eğer varsa suffix 'i hiç dikkate almazsın. Yoksa prefix+suffix için başlangıç
 # noktası kabul edersin ve bu durumda artık db 'de prefix içeren magaza kodu var artık demektir. Sonrasında bunu alır
 # her seferinde +1 yaparsın... Aşağıda bunu yapmışım zaten...
-def create_magazakodu(prefix, suffix, variation_id):
-    kod_query_set = Variation.objects.filter(istebu_product_no__icontains=prefix)
+def create_magazakodu(prefix, suffix, product_id):
+    kod_query_set = Product.objects.filter(istebu_product_no__icontains=prefix)
     # print(kod_query_set)
-    variation_instance = Variation.objects.get(pk=variation_id)
-    if not variation_instance.istebu_product_no:  # Eğer kod varsa girme, yoksa gir...
+    product_instance = Product.objects.get(pk=product_id)
+    if not product_instance.istebu_product_no:  # Eğer kod varsa girme, yoksa gir...
         if kod_query_set:
             kod_array = [int(kod.istebu_product_no[len(prefix):]) for kod in kod_query_set]
             last_number = max(kod_array)
@@ -117,7 +117,7 @@ def create_magazakodu(prefix, suffix, variation_id):
         else:
             return prefix + str(suffix)
     else:
-        return variation_instance.istebu_product_no
+        return product_instance.istebu_product_no
 
 
 # buraya tüm kontroller yapılıp gelmiş durumda dictioanry olarak. O nedenle get_or_create kullanabilirim.
@@ -183,8 +183,7 @@ def process_dict(self, row_dictionary, create_allowed):
     # elif variation_instance.istebu_product_no is None:
     #     variation_instance.istebu_product_no = create_magazakodu("PRJ", "1000")  # her xml için farklı olmalı
 
-    variation_instance.istebu_product_no = create_magazakodu("PRJ", "1000", variation_id=variation_instance.id)
-
+        product_instance.istebu_product_no = create_magazakodu("PRJ", "1000", product_id=product_instance.id)
 
     # zorunlu alan:
     variation_instance.buying_price = row_dictionary.get("Alis_Fiyati").get("buying_price")
@@ -430,7 +429,7 @@ def download_xml(xml_file_pk):
 
 @task(name="Run All Steps")
 def run_all_steps(xml_file_pk, create_allowed=False):
-    products_dict_array = step01_prepare_xml_for_processing(xml_file_pk)  # 50 adet için test ediyoruz.
+    products_dict_array = step01_prepare_xml_for_processing(xml_file_pk)[:50]  # 50 adet için test ediyoruz.
     # print(type(products_dict_array))
     # for product in products_dict_array:
     #     print(product)

@@ -35,7 +35,5 @@ class CartModelSerializer(serializers.ModelSerializer):
                 except:
                     pass
 
-
-
                 cart_items_array.append(item_in_cart)
             return cart_items_array
