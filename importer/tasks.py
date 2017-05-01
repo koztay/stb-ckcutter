@@ -4,7 +4,7 @@ from celery.decorators import task
 
 from .models import ProductImportMap
 from utils import image_downloader
-from products.models import Product, ProductType, Currency, Category
+from products.models import Product, ProductType, Currency, Category, AttributeType, AttributeValue
 
 
 # TODO: Currency ve Product Type, Barkod vb. field ları için Validation ekle.
@@ -54,7 +54,7 @@ def add(self, x, y):
     return x + y
 
 
-@task(bind=True, name="Process XLS Row", rate_limit="20/m")
+@task(bind=True, name="Process XLS Row", rate_limit="20/m")  # bunu importer_map_pk istemeyecek hale getirince birleştir.
 def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_task olarak views 'da çalıştığı görüldü.
     # Ancak task olarak çalışıp çalışmadığı test edilemedi.
     """
@@ -118,6 +118,12 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
                 # print("product_type_name :", product_type_name)
                 product_type_instance, created = ProductType.objects.get_or_create(name=cell)
                 product_instance.product_type = product_type_instance
+
+            elif cell_value_model is "AttributeValue":
+                attributetype_instance = AttributeType.objects.get(type="Marka")
+                AttributeValue.objects.get_or_create(attribute_type=attributetype_instance,
+                                                     product=product_instance,
+                                                     value=cell)
 
             elif cell_value_model is "Currency":
                 print("attribute: ", default_fields[main_field]["local_field"])
@@ -191,16 +197,23 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
         return "%s update edildi." % product.title
 
 
-@task(bind=True, name="Process XML Row", rate_limit="20/m")
 def process_xml_row(self, row):
 
     def get_value_for_field(field_name):
         db_field = settings.DEFAULT_FIELDS.get(field_name).get('local_field')
-        if field_name is not 'Urun_Resmi':
-            return [d.get('value') for d in row if d.get('field') is db_field][0][0]
-        else:
+        if field_name is 'Urun_Resmi':
             return [d.get('value') for d in row if d.get('field') is db_field]
-            # birden fazla resim olabilir o yüzden list döndürüyoruz.
+        elif field_name is "Magaza_Kodu":
+            print("Magaza Kodu için birşeyler yap")
+        else:
+            value = [d.get('value') for d in row if d.get('field') is db_field]
+            if len(value) > 0:
+                if isinstance([d.get('value') for d in row if d.get('field') is db_field][0], list):
+                    return [d.get('value') for d in row if d.get('field') is db_field][0][0]
+                else:
+                    return [d.get('value') for d in row if d.get('field') is db_field][0]
+            else:
+                return None
 
     def update_default_fields(product_instance=None):
 
@@ -219,7 +232,6 @@ def process_xml_row(self, row):
                 print("attribute: ", default_fields[main_field]["local_field"])
                 print("value: ", cell)
                 attribute = default_fields[main_field]["local_field"]
-                print("attribute - bunun boş dönmesi gerek: ", attribute)
                 if attribute is 'categories':  # Burası hiç çalışmıyor, hiç True dönmüyor...
                     print("kategori yakaladım")
                     try:
@@ -246,6 +258,12 @@ def process_xml_row(self, row):
                 product_type_instance, created = ProductType.objects.get_or_create(name=cell)
                 product_instance.product_type = product_type_instance
 
+            elif cell_value_model is "AttributeValue":
+                attributetype_instance = AttributeType.objects.get(type="Marka")
+                AttributeValue.objects.get_or_create(attribute_type=attributetype_instance,
+                                                     product=product_instance,
+                                                     value=cell)
+
             elif cell_value_model is "Currency":
                 print("attribute: ", default_fields[main_field]["local_field"])
                 print("value: ", cell)
@@ -271,13 +289,14 @@ def process_xml_row(self, row):
                 print("Hata! Böyle bir model dönmemeli, cell_value_model: ", cell_value_model)
 
         factor = float(settings.IMPORTER_SALE_PRICE_FACTOR)
-        product_instance.price = variation_instance.sale_price*factor
+        product_instance.price = float(variation_instance.sale_price)*factor
 
         # ürünlerin fiyatı boş geliyor o nedenle factor kadar yükseltiyoruz...
         product_instance.save()
         variation_instance.save()
 
     title = get_value_for_field("Urun_Adi")  # it is a list contains another list
+    print("title list mi kine acabağı?:", title)
     vendor_urun_kodu = get_value_for_field("Vendor_Urun_Kodu")  # bunu eşleştirdim.
     print("vendor kod :", get_value_for_field)
     istebu_magaza_kodu = get_value_for_field("Magaza_Kodu")

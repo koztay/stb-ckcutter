@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<product>
-     {% for product in query_set %}
-         <product_id>"{{ product.pk }}"</product_id>
-         <product_title><![CDATA[{{ product.title }}]]></product_title>
-     {% endfor %}
-</product>

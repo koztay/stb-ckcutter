@@ -357,3 +357,5 @@ DEFAULT_FIELDS = {
     "Kargo": {"model": "NA", "local_field": "NA"},
     "Urun_Resmi": {"model": "ProductImage", "local_field": "image"},
 }
+
+IMPORTER_SALE_PRICE_FACTOR = 1.05

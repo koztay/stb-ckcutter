@@ -178,14 +178,16 @@ class BaseImporter:
                     # title = [d.get('value') for d in row if d.get('field') is 'title']
                     # print(title)
                     # print(len(title))
-                    process_xml_row.apply_async(args=[], kwargs={'row': row}, queue='xml')
+                    process_xml_row(self, row=row)
+                    # process_xml_row.apply_async(args=[], kwargs={'row': row}, queue='xml')
                 else:
                     break
             else:
                 # title = list(filter(lambda key: key['title'], row))
                 # title = [d for d in row if d.get('field') is 'baslik']
                 # print(title)
-                process_xml_row.apply_async(args=[], kwargs={'row': row}, queue='xml')
+                process_xml_row(self, row=row)
+                # process_xml_row.apply_async(args=[], kwargs={'row': row}, queue='xml')
 
     def get_value_for_field(self, field, element):
         raise NotImplementedError('subclasses of BaseImporter must Implement get_value_for_field() method')
