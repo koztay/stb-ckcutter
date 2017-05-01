@@ -4,7 +4,6 @@ from celery.decorators import task
 
 from .models import ProductImportMap
 from utils import image_downloader
-from utils.importer import default_fields
 from products.models import Product, ProductType, Currency, Category
 
 
@@ -79,7 +78,7 @@ def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_ta
     def update_default_fields(product_instance=None):
 
         variation_instance = product_instance.variation_set.all()[0]  # product save edilince otomatik yaratılıyor.
-
+        default_fields = settings.DEFAULT_FIELDS
         # default fileds models içerisinde tanımlı
         for main_field in default_fields:
             cell = get_cell_for_field(main_field)

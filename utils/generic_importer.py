@@ -1,28 +1,11 @@
+import ast
 from lxml import etree
+from importer.models import ProductImportMap
+from my_importer.models import ImporterFile
+
+
 # Importerlarımızın default_fields 'a erişebilmeleri için BaseImporter objesi yaratmalarına gerek olmasın diye
 # class 'ın dışında aşağıdaki gibi global olarak tanımladık.
-
-default_fields = {
-    "IGNORE": {"model": "NA", "local_field": "NA"},
-    "Magaza_Kodu": {"model": "Variation", "local_field": "istebu_product_no"},
-    "Vendor_Urun_Kodu": {"model": "Variation", "local_field": "vendor_product_no"},  # urun eşleşmesi bu kod ile olacak
-    "Kategori": {"model": "Category", "local_field": "categories"},  # product.categories olarak eklenecek !!!!
-    "Alt_Kategori": {"model": "Category", "local_field": "categories"},  # product.categories olarak eklenecek !!!
-    "Urun_Tipi": {"model": "ProductType", "local_field": "name"},  # product.product_type olarak ekle !!!
-    "Marka": {"model": "AttributeValue", "local_field": "value"},  # value for AtrributeType.type == "Marka"
-    "Urun_Adi": {"model": "Product", "local_field": "title"},
-    "Aciklama": {"model": "Product", "local_field": "description"},
-    "Stok": {"model": "Variation", "local_field": "inventory"},
-    "KDV": {"model": "Product", "local_field": "kdv"},
-    "Para_Birimi": {"model": "Currency", "local_field": "name"},  # variation.buying_currency olarak ekle!!!
-    "Alis_Fiyati": {"model": "Variation", "local_field": "buying_price"},
-    "Satis_Fiyati": {"model": "Variation", "local_field": "sale_price"},
-    "N11_Satis_Fiyati": {"model": "Variation", "local_field": "n11_price"},
-    "GG_Satis_fiyati": {"model": "Variation", "local_field": "gittigidiyor_price"},
-    "Barkod": {"model": "Variation", "local_field": "product_barkod"},
-    "Kargo": {"model": "NA", "local_field": "NA"},
-    "Urun_Resmi": {"model": "ProductImage", "local_field": "image"},
-}
 
 
 def drop_xml_element_by_word(func):
@@ -66,7 +49,7 @@ def search_and_replace(func):
                 # for word in words:
                 for item in root.xpath(field):
                     parent = item.getparent()
-                    parent.text = item.replace(words[0], words[1])
+                    parent.text = item.replace(str(words[0]), str(words[1]))
         return root
     return func_wrapper
 
@@ -103,8 +86,8 @@ class XMLParser(BaseParser):
         parser = etree.XMLParser(strip_cdata=False, recover=True)
         doc = etree.parse(self.file_path, parser)
         root = doc.getroot()
-        # result = len(root.xpath(self.xpath_for_products))
-        # print("filter_öncesi xml: ", result)
+        result = len(root.xpath(self.xpath_for_products))
+        print("filter_öncesi xml: ", result)
         return root
 
 
@@ -161,3 +144,46 @@ class BaseImporter:
 
     def process_currency_field(self):
         pass
+
+
+def run_all_steps(**kwargs):
+    xml_file_pk = kwargs.get("xml_file_pk")
+    import_map_pk = kwargs.get("import_map_pk")
+    number_of_items = kwargs.get("number_of_items")
+    download_images = kwargs.get("download_images")
+    allow_item_creation = kwargs.get("allow_item_creation")
+
+    print("xml_file_pk from func:", xml_file_pk)
+    print("import_map_pk from func:", import_map_pk)
+    print("number_of_items from func:", number_of_items)
+    print("download_images from func:", download_images)
+    print("allow_item_creation from func:", allow_item_creation)
+
+    import_map_obj = ProductImportMap.objects.get(pk=import_map_pk)
+    xml_file_obj = ImporterFile.objects.get(pk=xml_file_pk)
+
+    root_xpath = import_map_obj.root
+    print("root_xpath :", root_xpath)
+    # ast.literal_eval("{'muffin' : 'lolz', 'foo' : 'kitty'}")
+    # {'muffin': 'lolz', 'foo': 'kitty'}
+    dropping_words_field = import_map_obj.fields_set.get(product_field="01_Drop_Words")
+    dropping_words = dropping_words_field.xml_field
+    dropping_words_list = ast.literal_eval(dropping_words)
+
+    replacing_words_field = import_map_obj.fields_set.get(product_field="00_Replace_Words")
+    replace_words = replacing_words_field.xml_field
+    replace_words_list = ast.literal_eval(replace_words)
+
+    file_path = xml_file_obj.get_file_path()
+    print("file_path :", file_path)
+
+    parser = XMLParser(file_path=file_path, xpath_for_products=root_xpath,
+                       dropping_words=dropping_words_list, replacing_words=replace_words_list)
+
+    print("parser_obj :", parser)
+    print("parser.dropping_words :", parser.dropping_words)
+    filtered_xml_document = parser.process_file(dropping_words=parser.dropping_words,
+                                                replacing_words=parser.replacing_words)
+    result = len(filtered_xml_document.xpath(".//Urun"))
+    print("filter_sonrası xml: ", result)
+

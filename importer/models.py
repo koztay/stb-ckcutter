@@ -1,9 +1,10 @@
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
 
 from products.models import AttributeType, ProductType
-from utils.importer import default_fields
+
 # Create your models here.
 # buraya mapping ile ilgili bir model koyabilirim.
 # sonuçta her firmanın kendine has bir importer 'ı olacak.
@@ -60,7 +61,7 @@ def import_map_post_save_receiver(sender, instance, *args, **kwargs):
     # print("map_post_save_receiver çalıştı:", sender)  # sender ile instance farklı birbirinden
     # print("instance:", instance)
     # yukarıda tanımlanan default fieldları oluşturuyoruz:
-    for field in default_fields:
+    for field in settings.DEFAULT_FIELDS:
         if field is not "IGNORE":
             Fields.objects.get_or_create(map=instance, product_field=field)
     # eğer specific bir ürün grubu import edeceksek ve aynı zamanda da featureları da import edeceksek o zaman

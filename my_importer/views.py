@@ -2,6 +2,7 @@
 # from django.core.files.storage import FileSystemStorage
 #
 import json
+from django.conf import settings
 from django.shortcuts import render, redirect
 # from formtools.wizard.views import SessionWizardView
 from tempfile import TemporaryFile
@@ -15,7 +16,7 @@ from .forms import XMLFileMappingForm, ImporterFileForm, ImporterXMLSelectionFor
 from .models import XMLImportMap, ImporterFile
 from .xml_processor import get_root, get_all_sub_elements_in_xml_root
 from .tasks import run_all_steps
-from utils.importer import default_fields
+
 
 
 # Create your views here.
@@ -84,7 +85,7 @@ def xml_map_view(request):
     xml_elements = []
     for i in range(xml_tag_count):
         xml_elements.append(request.session.get('tag'+str(i)))
-    default_locals = default_fields.keys()
+    default_locals = settings.DEFAULT_FIELDS.keys()
     print(default_locals)
     # default_locals.append('Ignore')
     form = XMLFileMappingForm(request.POST or None, extra=xml_elements)
