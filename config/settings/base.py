@@ -338,8 +338,8 @@ PAGINATION_SETTINGS = {
 }
 
 DEFAULT_FIELDS = {
-    "Magaza_Kodu": {"model": "Variation", "local_field": "istebu_product_no"},
-    "Vendor_Urun_Kodu": {"model": "Variation", "local_field": "vendor_product_no"},  # urun eşleşmesi bu kod ile olacak
+    "Magaza_Kodu": {"model": "Product", "local_field": "istebu_product_no"},
+    "Vendor_Urun_Kodu": {"model": "Product", "local_field": "vendor_product_no"},  # urun eşleşmesi bu kod ile olacak
     "Kategori": {"model": "Category", "local_field": "categories"},  # product.categories olarak eklenecek !!!!
     "Alt_Kategori": {"model": "Category", "local_field": "categories"},  # product.categories olarak eklenecek !!!
     "Urun_Tipi": {"model": "ProductType", "local_field": "name"},  # product.product_type olarak ekle !!!
@@ -356,6 +356,4 @@ DEFAULT_FIELDS = {
     "Barkod": {"model": "Variation", "local_field": "product_barkod"},
     "Kargo": {"model": "NA", "local_field": "NA"},
     "Urun_Resmi": {"model": "ProductImage", "local_field": "image"},
-    "00_Replace_Words": {"model": "NA", "local_field": "NA"},
-    "01_Drop_Words": {"model": "NA", "local_field": "NA"}
 }

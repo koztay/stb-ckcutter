@@ -27,6 +27,8 @@ class ProductImportMap(models.Model):
                             help_text='Product Type değeri yazılacak, Örneğin: "Generic Product"')
     root = models.CharField(max_length=120, blank=True, null=True,
                             help_text='Eğer XML dosyası ise o zaman ürünlerin çekileceği root tagi yaz.')
+    replace_words = models.TextField(blank=True, null=True)
+    dropping_words = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name

@@ -207,5 +207,5 @@ class XMLImporterRunImportTaskView(StaffRequiredMixin, FormView):
                       download_images=download_images,
                       allow_item_creation=allow_item_creation
                       )
-        messages.success(self.request, "Import İşlemi Başlatıldı!")
+        messages.success(self.request,"Import İşlemi Başlatıldı!")
         return super(XMLImporterRunImportTaskView, self).form_valid(form)
