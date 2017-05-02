@@ -1,5 +1,6 @@
 import ast
 from django.conf import settings
+import json
 from lxml import etree
 from importer.models import ProductImportMap
 from importer.tasks import process_xml_row
@@ -8,12 +9,13 @@ from my_importer.models import ImporterFile
 # Importerlarımızın default_fields 'a erişebilmeleri için BaseImporter objesi yaratmalarına gerek olmasın diye
 # class 'ın dışında aşağıdaki gibi global olarak tanımladık.
 
+
 def drop_xml_element_by_word(func):
     def func_wrapper(*args, **kwargs):
         root = func(*args, **kwargs)
         word_list = kwargs.get('dropping_words')
-        print("bu funk çalışıyor mu abooovv")
-        print(word_list)
+        # print("bu funk çalışıyor mu abooovv")
+        # print(word_list)
         if word_list:
             # create xpath
             # check every filtered words
@@ -87,9 +89,9 @@ class XMLParser(BaseParser):
         parser = etree.XMLParser(strip_cdata=False, recover=True)
         doc = etree.parse(self.file_path, parser)
         root = doc.getroot()
-        print("xpath ney layn :", self.xpath_for_products)
-        result = len(root.xpath(self.xpath_for_products))
-        print("filter_öncesi xml: ", result)
+        # print("xpath ney layn :", self.xpath_for_products)
+        # result = len(root.xpath(self.xpath_for_products))
+        # print("filter_öncesi xml: ", result)
         return root
 
 
@@ -139,7 +141,7 @@ class BaseImporter:
                     row_object.append({"model": model, "field": field, "value": value})
                     if field is "Aciklama":
                         print("Açıklama fieldını buldum... Value neymiş?")
-                        print(value)
+                        # print(value)
             # row_object.append(product_field_list)
             yield row_object
                 # print(element.xpath(map_item.xml_field))
@@ -178,16 +180,24 @@ class BaseImporter:
                     # title = [d.get('value') for d in row if d.get('field') is 'title']
                     # print(title)
                     # print(len(title))
-                    process_xml_row(self, row=row)
-                    # process_xml_row.apply_async(args=[], kwargs={'row': row}, queue='xml')
+                    # process_xml_row(self, row=row)
+                    json_values = json.dumps(row)
+
+                    # print(json_values)
+                    # process_xml_row(self, row=json_values)
+                    # process_xml_object_oriented(self, row=json_values)
+                    process_xml_row.apply_async(args=[], kwargs={'row': json_values, }, queue='xml')
                 else:
                     break
             else:
                 # title = list(filter(lambda key: key['title'], row))
                 # title = [d for d in row if d.get('field') is 'baslik']
                 # print(title)
-                process_xml_row(self, row=row)
-                # process_xml_row.apply_async(args=[], kwargs={'row': row}, queue='xml')
+                # process_xml_row(self, row=row)
+                json_values = json.dumps(row)
+
+                # print(json_values)
+                process_xml_row.apply_async(args=[row], kwargs={'row': json_values, }, queue='xml')
 
     def get_value_for_field(self, field, element):
         raise NotImplementedError('subclasses of BaseImporter must Implement get_value_for_field() method')
@@ -231,11 +241,11 @@ def run_all_steps(**kwargs):
     download_images = kwargs.get("download_images")
     allow_item_creation = kwargs.get("allow_item_creation")
 
-    print("xml_file_pk from func:", xml_file_pk)
-    print("import_map_pk from func:", import_map_pk)
-    print("number_of_items from func:", number_of_items)
-    print("download_images from func:", download_images)
-    print("allow_item_creation from func:", allow_item_creation)
+    # print("xml_file_pk from func:", xml_file_pk)
+    # print("import_map_pk from func:", import_map_pk)
+    # print("number_of_items from func:", number_of_items)
+    # print("download_images from func:", download_images)
+    # print("allow_item_creation from func:", allow_item_creation)
 
     import_map_obj = ProductImportMap.objects.get(pk=import_map_pk)
     xml_file_obj = ImporterFile.objects.get(pk=xml_file_pk)
@@ -252,8 +262,8 @@ def run_all_steps(**kwargs):
     parser = XMLParser(file_path=file_path, xpath_for_products=root_xpath,
                        dropping_words=dropping_words_list, replacing_words=replace_words_list)
 
-    print("parser_obj :", parser)
-    print("parser.dropping_words :", parser.dropping_words)
+    # print("parser_obj :", parser)
+    # print("parser.dropping_words :", parser.dropping_words)
     filtered_xml_document = parser.process_file(dropping_words=parser.dropping_words,
                                                 replacing_words=parser.replacing_words)
     # result = len(filtered_xml_document.xpath(".//Urun"))
@@ -261,8 +271,33 @@ def run_all_steps(**kwargs):
     #
     my_importer = XMLImporter(map_obj=import_map_obj, xml_document=filtered_xml_document, xpath_for_products=root_xpath)
     my_importer.update_db(number_of_items=number_of_items)
-
-
+    # def update_db(importer, no_of_items=10):
+    #
+    #     for number, row in enumerate(importer.process_row_object()):
+    #         if number_of_items:
+    #             if number < number_of_items:
+    #                 # aşağıya print_row yerine add.delay(row) şeklinde bir task yazacağız.
+    #                 # title = [d.get('value') for d in row if d.get('field') is 'title']
+    #                 # print(title)
+    #                 # print(len(title))
+    #                 # process_xml_row(self, row=row)
+    #                 json_values = json.dumps(row)
+    #
+    #                 # print(json_values)
+    #                 # process_xml_row(self, row=json_values)
+    #                 process_xml_row.apply_async(args=[], kwargs={'row': json_values, }, queue='xml')
+    #             else:
+    #                 break
+    #         else:
+    #             # title = list(filter(lambda key: key['title'], row))
+    #             # title = [d for d in row if d.get('field') is 'baslik']
+    #             # print(title)
+    #             # process_xml_row(self, row=row)
+    #             json_values = json.dumps(row)
+    #
+    #             # print(json_values)
+    #             process_xml_row.apply_async(args=[row], kwargs={'row': json_values, }, queue='xml')
+    # update_db(importer=my_importer, no_of_items=number_of_items)
 
 
 

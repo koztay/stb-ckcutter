@@ -196,6 +196,7 @@ def slug_pre_save_receiver(sender, instance, *args, **kwargs):
 
     if sender.__name__ in list_of_models:  # this is the dynamic part you want
         if not instance.slug:
+            print("instance from receiver:", instance)
             instance.slug = create_slug(instance, sender)
     else:
         pass
