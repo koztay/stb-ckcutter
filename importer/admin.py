@@ -3,7 +3,7 @@ from django.db import models
 # Register your models here.
 from django import forms
 
-from .models import ProductImportMap, Fields
+from .models import ProductImportMap, Fields, ImporterFile
 
 
 class FieldsInline(admin.TabularInline):
@@ -35,3 +35,4 @@ class ProductImportMapAdmin(admin.ModelAdmin):
         model = ProductImportMap
 
 admin.site.register(ProductImportMap, ProductImportMapAdmin)
+admin.site.register(ImporterFile)

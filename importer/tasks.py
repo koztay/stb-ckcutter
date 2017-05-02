@@ -1,5 +1,4 @@
 from __future__ import absolute_import, unicode_literals
-import ast
 import json
 from django.conf import settings
 from celery.decorators import task

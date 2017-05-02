@@ -1,8 +1,6 @@
 from django import forms
 
-from my_importer.models import ImporterFile
-
-from .models import ProductImportMap
+from .models import ProductImportMap, ImporterFile
 
 
 class ProductImporterMapTypeForm(forms.Form):

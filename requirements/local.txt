@@ -17,3 +17,8 @@ ipdb==0.10.2
 
 pytest-django==3.1.2
 pytest-sugar==0.8.0
+
+# test.txt ne işe yarıyor anlamadım. Biz lokalde bu klasörün içindekileri
+# aynen kopyalayacaksak o zaman neden ayrı bir dosyada tutuyoruz. Acaba CI
+# server vc. ler için olabilir mi?
+mixer
