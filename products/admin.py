@@ -1,6 +1,6 @@
 from django.contrib import admin
 # import nested_admin
-
+admin.site.empty_value_display = '???'
 
 from .models import (
     Product,

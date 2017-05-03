@@ -95,11 +95,6 @@ class Product(models.Model):
     def __str__(self):  # def __str__(self):
         return self.title
 
-    def save(self, *args, **kwargs):
-        if not self.id:  # slug fonksiyonunu sadece ..
-            self.slug = slugify(self.title)
-            super(Product, self).save(*args, **kwargs)
-
     def get_absolute_url(self):
         view_name = "products:product_detail"
         # view_name = "products:product_detail_slug_function"
@@ -205,14 +200,15 @@ class Variation(models.Model):
 
     # eğer ürünü import ederek eklemişsek variation'ın hem price hem de sale price kısmı empty geliyordu.
     # aşağıdaki revizyon ile düzelttim bakalım düzgün çalışacak mı?
+    # "{:,.2f}".format(self.sale_price * Decimal(self.buying_currency.value))
     # "{:,.2f}".format(value) => thousands seperator işlevi sağlıyor
     def get_sale_price(self):
         if self.sale_price is not None:
-            return self.sale_price * Decimal(self.buying_currency.value)
+            return "{:,.2f}".format(self.sale_price * Decimal(self.buying_currency.value))
         elif self.price is not None:
-            return self.price * Decimal(self.buying_currency.value)
+            return "{:,.2f}".format(self.price * Decimal(self.buying_currency.value))
         else:
-            return self.product.price * Decimal(self.buying_currency.value)
+            return "{:,.2f}".format(self.product.price * Decimal(self.buying_currency.value))
 
     def get_product_price(self):
         return self.product.price * Decimal(self.buying_currency.value)

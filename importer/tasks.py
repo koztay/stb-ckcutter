@@ -135,7 +135,7 @@ class BaseDataImporterTask:
                     print("Kategori bulunamadı lütfen ekleyin : ", cell)
 
             else:
-                print("Hata! Böyle bir model dönmemeli, cell_value_model: ", cell_value_model)
+                print("ProductImage dönmüş olması lazım => cell_value_model: ", cell_value_model)
 
         factor = float(settings.IMPORTER_SALE_PRICE_FACTOR)
         product_instance.price = float(variation_instance.sale_price) * factor
