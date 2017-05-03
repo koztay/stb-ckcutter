@@ -95,26 +95,15 @@ class Product(models.Model):
     def __str__(self):  # def __str__(self):
         return self.title
 
-    # def get_absolute_url(self):
-    #     return reverse("products:product_detail", kwargs={"pk": self.pk})
+    def save(self, *args, **kwargs):
+        if not self.id:  # slug fonksiyonunu sadece ..
+            self.slug = slugify(self.title)
+            super(Product, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         view_name = "products:product_detail"
         # view_name = "products:product_detail_slug_function"
         return reverse(view_name, kwargs={"slug": self.slug})
-
-        # return reverse('blog:post_detail',
-        #                args=[self.publish.year,
-        #                      self.publish.strftime('%m'),
-        #                      self.publish.strftime('%d'),
-        #                      self.slug])
-
-        #
-        # def get_image_url(self): # buna gerek yok o zaman
-        #     img = self.productimage_set.first()
-        #     if img:
-        #         return img.image.url
-        #     return img  # None
 
     def get_main_category(self):  # bu quickview 'da ürününü kategorisini göstermek için...
         categories = Category.objects.all().filter(product=self)

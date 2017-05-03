@@ -78,7 +78,7 @@ LOCAL_APPS = [
     'blog',
     'carts',
     'importer',
-    'my_importer',
+    # 'my_importer',
     'newsletter',
     'orders',
     'products',

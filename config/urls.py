@@ -16,7 +16,7 @@ from orders.views import (
     OrderDetail)
 
 from newsletter.views import HomeView, ContactView
-from my_importer.views import xml_upload_view, xml_map_view, TaskRunnerView
+# from my_importer.views import xml_upload_view, xml_map_view, TaskRunnerView
 
 urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),
@@ -53,9 +53,9 @@ urlpatterns = [
     # data-importer
     url(r'^data-importer/', include('importer.urls', namespace='importer')),
 
-    url(r'^xml-upload/$', xml_upload_view, name='xml_upload'),
-    url(r'^xml-map/$', xml_map_view, name='xml_map'),
-    url(r'^run-xml-task/$', TaskRunnerView.as_view(), name='run_xml_task'),
+    # url(r'^xml-upload/$', xml_upload_view, name='xml_upload'),
+    # url(r'^xml-map/$', xml_map_view, name='xml_map'),
+    # url(r'^run-xml-task/$', TaskRunnerView.as_view(), name='run_xml_task'),
 
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

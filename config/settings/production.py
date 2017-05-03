@@ -215,37 +215,11 @@ ADMIN_URL = env('DJANGO_ADMIN_URL')
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'  # pickle yapmazsak importer çalışmıyor, json yapmazsak da kur çekme çalışmıyor.
-CELERY_RESULT_SERIALIZER = 'json'  # pickle yapmazsak importer çalışmıyor, json yapmazsak da kur çekme çalışmıyor.
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
-# Name of nodes to start, here we have a single node
-CELERYD_NODES="worker1"
-# or we could have three nodes:
-#CELERYD_NODES="w1 w2 w3"
-
-# Where to chdir at start.
-CELERYD_CHDIR="/app"
-
-# How to call "manage.py celeryd_multi"
-CELERYD_MULTI="$CELERYD_CHDIR/manage.py celeryd_multi"
-
-# How to call "manage.py celeryctl"
-CELERYCTL="$CELERYD_CHDIR/manage.py celeryctl"
-
-# Extra arguments to celeryd
-CELERYD_OPTS="--time-limit=300 --concurrency=8"
-
-# Name of the celery config module.
-CELERY_CONFIG_MODULE="celeryconfig"
-
-# %n will be replaced with the nodename.
-CELERYD_LOG_FILE="/var/log/celery/%n.log"
-CELERYD_PID_FILE="/var/run/celery/%n.pid"
-
-# Workers should run as an unprivileged user.
-CELERYD_USER="celery"
-CELERYD_GROUP="celery"
+CELERY_IMPORTS = ('utils.tasks',)
 
 
 # IMPORTER APP USES IT FOR EXCEL IMPORT

@@ -115,19 +115,6 @@ def attribute_type_post_save_receiver(sender, instance, *args, **kwargs):
             AttributeValue.objects.create(attribute_type=instance, product=product, value="")
 
 
-def create_slug(instance, sender, new_slug=None):
-    print(instance)
-    slug = slugify(instance.title)
-    if new_slug is not None:
-        slug = new_slug
-    qs = sender.objects.filter(slug=slug)
-    exists = qs.exists()
-    if exists:
-        new_slug = "%s-%s" % (slug, qs.first().id)
-        return create_slug(instance, sender=sender, new_slug=new_slug)
-    return slug
-
-
 def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *args, **kwargs):
     print('sender : ', sender)
     print('instance', instance)
@@ -170,13 +157,6 @@ def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *ar
         if micro_created:
             thumbnail_creator.create_new_thumb(media_path, micro, owner_slug, micro_max[0], micro_max[1])
 
-        # yukarıdaki gibi if 'ler olduğunda sadece ilk resme ilişkin thumnail yaratıyor. Biz tamamı,
-        # için thumbnail yaratmak istiyoruz. Ama bu sefer de thumb resme ait mi değil mi bulmamız gerek.
-
-        # thumbnail_creator.create_new_thumb(media_path, hd, owner_slug, hd_max[0], hd_max[1])
-        # thumbnail_creator.create_new_thumb(media_path, sd, owner_slug, sd_max[0], sd_max[1])
-        # thumbnail_creator.create_new_thumb(media_path, mid, owner_slug, mid_max[0], mid_max[1])
-        # thumbnail_creator.create_new_thumb(media_path, micro, owner_slug, micro_max[0], micro_max[1])
 
 post_save.connect(productimage_post_save_receiver_for_thumbnail, sender=ProductImage)
 post_save.connect(product_post_save_receiver_for_attributes, sender=Product)
@@ -184,34 +164,6 @@ post_save.connect(product_post_save_receiver_for_variation, sender=Product)
 post_save.connect(attribute_type_post_save_receiver, sender=AttributeType)
 pre_delete.connect(image_pre_delete_receiver_for_cleanup, sender=Thumbnail)
 pre_delete.connect(image_pre_delete_receiver_for_cleanup, sender=ProductImage)
-
-
-# TODO : Bunu normal olarak product ve kategori post save olarak yaratamaz mıyız? (mixin vb. yöntemle)
-@receiver(pre_save)  # tüm objeler pre_save olmadan çalışıyor...
-def slug_pre_save_receiver(sender, instance, *args, **kwargs):
-    # print("pre_save_receiver_çalıştı...")
-
-    list_of_models = ('Product', 'Category')
-    # print("sender:", sender.__name__)
-
-    if sender.__name__ in list_of_models:  # this is the dynamic part you want
-        if not instance.slug:
-            print("instance from receiver:", instance)
-            instance.slug = create_slug(instance, sender)
-    else:
-        pass
-        # print("sender list of models içinde değil")
-
-
-#     if sender.__name__ == 'Category':
-#         instance.order = instance.id
-
-
-# @receiver(post_save, sender=Category)
-# def category_order_receiver(sender, instance, *args, **kwargs):
-#     print("post save category çalışıyor mu?")
-#     instance.order = instance.id
-#     # instance.save() # bu satır patlatıyor...
 
 
 
