@@ -1,3 +1,5 @@
+import time
+from lxml import etree
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -53,7 +55,98 @@ def some_view(request):
 """
 
 
-def xml_latest(request):
+def stream_response(request):
+    response = StreamingHttpResponse(xml_generator_2(), content_type='text/xml')
+    response['Content-Disposition'] = 'attachment; filename="istebu.xml"'
+    return response
+
+
+def stream_response_generator():
+    for x in range(1, 150):
+        yield "%s\n" % x  # Returns a chunk of the response to the browser
+        time.sleep(1)
+
+
+# def big_csv(num_rows):
+#     for row in range(num_rows):
+#         output = StringIO()
+#         writer = csv.writer(output)
+#
+#         if row == 0:
+#             writer.writerow(['One', 'Two', 'Three'])
+#         else:
+#             writer.writerow(['Hello', 'world', row])
+#
+#         output.seek(0)
+#         yield output.read()
+
+
+# def download_csv_streaming(request):
+#     """Return a CSV file.
+#     This view responds with a generator that yields each row of the response as
+#     it's created.
+#     """
+#     response = StreamingHttpResponse(big_csv(100), content_type='text/csv')
+#     response['Content-Disposition'] = 'attachment; filename=big.csv'
+#
+#     return response
+
+
+def xml_generator():
+
+    products = Product.objects.all()
+    for item, urun in enumerate(products):
+        if item == 0:
+            row = '<?xml version="1.0" encoding="UTF-8"?>\n'
+            root_node = '<products>\n'
+            product_node = '<product>\n'
+            istebu_product_no = '<istebu_product_no>'+'<![CDATA[{}]]>'.format(urun.istebu_product_no)+'</istebu_product_no>\n'
+            baslik = '<title>' + '<![CDATA[{}]]>'.format(urun.title) + '</title>\n'
+            end_product_node = '<product>'
+        else:
+            row = ''
+            root_node = ''
+            product_node = '<product>\n'
+            istebu_product_no = '<istebu_product_no>'+'<![CDATA[{}]]>'.format(urun.istebu_product_no)+'</istebu_product_no>\n'
+            baslik = '<title>' + '<![CDATA[{}]]>'.format(urun.title) + '</title>\n'
+            end_product_node = '<product>'
+        print(row + root_node + product_node + istebu_product_no + baslik + end_product_node)
+        yield "%s%s%s%s%s%s" % (row, root_node, product_node, istebu_product_no, baslik, end_product_node)
+        time.sleep(3)
+
+    # for x in range(1, 150):
+    #     yield "%s\n" % x  # Returns a chunk of the response to the browser
+    #     time.sleep(1)
+
+
+def xml_generator_2():
+
+    template_vars = dict()
+    template_vars['products'] = Product.objects.all()
+    template_vars['buffer'] = ' ' * 1024
+
+    t = loader.get_template('products/xml/base.xml')  # or whatever
+    buffer = ' ' * 1024
+
+    for product in Product.objects.all():
+        c = Context({"product": product})
+        yield t.render(c)
+
+    # c = Context(template_vars)
+    # yield t.render(c)
+    # yield t.render(Context({'varname': 'some value', 'buffer': buffer}))
+    #                                                 ^^^^^^
+    #    embed that {{ buffer }} somewhere in your template
+    #        (unless it's already long enough) to force display
+
+    # for x in range(1, 11):
+    #     yield '<p>x = {}</p>{}\n'.format(x, buffer)
+    # def gen_rendered():
+    #     for x in range(1, 11):
+    #         c = Context({'mydata': x})
+    #         yield t.render(c)
+
+def xml_test(request, marketplace):
     """
     returns an XML of the most latest posts
     """
@@ -61,6 +154,46 @@ def xml_latest(request):
     template_vars = dict()
     template_vars['products'] = Product.objects.all()
     template_vars['host'] = request.get_host()
+    # print("marketplace :", marketplace)
+    if marketplace in ("n11", "gittigidiyor", "test",):
+        # print("if mi çalışmıyor ? :", marketplace)
+        template_vars['marketplace'] = marketplace
+    else:
+        raise Http404("The link is not available!")
+
+    # TODO: Burada henüz domain çalışmıyorkenki URL 'yi de koymayı unutma...
+    if settings.DEBUG:
+        domain = 'http://127.0.0.1:8000'
+    else:
+        domain = 'http://www.istebu.com'
+
+    template_vars['domain'] = domain
+
+    t = loader.get_template('products/xml/products.xml')
+    c = Context(template_vars)
+
+    # return HttpResponse(t.render(c), content_type="text/xml")
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(t.render(c), content_type='text/xml')
+    response['Content-Disposition'] = 'attachment; filename="istebu.xml"'
+    return response
+
+
+def xml_latest(request, marketplace):
+    """
+    returns an XML of the most latest posts
+    """
+
+    template_vars = dict()
+    template_vars['products'] = Product.objects.filter(istebu_product_no__startswith="PRJ")
+    print("number_of_products : %s" % template_vars['products'].count())
+    template_vars['host'] = request.get_host()
+    # print("marketplace :", marketplace)
+    if marketplace in ("n11", "gittigidiyor"):
+        # print("if mi çalışmıyor ? :", marketplace)
+        template_vars['marketplace'] = marketplace
+    else:
+        raise Http404("The link is not available!")
 
     # TODO: Burada henüz domain çalışmıyorkenki URL 'yi de koymayı unutma...
     if settings.DEBUG:

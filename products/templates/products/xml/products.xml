@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{% load get_thumbnail %}
+<products>
+{% for product in products %}
+  <product>
+  {% with product.variation_set as variation_set %}
+    <istebu_product_no><![CDATA[ {{ product.istebu_product_no }} ]]></istebu_product_no>
+    <product_barkod><![CDATA[{% if variation_set.first.product_barkod %}{{ variation_set.first.product_barkod }}{% else %}No Product Barkod{% endif %}]]></product_barkod>
+    <product_brand><![CDATA[ {{ product.get_brand }} ]]></product_brand>
+    <product_title><![CDATA[ {{ product.title }} ]]></product_title>
+    <product_description><![CDATA[ {{ product.description }} ]]></product_description>
+    <product_category><![CDATA[ {{ product.get_main_category }} ]]></product_category>
+    {% if marketplace == "n11" %}
+        {% if variation_set.first.n11_price %}
+    <product_price>{{ variation_set.first.n11_price }}</product_price>
+        {% else %}
+    <product_price>{{ variation_set.first.sale_price }}</product_price>
+        {% endif %}
+    {% elif marketplace == "gittigidiyor" %}
+        {% if variation_set.first.n11_price %}
+    <product_price>{{ variation_set.first.gittigidiyor_price }}</product_price>
+        {% else %}
+    <product_price>{{ variation_set.first.sale_price }}</product_price>
+        {% endif %}
+    {% endif %}
+    <product_image>{{ product|get_thumbnail:"sd"}}</product_image>
+    <product_url>
+        {% if request.is_secure %}https://{% else %}http://{% endif %}{{host}}{{product.get_absolute_url}}
+    </product_url>
+    <stok_adedi>{{ variation_set.all.0.inventory }}</stok_adedi>
+  {% endwith %}
+  </product>
+{% endfor %}
+</products>
+

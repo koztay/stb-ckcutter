@@ -95,6 +95,15 @@ class Product(models.Model):
     def __str__(self):  # def __str__(self):
         return self.title
 
+    def get_brand(self):
+        attr_type = AttributeType.objects.filter(type="Marka", product=self)
+        attr = AttributeValue.objects.filter(attribute_type=attr_type, product=self)
+        for attribute in attr:
+            if attribute.value:
+                return attribute.value
+            else:
+                return "No Brand Set for Product"
+
     def get_absolute_url(self):
         view_name = "products:product_detail"
         # view_name = "products:product_detail_slug_function"

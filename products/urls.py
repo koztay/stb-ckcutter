@@ -7,6 +7,8 @@ from .views import (
     VariationListView,
     # product_list_by_tag,
     xml_latest,
+    xml_test,
+    stream_response,
     ProductListTagFilterView,
 )
 
@@ -20,9 +22,11 @@ urlpatterns = [
     url(r'^tag/(?P<tag_slug>[-\w]+)/$', ProductListTagFilterView.as_view(), name='product_list_by_tag'),
     # url(r'^(?P<pk>\d+)/$', ProductDetailView.as_view(), name='product_detail'),
     url(r'^(?P<pk>\d+)/inventory/$', VariationListView.as_view(), name='product_inventory'),
-    url(r'^xml/istebu.xml', xml_latest, name='products_xml'),
+    url(r'^(?P<marketplace>[\w-]+)/istebu.xml', xml_latest, name='products_xml'),
+    url(r'^test/(?P<marketplace>[\w-]+)/istebu.xml', xml_test, name='products_test_xml'),
     # url(r'^(?P<id>\d+)', 'products.views.product_detail_view_func', name='product_detail_function'),
     # url(r'^(?P<slug>[\w-]+)/$', 'products.views.detail_slug_view', name='product_detail_slug_function'),
     # url(r'^(?P<slug>[\w-]+)/$', ProductDetailView.as_view(), name='detail_slug'),
+    url(r'^stream/stream.xml$', stream_response, name='stream_xml')
 
 ]

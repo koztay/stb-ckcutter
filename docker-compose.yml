@@ -62,7 +62,7 @@ services:
       - static-data:/static_root
     volumes_from:
       - django
-    command: celery -A ecommerce_istebu_cookiecutter.taskapp worker -Q images,xml,default -l INFO -Ofair --concurrency=5
+    command: celery -A ecommerce_istebu_cookiecutter.taskapp worker -Q images,xml,default -l INFO -Ofair --concurrency=3
 
   celerybeat:
 # Aşağıdakileri commentleyip yaratılmış imajı kullandırtmazsan yeniden djangoyu build ediyor. Çok saçma...
