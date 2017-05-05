@@ -47,12 +47,12 @@ class BaseDataImporterTask:
 
     @staticmethod
     def _create_magazakodu(prefix, suffix, product_id):
-        print("gelen prefix ve suffix :")
-        print(prefix, suffix)
+        # print("gelen prefix ve suffix :")
+        # print(prefix, suffix)
         kod_query_set = Product.objects.filter(istebu_product_no__icontains=prefix)
-        print(kod_query_set)
+        # print(kod_query_set)
         product_instance = Product.objects.get(pk=product_id)
-        print("product_instance :", product_instance)
+        # print("product_instance :", product_instance)
         if not product_instance.istebu_product_no:  # Eğer kod varsa girme, yoksa gir...
             if kod_query_set.count() > 0:
                 kod_array = [int(kod.istebu_product_no[len(prefix):]) for kod in kod_query_set]
@@ -232,13 +232,13 @@ def download_image_for_product(self, image_link=None, product_id=None):
     return result
 
 
-@task(bind=True, name="Process XML Row", rate_limit="20/m")
+@task(bind=True, name="Process XML Row", rate_limit="120/m")
 def process_xml_row(self, row=None, create_allowed=False, download_images=False):
     xml_task = XMLImporterTask(file_type="XML", row=row, create_allowed=create_allowed, download_images=download_images)
     return xml_task.run_import_task()
 
 
-@task(bind=True, name="Process XLS Row", rate_limit="20/m")
+@task(bind=True, name="Process XLS Row", rate_limit="120/m")
 def process_xls_row(self, importer_map_pk, row, values, create_allowed=False, download_images=False):
     xls_task = XLSImporterTesk(file_type="XLS", row=values, importer_map_pk=importer_map_pk, row_number=row,
                                create_allowed=create_allowed, download_images=download_images)

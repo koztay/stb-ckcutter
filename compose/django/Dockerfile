@@ -17,14 +17,19 @@ RUN chmod +x /requirements
 RUN chown -R django /static_root
 RUN chmod +x /static_root
 
+COPY ./compose/django/celeryd /etc/default/celeryd
 COPY ./compose/django/gunicorn.sh /gunicorn.sh
 COPY ./compose/django/entrypoint.sh /entrypoint.sh
+COPY ./compose/django/celery.sh /celery.sh
 RUN sed -i 's/\r//' /entrypoint.sh \
     && sed -i 's/\r//' /gunicorn.sh \
+    && sed -i 's/\r//' /celery.sh \
     && chmod +x /entrypoint.sh \
     && chown django /entrypoint.sh \
     && chmod +x /gunicorn.sh \
-    && chown django /gunicorn.sh
+    && chown django /gunicorn.sh \
+    && chmod +x /celery.sh \
+    && chown django /celery.sh
 
 WORKDIR /app
 

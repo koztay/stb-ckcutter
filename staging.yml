@@ -62,8 +62,9 @@ services:
       - static-data:/static_root
     volumes_from:
       - django
+#    command: /celery.sh
 #    command: celery multi start worker1 -A ecommerce_istebu_cookiecutter.taskapp -l INFO -Ofair --pidfile="/app/%n.pid" --logfile="/app/%n%I.log"
-    command: celery -A ecommerce_istebu_cookiecutter.taskapp worker -Q images,xml,default -l INFO -Ofair --concurrency=5
+    command: celery -A ecommerce_istebu_cookiecutter.taskapp worker -Q images,xml,default -l INFO -Ofair --without-gossip --without-mingle --without-heartbeat
 
   celerybeat:
 # Aşağıdakileri commentleyip yaratılmış imajı kullandırtmazsan yeniden djangoyu build ediyor. Çok saçma...
