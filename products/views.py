@@ -302,6 +302,8 @@ class ProductFilter(FilterSet):
         ]
 
 
+
+
 # def product_list(request):
 #     qs = Product.objects.all()
 #     ordering = request.GET.get("ordering")
@@ -510,20 +512,31 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, Pagination
 # bu da yine otomatik listeliyor
 class CategoryDetailView(NewProductListView):
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(CategoryDetailView, self).get_context_data(*args, **kwargs)
+    def get_queryset(self, *args, **kwargs):
+        qs = super(CategoryDetailView, self).get_queryset(*args, **kwargs)
         slug = self.kwargs["slug"]
         category = Category.objects.filter(slug=slug)
-        qs = self.get_queryset()
         if slug:
-            products = qs.filter(categories=category).distinct()
-            context["object_list"] = products
-        if context.get('object_list'):
-            paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
-            context["paginator"] = paginated[0]
-            context["page_obj"] = paginated[1]
-            context["object_list"] = paginated[2]
-        return context
+            qs = qs.filter(categories=category).distinct()
+        #     return qs
+        # else:
+        return qs
+
+    # aşağıdaki metoda gerek yok, qs ile çözüyoruz.
+    # def get_context_data(self, *args, **kwargs):
+    #     context = super(CategoryDetailView, self).get_context_data(*args, **kwargs)
+    #     slug = self.kwargs["slug"]
+    #     category = Category.objects.filter(slug=slug)
+    #     qs = self.get_queryset()
+    #     # if slug:
+    #     #     products = qs.filter(categories=category).distinct()
+    #     #     context["object_list"] = products
+    #     # if context.get('object_list'):
+    #     #     paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
+    #     #     context["paginator"] = paginated[0]
+    #     #     context["page_obj"] = paginated[1]
+    #     #     context["object_list"] = paginated[2]
+    #     return context
 
 
 # bu view tag üzerine tıklanınca filter yapıyor

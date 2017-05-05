@@ -1,24 +1,28 @@
+
             <div class="col-lg-9 col-md-9 col-sm-8 col-md-push-3">
                 <div class="aa-product-catg-content">
                     <div class="aa-product-catg-head">
                         <div class="aa-product-catg-head-left">
                             <form action="" class="aa-sort-form">
-                                <label for="">Sort by</label>
-                                <select name="">
-                                    <option value="1" selected="Default">Default</option>
-                                    <option value="2">Name</option>
-                                    <option value="3">Price</option>
-                                    <option value="4">Date</option>
+                                <label for="">Sıralama : </label>
+                                {% with request.GET.ordering as selected %}
+                                <select name="ordering" onchange="this.form.submit()" style="width: 200px">
+                                    <option value="price" {% if selected == '' %} selected="Varsayılan"{% endif %}>Varsayılan</option>
+                                    <option value="price" {% if selected == 'price' %} selected="Fiyata Göre Artan"{% endif %}>Fiyata Göre Artan</option>
+                                    <option value="-price" {% if selected == '-price' %} selected="Fiyata Göre Azalan"{% endif %}>Fiyata Göre Azalan</option>
+                                    <option value="title" {% if selected == 'title' %} selected="İsme Göre Artan"{% endif %}>İsme Göre Artan</option>
+                                    <option value="-title" {% if selected == '-title' %} selected="İsme Göre Azalan"{% endif %}>İsme Göre Azalan</option>
                                 </select>
+                                {% endwith %}
                             </form>
-                            <form action="" class="aa-show-form">
-                                <label for="">Show</label>
-                                <select name="">
-                                    <option value="1" selected="12">12</option>
-                                    <option value="2">24</option>
-                                    <option value="3">36</option>
-                                </select>
-                            </form>
+{#                            <form action="" class="aa-show-form">#}
+{#                                <label for="">Show</label>#}
+{#                                <select name="">#}
+{#                                    <option value="1" selected="12">12</option>#}
+{#                                    <option value="2">24</option>#}
+{#                                    <option value="3">36</option>#}
+{#                                </select>#}
+{#                            </form>#}
                         </div>
                         <div class="aa-product-catg-head-right">
                             <a id="grid-catg" href="#"><span class="fa fa-th"></span></a>

@@ -345,14 +345,12 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
                 }
 
 
-
+                $('#modal-description').text("");
                 if ( data['product']['description'].indexOf("table") > -1 ) {
-                    console.log("table elementi bulundu...");
-                    $('#modal-description').text("");
-                }else{
+                    console.log("table elementi bulundu, birşey yapma...");
+                }else {
                     $('#modal-description').append(data['product']['description']);
                 }
-
 
                 //modal.find('.simpleLens-big-image').attr("src", imagemedium);
                 //modal.find('.simpleLens-lens-image').attr('data-lens-image', imagehd);

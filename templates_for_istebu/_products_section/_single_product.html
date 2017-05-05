@@ -23,17 +23,7 @@
 
                                                 <figcaption>
                                                     <h4 class="aa-product-title"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
-                                                    {% if product.variation_set.first.sale_price %}
-                                                        {% if product.variation_set.first.sale_price < product.price %}
-                                                            <span class="aa-product-price">{{ product.variation_set.first.sale_price }},-₺</span>
-                                                            <span class="aa-product-price"><del>{{ product.price | intcomma }},-₺</del></span>
-                                                        {% else %}
-                                                            <span class="aa-product-price">{{ product.price | intcomma }},-₺</span>
-                                                        {% endif %}
-
-                                                    {% else %}
-                                                        <span class="aa-product-price">{{ product.price | intcomma }},-₺</span>
-                                                    {% endif %}
+                                                    {{ product.variation_set.first.get_html_price }}
                                                 </figcaption>
                                             </figure>
                                             <div class="aa-product-hvr-content">
@@ -48,6 +38,6 @@
                                                 ><span class="fa fa-search"></span></a>
                                             </div>
                                             <!-- product badge -->
-                                            <span class="aa-badge aa-sale" href="#">SALE!</span>
+{#                                            <span class="aa-badge aa-sale" href="#">SALE!</span>#}
                                         </li>
 {% endfor %}

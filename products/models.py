@@ -203,6 +203,13 @@ class Variation(models.Model):
     n11_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     inventory = models.IntegerField(null=True, blank=True)  # refer none == unlimited amount
     product_barkod = models.CharField(max_length=100, null=True, blank=True)
+    # vendor = models.ForeignKey('vendors.Vendor', null=True, blank=True)
+    # vendor_product_no = models.CharField(max_length=100, null=True, blank=True)
+    # product alanı içerisinde de vendor_product_no var. XML çekerken, XML 'e de vendoru eklemek lazım. Dolayısıyla,
+    # her xml kendine ait olan variationa yazar buying price ve buying currency değerlerini. Sitede göstermek için de
+    # product sayfasında hangi vendor seçiliyse onun ürünü gösterilir. Eşleştirirken de önce vendoru kendi olan ürünleri
+    # bulur sonra kendine ait vendor no.lu ürün var mı bakar varsa update eder yoksa pas geçer. Şimdilik yukarıdaki
+    # modelleri eklemeyeyim.
 
     def __str__(self):
         return self.title
@@ -210,21 +217,22 @@ class Variation(models.Model):
     # eğer ürünü import ederek eklemişsek variation'ın hem price hem de sale price kısmı empty geliyordu.
     # aşağıdaki revizyon ile düzelttim bakalım düzgün çalışacak mı?
     # "{:,.2f}".format(self.sale_price * Decimal(self.buying_currency.value))
-    # "{:,.2f}".format(value) => thousands seperator işlevi sağlıyor
+    # "{:,.2f}".format(value) => thousands seperator işlevi sağlıyor, ancak sepete eklerken bu sorun yaratıyor...
+
     def get_sale_price(self):
         if self.sale_price is not None:
-            return "{:,.2f}".format(self.sale_price * Decimal(self.buying_currency.value))
+            return "{:.2f}".format(self.sale_price * Decimal(self.buying_currency.value))
         elif self.price is not None:
-            return "{:,.2f}".format(self.price * Decimal(self.buying_currency.value))
+            return "{:.2f}".format(self.price * Decimal(self.buying_currency.value))
         else:
-            return "{:,.2f}".format(self.product.price * Decimal(self.buying_currency.value))
+            return "{:.2f}".format(self.product.price * Decimal(self.buying_currency.value))
 
     def get_product_price(self):
         return self.product.price * Decimal(self.buying_currency.value)
 
     def get_html_price(self):
         if self.sale_price is not None:
-            if self.get_sale_price() < self.get_product_price():
+            if float(self.get_sale_price()) < float(self.get_product_price()):
                 html_text = '<span class="aa-product-price">%s ,-₺</span> <span class="aa-product-price"><del>%s ,-₺</del></span>' % ("{:,.2f}".format(float(self.get_sale_price())), "{:,.2f}".format(float(self.get_product_price())))
             else:
                 html_text = "<span class='aa-product-price'>%s ,-₺</span>" % "{:,.2f}".format(float(self.get_sale_price()))
@@ -376,7 +384,7 @@ class Category(models.Model):
 
 # ************************************************************************************************************ #
 
-
+# Bu ürünleri Justin anasayfada tam ekran resim ise banner gibi gösteriyordu, bizde kullanılmıyor bu model.
 class ProductFeatured(models.Model):
     product = models.ForeignKey(ProductImage)
     image = models.ImageField(upload_to=image_upload_to_featured, max_length=2000)
