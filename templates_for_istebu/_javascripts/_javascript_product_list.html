@@ -28,7 +28,15 @@
     <!-- Price picker slider / Buna anasayfada gerek yok -->
 <script type="text/javascript" src="{% static 'js/nouislider.js' %}"></script>
 <script>
-    jQuery(function () {
+
+function set_slider_values() {
+    $('#skip-value-lower').text({{ minimum_price }});
+    $('#skip-value-upper').text({{ maximum_price }});
+};
+
+set_slider_values();
+
+jQuery(function () {
         if ($('body').is('.productPage')) {
 
             var min_price = 0;
@@ -100,6 +108,7 @@
             });
         }
     });
+
 function getUrlVars()
 /*
 This code will return:
@@ -147,13 +156,13 @@ function setUrlVars(min_value, max_value) {
 
 }
 
-
 function post(path, params, method) {
     method = method || "POST"; // Set method to post by default if not specified.
 
     // The rest of this code assumes you are not using a library.
     // It can be made less wordy if you use one.
     var form = document.createElement("form");
+    form.setAttribute("id", "delete-this-form");
     form.setAttribute("method", method);
     form.setAttribute("action", path);
 
@@ -173,10 +182,9 @@ function post(path, params, method) {
 
     document.body.appendChild(form);
     form.submit();
+    //document.body.removeChild(form);
+    // remove yapmaya gerek yok çünkü post edildikten sonra sayfa yenilendiği için otomatik remove ediliyor.
 }
-
-
-
 // Aşağıda POST 'u engelleyip GET parametrelerini alıyoruz. Sonra da post ediyoruz.
 $('#price-slider-form').submit(function (evt) {
     evt.preventDefault();

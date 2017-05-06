@@ -1,11 +1,5 @@
 {% load staticfiles %}
 <script>
-function set_slider_values() {
-    $('#skip-value-lower').text({{ minimum_price }});
-    $('#skip-value-upper').text({{ maximum_price }});
-};
-
-set_slider_values();
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -90,8 +84,8 @@ function removeProduct(product) {
             url: "{% url 'cart' %}",
             data: "item=" + product_id + "&qty=0",
             success: function (data) {
-                //console.log('success çalıştı');
-                //console.log(data);
+                console.log('success remove çalıştı');
+                console.log(data);
                 updateCartTotal();
                 updateCartItemCount();
                 $(product.parentElement).fadeOut(800);
@@ -113,8 +107,8 @@ function updateCartItemCount() {
         type: "GET",
         url: "{% url 'item_count' %}",
         success: function (data) {
+            console.log("badge text update edilmeli:!", data.count);
             badge.text(data.count);
-            //console.log(data.count);
 
         },
         error: function (response, error) {

@@ -493,11 +493,11 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, Pagination
         most_viewed_product_list = Product.objects.annotate(num_views=Sum('productanalytics__count')).filter(num_views__gt=0).order_by('-num_views')
         context['most_popular_products'] = most_viewed_product_list[:3]
 
-        minimum_price_aggregate = Product.objects.all().aggregate(Min('price'))
+        minimum_price_aggregate = context["object_list"].aggregate(Min('price'))
         minimum_price = minimum_price_aggregate['price__min']
         context["minimum_price"] = minimum_price
 
-        maximum_price_aggregate = Product.objects.all().aggregate(Max('price'))
+        maximum_price_aggregate = context["object_list"].aggregate(Max('price'))
         maximum_price = maximum_price_aggregate['price__max']
         context["maximum_price"] = maximum_price
 
@@ -506,7 +506,6 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, Pagination
 
         if self.request.GET.get('max_price', '') is not '':
             context["maximum_set_price_value"] = str(self.request.GET.get('max_price', ''))
-        context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
 
         return context
 
@@ -539,31 +538,31 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, Pagination
 # bu da yine otomatik listeliyor
 class CategoryDetailView(NewProductListView):
 
-    def get_queryset(self, *args, **kwargs):
-        qs = super(CategoryDetailView, self).get_queryset(*args, **kwargs)
-        slug = self.kwargs["slug"]
-        category = Category.objects.filter(slug=slug)
-        if slug:
-            qs = qs.filter(categories=category).distinct()
-        #     return qs
-        # else:
-        return qs
-
-    # aşağıdaki metoda gerek yok, qs ile çözüyoruz.
-    # def get_context_data(self, *args, **kwargs):
-    #     context = super(CategoryDetailView, self).get_context_data(*args, **kwargs)
+    # def get_queryset(self, *args, **kwargs):
+    #     qs = super(CategoryDetailView, self).get_queryset(*args, **kwargs)
     #     slug = self.kwargs["slug"]
     #     category = Category.objects.filter(slug=slug)
-    #     qs = self.get_queryset()
-    #     # if slug:
-    #     #     products = qs.filter(categories=category).distinct()
-    #     #     context["object_list"] = products
-    #     # if context.get('object_list'):
-    #     #     paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
-    #     #     context["paginator"] = paginated[0]
-    #     #     context["page_obj"] = paginated[1]
-    #     #     context["object_list"] = paginated[2]
-    #     return context
+    #     if slug:
+    #         qs = qs.filter(categories=category).distinct()
+    #     #     return qs
+    #     # else:
+    #     return qs
+
+    # aşağıdakini silersen pagination çalışmıyor ayrıca javascript ler de bu yüzden çalışmıyor olabilir...
+    def get_context_data(self, *args, **kwargs):
+        context = super(CategoryDetailView, self).get_context_data(*args, **kwargs)
+        slug = self.kwargs["slug"]
+        category = Category.objects.filter(slug=slug)
+        qs = self.get_queryset()
+        if slug:
+            products = qs.filter(categories=category).distinct()
+            context["object_list"] = products
+        if context.get('object_list'):
+            paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
+            context["paginator"] = paginated[0]
+            context["page_obj"] = paginated[1]
+            context["object_list"] = paginated[2]
+        return context
 
 
 # bu view tag üzerine tıklanınca filter yapıyor
