@@ -30,9 +30,20 @@
 <script>
     jQuery(function () {
         if ($('body').is('.productPage')) {
-            var min_price = parseFloat(document.getElementById('skip-value-lower').innerHTML);
-            var max_price = parseFloat(document.getElementById('skip-value-upper').innerHTML);
-            console.log(min_price, max_price);
+
+            var min_price = 0;
+            var max_price = 100;
+
+            if (getUrlVars()["min_price"]){
+                min_price = parseFloat(getUrlVars()["min_price"])
+            }else{
+                min_price = parseFloat(document.getElementById('skip-value-lower').innerHTML);
+            }
+            if (getUrlVars()["max_price"]){
+                max_price = parseFloat(getUrlVars()["max_price"])
+            }else{
+                max_price = parseFloat(document.getElementById('skip-value-upper').innerHTML);
+            }
 
             var skipSlider = document.getElementById('skipstep');
             noUiSlider.create(skipSlider, {
@@ -41,7 +52,7 @@
 {#                step:10, //bu da saçma çalışıyor...#}
                 start: [min_price, max_price],
                 range: {
-                    'min': min_price,
+                    'min': parseFloat(document.getElementById('skip-value-lower').innerHTML),
 {#                    '10%': min_price + step,#}
 {#                    '20%': min_price + 2*step ,#}
 {#                    '30%': min_price + 3*step,#}
@@ -51,7 +62,7 @@
 {#                    '70%': min_price + 7*step,#}
 {#                    '80%': min_price + 8*step,#}
 {#                    '90%': min_price + 9*step,#}
-                    'max': max_price
+                    'max': parseFloat(document.getElementById('skip-value-upper').innerHTML)
 
                 }
 
