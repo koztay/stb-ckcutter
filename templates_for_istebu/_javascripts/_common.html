@@ -1,5 +1,11 @@
 {% load staticfiles %}
 <script>
+function set_slider_values() {
+    $('#skip-value-lower').text({{ minimum_price }});
+    $('#skip-value-upper').text({{ maximum_price }});
+};
+
+set_slider_values();
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

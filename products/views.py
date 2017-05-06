@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # from datetime import datetime
 from django.db.models import Q, Max, Min, Count, Sum
-from django.http import Http404, HttpResponse, StreamingHttpResponse
+from django.http import Http404, HttpResponse, StreamingHttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Context, loader
 from django.urls import reverse_lazy
@@ -53,6 +53,18 @@ def some_view(request):
 
 
 """
+
+
+def update_session(request, *args, **kwargs):
+
+    # if not request.is_ajax() or not request.method == 'POST':
+    #     print("post ile ilgili sıkıntı var")
+    #     return HttpResponseNotAllowed(['POST'])
+    minimum_value = request.GET.get("min_value")
+    maximum_value = request.GET.get("max_value")
+    request.session['min_value'] = minimum_value
+    request.session['max_value'] = maximum_value
+    return HttpResponse('ok')
 
 
 def stream_response(request):
@@ -481,6 +493,21 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, Pagination
         most_viewed_product_list = Product.objects.annotate(num_views=Sum('productanalytics__count')).filter(num_views__gt=0).order_by('-num_views')
         context['most_popular_products'] = most_viewed_product_list[:3]
 
+        minimum_price_aggregate = Product.objects.all().aggregate(Min('price'))
+        minimum_price = minimum_price_aggregate['price__min']
+        context["minimum_price"] = minimum_price
+
+        maximum_price_aggregate = Product.objects.all().aggregate(Max('price'))
+        maximum_price = maximum_price_aggregate['price__max']
+        context["maximum_price"] = maximum_price
+
+        if self.request.GET.get('min_price', '') is not '':
+            context["minimum_set_price_value"] = str(self.request.GET.get('min_price', ''))
+
+        if self.request.GET.get('max_price', '') is not '':
+            context["maximum_set_price_value"] = str(self.request.GET.get('max_price', ''))
+        context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
+
         return context
 
     def get_queryset(self, *args, **kwargs):
@@ -600,3 +627,6 @@ class ProductDetailView(SignupFormView, DetailView):
             self.request.session.modified = True
 
         return context
+
+
+

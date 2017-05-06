@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load query_transform %}
 <!-- Start header section -->
 <header id="aa-header">
     <!-- start header top  -->
@@ -104,11 +105,13 @@
                         <!-- / cart box -->
                         <!-- search box -->
                         <div class="aa-search-box">
+
                             <form method="GET" role="search" action='{% url "products:products" %}'>
                                 <input type="text" id="" placeholder="Ara" name="q"
-                                value='{{ request.GET.q }}'>
+                                value='{{ request.GET.q }}' >
                                 <button type="submit"><span class="fa fa-search"></span></button>
                             </form>
+
                         </div>
                         <!-- / search box -->
                     </div>

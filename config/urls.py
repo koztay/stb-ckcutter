@@ -16,6 +16,7 @@ from orders.views import (
     OrderDetail)
 
 from newsletter.views import HomeView, ContactView
+from products.views import update_session
 # from my_importer.views import xml_upload_view, xml_map_view, TaskRunnerView
 
 urlpatterns = [
@@ -52,6 +53,7 @@ urlpatterns = [
 
     # data-importer
     url(r'^data-importer/', include('importer.urls', namespace='importer')),
+    url(r'^update_session/$', update_session, name='update_session'),
 
     # url(r'^xml-upload/$', xml_upload_view, name='xml_upload'),
     # url(r'^xml-map/$', xml_map_view, name='xml_map'),

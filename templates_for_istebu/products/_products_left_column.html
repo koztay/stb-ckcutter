@@ -1,4 +1,5 @@
 {% load get_image_thumbnail %}
+{% load query_transform %}
 <div class="col-lg-3 col-md-3 col-sm-4 col-md-pull-9">
                 <aside class="aa-sidebar">
                     <!-- single sidebar -->
@@ -23,10 +24,10 @@
                     </div>
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
-                        <h3>Shop By Price</h3>
+                        <h3>Fiyat Aralığı</h3>
                         <!-- price range -->
                         <div class="aa-sidebar-price-range">
-                            <form action="">
+                            <form id="price-slider-form" method="GET" action="">
                                 <div id="skipstep" class="noUi-target noUi-ltr noUi-horizontal noUi-background">
                                 </div>
                                 <span id="skip-value-lower" class="example-val">30.00</span>
@@ -34,7 +35,6 @@
                                 <button class="aa-filter-btn" type="submit">Filter</button>
                             </form>
                         </div>
-
                     </div>
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
@@ -82,3 +82,5 @@
                     </div>
                 </aside>
             </div>
+
+

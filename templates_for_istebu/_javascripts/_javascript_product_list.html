@@ -1,0 +1,183 @@
+{% extends '_javascripts/_javascript_base.html' %}
+{% load staticfiles %}
+{% load jsonify %}
+<!-- aşağıdaki fonksiyon django template tag içerdiği için .js dosyasına koyamıyoruz. -->
+
+{% block smart_menus %}
+<!-- SmartMenus jQuery plugin -->
+<script type="text/javascript" src="{% static 'js/jquery.smartmenus.js' %}"></script>
+<!-- SmartMenus jQuery Bootstrap Addon -->
+<script type="text/javascript" src="{% static 'js/jquery.smartmenus.bootstrap.js' %}"></script>
+{% endblock %}
+
+
+{% block product_view_slider %}
+<!-- Product view slider -->
+<script type="text/javascript" src="{% static 'js/jquery.simpleGallery.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.simpleLens.js' %}"></script>
+{% endblock %}
+
+
+{% block slick_slider %}
+<!-- slick slider -->
+<script type="text/javascript" src="{% static 'js/slick.js' %}"></script>
+{% endblock %}
+
+
+{% block price_picker_slider %}
+    <!-- Price picker slider / Buna anasayfada gerek yok -->
+<script type="text/javascript" src="{% static 'js/nouislider.js' %}"></script>
+<script>
+    jQuery(function () {
+        if ($('body').is('.productPage')) {
+            var min_price = parseFloat(document.getElementById('skip-value-lower').innerHTML);
+            var max_price = parseFloat(document.getElementById('skip-value-upper').innerHTML);
+            console.log(min_price, max_price);
+
+            var skipSlider = document.getElementById('skipstep');
+            noUiSlider.create(skipSlider, {
+                snap: false, // bunu true yaparsan borulardasın...
+                connect: true,
+{#                step:10, //bu da saçma çalışıyor...#}
+                start: [min_price, max_price],
+                range: {
+                    'min': min_price,
+{#                    '10%': min_price + step,#}
+{#                    '20%': min_price + 2*step ,#}
+{#                    '30%': min_price + 3*step,#}
+{#                    '40%': min_price + 4*step,#}
+{#                    '50%': min_price + 5*step,#}
+{#                    '60%': min_price + 6*step,#}
+{#                    '70%': min_price + 7*step,#}
+{#                    '80%': min_price + 8*step,#}
+{#                    '90%': min_price + 9*step,#}
+                    'max': max_price
+
+                }
+
+            });
+            // for value print
+
+            var skipValues = [
+               document.getElementById('skip-value-lower'),
+               document.getElementById('skip-value-upper')
+            ];
+
+            skipSlider.noUiSlider.on('update', function (values, handle) {
+
+                skipValues[handle].innerHTML = values[handle];
+                // Aşağıdaki ajax call işe yaramıyor artık...
+{#                $.ajax({#}
+{#                    data: {#}
+{#                        "min_value" : document.getElementById('skip-value-lower').innerHTML,#}
+{#                        "max_value" : document.getElementById('skip-value-upper').innerHTML#}
+{#                    },#}
+{#                    type: "GET",#}
+{#                    url: "/update_session/",#}
+{##}
+{#                    success: function (data) {#}
+{#                        console.log(data);#}
+{#                    },#}
+{##}
+{#                    error: function (response, error) {#}
+{#                        console.log(response);#}
+{#                        console.log(error);#}
+{#                    }#}
+{##}
+{#                });#}
+
+            });
+        }
+    });
+function getUrlVars()
+/*
+This code will return:
+
+{
+    "me"    : "myValue",
+    "name2" : "SomeOtherValue"
+}
+and you can do:
+
+var me = getUrlVars()["me"];
+var name2 = getUrlVars()["name2"];
+*/
+{
+    var vars = [], hash;
+    // Orijinal kodda if kontrolü yok. Ancak kontrol etmeyince eğer GET parametresi yoksa o zamun URL nin
+    // kendisini döndürüyordu. Boş bir array dmbdürmesi için if bloğu içerisine aldık.
+    if (window.location.href.indexOf('?')>0){
+
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+    }
+
+    return vars;
+}
+
+// Burada URL 'deki GET parametrelerini alıyoruz. Ancak parametreler arınnamış olarak geliyor.
+// Tamamen arındırıypruz ve yeni bir arraye atıp yeni arrayi döndürüyoruz.
+function setUrlVars(min_value, max_value) {
+    var url_var = getUrlVars();
+    var cleaned_params = [];
+    url_var.forEach( function (arrayItem)
+            {
+               cleaned_params[arrayItem] = url_var[arrayItem];
+            });
+
+    cleaned_params["min_price"] = min_value;
+    cleaned_params["max_price"] = max_value;
+    return cleaned_params;
+
+}
+
+
+function post(path, params, method) {
+    method = method || "POST"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+
+    for(var key in params) {
+        console.log("formdan print :", key);
+        console.log("formdan print :", params[key]);
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+         }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+
+
+// Aşağıda POST 'u engelleyip GET parametrelerini alıyoruz. Sonra da post ediyoruz.
+$('#price-slider-form').submit(function (evt) {
+    evt.preventDefault();
+{#    window.history.back();#}
+{#    console.log("prevented submit");#}
+{#    console.log("form data :", $('#price-slider-form').serialize());#}
+{#    console.log($('#skip-value-lower').text());#}
+{#    console.log($('#skip-value-upper').text());#}
+    var new_vars = setUrlVars(min_value=$('#skip-value-lower').text(), max_value=$('#skip-value-upper').text());
+{#    console.log("new_vars :", new_vars);#}
+    post(path=".", params=new_vars, method="GET")
+});
+
+</script>
+{% endblock %}

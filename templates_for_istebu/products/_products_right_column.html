@@ -1,17 +1,17 @@
-
-            <div class="col-lg-9 col-md-9 col-sm-8 col-md-push-3">
+ {% load query_transform %}
+    <div class="col-lg-9 col-md-9 col-sm-8 col-md-push-3">
                 <div class="aa-product-catg-content">
                     <div class="aa-product-catg-head">
                         <div class="aa-product-catg-head-left">
                             <form action="" class="aa-sort-form">
                                 <label for="">Sıralama : </label>
                                 {% with request.GET.ordering as selected %}
-                                <select name="ordering" onchange="this.form.submit()" style="width: 200px">
-                                    <option value="price" {% if selected == '' %} selected="Varsayılan"{% endif %}>Varsayılan</option>
-                                    <option value="price" {% if selected == 'price' %} selected="Fiyata Göre Artan"{% endif %}>Fiyata Göre Artan</option>
-                                    <option value="-price" {% if selected == '-price' %} selected="Fiyata Göre Azalan"{% endif %}>Fiyata Göre Azalan</option>
-                                    <option value="title" {% if selected == 'title' %} selected="İsme Göre Artan"{% endif %}>İsme Göre Artan</option>
-                                    <option value="-title" {% if selected == '-title' %} selected="İsme Göre Azalan"{% endif %}>İsme Göre Azalan</option>
+                                <select name="ordering" onChange="window.location.href=this.value" style="width: 200px">
+                                    <option value="?{% query_transform ordering='' %}" {% if selected == '' %} selected="Varsayılan"{% endif %}>Varsayılan</option>
+                                    <option value="?{% query_transform ordering='price' %}" {% if selected == 'price' %} selected="Fiyata Göre Artan"{% endif %}>Fiyata Göre Artan</option>
+                                    <option value="?{% query_transform ordering='-price' %}" {% if selected == '-price' %} selected="Fiyata Göre Azalan"{% endif %}>Fiyata Göre Azalan</option>
+                                    <option value="?{% query_transform ordering='title' %}" {% if selected == 'title' %} selected="İsme Göre Artan"{% endif %}>İsme Göre Artan</option>
+                                    <option value="?{% query_transform ordering='-title' %}" {% if selected == '-title' %} selected="İsme Göre Azalan"{% endif %}>İsme Göre Azalan</option>
                                 </select>
                                 {% endwith %}
                             </form>
