@@ -29,6 +29,10 @@
 <script type="text/javascript" src="{% static 'js/nouislider.js' %}"></script>
 <script>
 
+{% ifnotequal minimum_price maximum_price %}
+    {% if number_of_object_list < 100 %}
+    {# output something #}
+
 function set_slider_values() {
     $('#skip-value-lower').text({{ minimum_price }});
     $('#skip-value-upper').text({{ maximum_price }});
@@ -107,6 +111,8 @@ jQuery(function () {
             });
         }
     });
+    {% endif %}
+{% endifnotequal %}
 
 function getUrlVars()
 /*
@@ -146,7 +152,7 @@ function setUrlVars(min_value, max_value) {
     var cleaned_params = [];
     url_var.forEach( function (arrayItem)
             {
-               cleaned_params[arrayItem] = url_var[arrayItem];
+               cleaned_params[arrayItem] = decodeURI(url_var[arrayItem]);
             });
 
     cleaned_params["min_price"] = min_value;
@@ -193,7 +199,7 @@ $('#price-slider-form').submit(function (evt) {
 {#    console.log($('#skip-value-lower').text());#}
 {#    console.log($('#skip-value-upper').text());#}
     var new_vars = setUrlVars(min_value=$('#skip-value-lower').text(), max_value=$('#skip-value-upper').text());
-{#    console.log("new_vars :", new_vars);#}
+    console.log("new_vars :", new_vars);
     post(path=".", params=new_vars, method="GET")
 });
 

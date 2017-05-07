@@ -18,7 +18,7 @@
     <div class="container">
         <div class="row">
             {% include 'products/_products_right_column.html' with object_list=object_list %}
-            {% include 'products/_products_left_column.html' with categories=categories %}
+            {% include 'products/_products_left_column.html' with categories=categories products_count=object_list|length %}
          </div>
     </div>
 </section>

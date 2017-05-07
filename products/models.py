@@ -66,6 +66,7 @@ class ProductManager(models.Manager):
         return qs
 
 
+
 class Product(models.Model):
     title = models.CharField(max_length=1000)
     # description = models.TextField(blank=True, null=True)

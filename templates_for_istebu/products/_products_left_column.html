@@ -1,5 +1,6 @@
 {% load get_image_thumbnail %}
- {% load query_transform %}
+{% load query_transform %}
+{% load str_to_int %}
 <div class="col-lg-3 col-md-3 col-sm-4 col-md-pull-9">
                 <aside class="aa-sidebar">
                     <!-- single sidebar -->
@@ -11,17 +12,19 @@
                             {% endfor %}
                         </ul>
                     </div>
-                    <!-- single sidebar -->
-                    <div class="aa-sidebar-widget">
-                        <h3>Etiketler</h3>
-                        <div class="tag-cloud">
-                            {% for tag in tags %}
-                                {% if tag.name %}
-                                    <a href="{% url "products:product_list_by_tag" tag_slug=tag.slug %}">{{ tag.name }}</a>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
+{#                    <!-- single sidebar -->#}
+{#                    <div class="aa-sidebar-widget">#}
+{#                        <h3>Etiketler</h3>#}
+{#                        <div class="tag-cloud">#}
+{#                            {% for tag in tags %}#}
+{#                                {% if tag.name %}#}
+{#                                    <a href="{% url "products:product_list_by_tag" tag_slug=tag.slug %}">{{ tag.name }}</a>#}
+{#                                {% endif %}#}
+{#                            {% endfor %}#}
+{#                        </div>#}
+{#                    </div>#}
+                {% ifnotequal minimum_price maximum_price %}
+                    {% if number_of_object_list < 100 %}
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
                         <h3>Fiyat Aralığı</h3>
@@ -36,6 +39,10 @@
                             </form>
                         </div>
                     </div>
+                    {% endif %}
+
+                {% endifnotequal %}
+                {% if last_visited_item_list > 0 %}
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
                         <h3>Son Gezilenler</h3>
@@ -58,6 +65,7 @@
                             </ul>
                         </div>
                     </div>
+                {% endif %}
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
                         <h3>En Popüler Ürünler</h3>

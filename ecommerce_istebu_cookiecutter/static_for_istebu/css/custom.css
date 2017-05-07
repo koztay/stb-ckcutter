@@ -58,3 +58,12 @@ figure {
     background-color: #37c6f5;
     border-color: #37c6f5;
 }
+
+.aa-reset-btn {
+    color: #fff;
+    font-size: 15px;
+    height: 30px;
+    width: 140px;
+    background-color: #37c6f5;
+    border: 1px solid #37c6f5;
+}

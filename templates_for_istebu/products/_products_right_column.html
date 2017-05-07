@@ -15,14 +15,10 @@
                                 </select>
                                 {% endwith %}
                             </form>
-{#                            <form action="" class="aa-show-form">#}
-{#                                <label for="">Show</label>#}
-{#                                <select name="">#}
-{#                                    <option value="1" selected="12">12</option>#}
-{#                                    <option value="2">24</option>#}
-{#                                    <option value="3">36</option>#}
-{#                                </select>#}
-{#                            </form>#}
+                            <form action="" class="aa-show-form">
+                                <label for=""></label>
+                                <button class="aa-reset-btn" onclick="window.location.href={% url 'products:products' %}" type="submit">Filtreleri Temizle</button>
+                            </form>
                         </div>
                         <div class="aa-product-catg-head-right">
                             <a id="grid-catg" href="#"><span class="fa fa-th"></span></a>

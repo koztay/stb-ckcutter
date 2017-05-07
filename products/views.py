@@ -314,8 +314,6 @@ class ProductFilter(FilterSet):
         ]
 
 
-
-
 # def product_list(request):
 #     qs = Product.objects.all()
 #     ordering = request.GET.get("ordering")
@@ -476,7 +474,6 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, Pagination
         context["now"] = timezone.now()
         context["query"] = self.request.GET.get("q")  # None
         context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
-
         print("context_object_list var mı?", context["object_list"])
         # paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
         # context["paginator"] = paginated[0]
@@ -484,7 +481,7 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, Pagination
         # print("page_nedir?", context["page"])
         # context["page_obj"] = paginated[1]
         # context["object_list"] = paginated[2]
-
+        context["number_of_object_list"] = len(context["object_list"])
         minimum_price_aggregate = context["object_list"].aggregate(Min('price'))
         minimum_price = minimum_price_aggregate['price__min']
         context["minimum_price"] = minimum_price
