@@ -18,14 +18,20 @@
 
                                         {#            <input type="hidden" name='item' value='{{ product.variation_set.first.id }}'/>#}
                                         {#            <input type="hidden" class='form-control' type='number' name='qty' value='1'/>#}
+                                            {% if  product.variation_set.first.inventory > 0 %}
                                                 <a class="aa-add-card-btn" href="#" data-productid="{{ product.variation_set.first.id }}">
                                                     <span class="fa fa-shopping-cart"></span>Sepete At</a>
+                                            {% else %}
+                                                    <a class="aa-add-card-btn" href="#">
+                                                    <span class="fa fa-shopping-cart"></span>Stok Yok</a>
+                                            {% endif %}
 
                                                 <figcaption>
                                                     <h4 class="aa-product-title"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
                                                     {{ product.variation_set.first.get_html_price }}
                                                 </figcaption>
                                             </figure>
+
                                             <div class="aa-product-hvr-content">
                                         {#        <a href="#" data-toggle="tooltip" data-placement="top"#}
                                         {#           title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>#}
@@ -37,6 +43,7 @@
                                                    data-product_pk="{{ product.id }}"
                                                 ><span class="fa fa-search"></span></a>
                                             </div>
+
                                             <!-- product badge -->
 {#                                            <span class="aa-badge aa-sale" href="#">SALE!</span>#}
                                         </li>

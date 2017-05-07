@@ -32,7 +32,7 @@
                             {% else %}
                                 <li><a href="{% url 'account_signup' %}">Kayıt Ol</a></li>
                                 {% if not request.user.is_authenticated and not "/accounts/login" in request.get_full_path %}
-                                    <li><a href="{% url 'account_login' %}" data-toggle="modal" data-target="#login-modal">Giriş Yap</a></li>
+                                    <li><a href="#" data-toggle="modal" data-target="#login-modal">Giriş Yap</a></li>
                                 {% endif %}
 
                             {% endif %}

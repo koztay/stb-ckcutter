@@ -16,7 +16,7 @@ from carts.models import Cart
 class UserCheckout(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, blank=True)  # not required
     email = models.EmailField(unique=True)  # --> required
-    braintree_id = models.CharField(max_length=120, null=True, blank=True) # bu değişecek
+    braintree_id = models.CharField(max_length=120, null=True, blank=True) # burada paynet id verelim
 
     def __unicode__(self):  # def __str__(self):
         return self.email
@@ -114,6 +114,10 @@ class Order(models.Model):
 
     def paynet_order_total(self):
         return self.order_total*100
+
+    def create_order_id(self):
+        print("burada order id yarat!")
+        pass
 
 
 def order_pre_save(sender, instance, *args, **kwargs):

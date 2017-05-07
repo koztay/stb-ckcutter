@@ -1,5 +1,5 @@
-
-<li><a href="{{ category.get_absolute_url }}">{{ category.title }}{% if category.get_children %}<span class="caret">{% endif %}</span></a>
+{% load query_transform %}
+<li><a href="products/?{% query_transform category=category.slug %}">{{ category.title }}{% if category.get_children %}<span class="caret">{% endif %}</span></a>
     {% if category.get_children %}
     <ul class="dropdown-menu">
 
@@ -7,19 +7,19 @@
             {% if child.get_children %}
                 <li class="dropdown-submenu">
 {#                <a href="{% url 'products:products' %}?category={{ child.title }}">{{ child.title }}</a>#}
-                <a href="{{ child.get_absolute_url }}">{{ child.title }}</a>
+                <a href="products/?{% query_transform category=child.slug %}">{{ child.title }}</a>
                     <ul class="dropdown-menu">
                         {% for second_child in child.get_children %}
-                            <li><a href="{{ child.get_absolute_url }}">{{ second_child.title }}</a></li>
+                            <li><a href="products/?{% query_transform category=second_child.slug %}">{{ second_child.title }}</a></li>
                         {% endfor %}
                     </ul>
                 </li>
             {% else %}
-                <li><a href="{{ child.get_absolute_url }}">{{ child.title }}</a></li>
+                <li><a href="products/?{% query_transform category=child.slug %}">{{ child.title }}</a></li>
             {% endif%}
         {% endfor %}
         <li>
-            <a href="{{ child.get_absolute_url }}">Tüm Ürünler<span class="caret"></span></a>
+            <a href="products/?{% query_transform category=category.slug %}">Tüm Ürünler<span class="caret"></span></a>
         </li>
 
     </ul>

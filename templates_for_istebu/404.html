@@ -1,0 +1,22 @@
+{% extends "__base.html" %}
+
+{% block title %}Page not found{% endblock %}
+
+{% block content %}
+<!- 404 error section -->
+<section id="aa-error">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="aa-error-area">
+                    <h2>404</h2>
+                    <span>Üzgünüz! Aradığınız sayfa bulunamadı.</span>
+                    <p>Yyından kaldırılmış, ya da hiç olmayan bir sayfaya ulaşmaya çalışıyorsunuz.</p>
+                    <p><a href="{% url 'home' %}"> Anasayfa</a> 'ya dön. </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- / 404 error section -->
+{% endblock content %}
