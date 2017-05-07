@@ -29,6 +29,7 @@ function showFlashMessage(message) {
 }
 
 function addProductTocart(product_id) {
+    console.log("eklenenen product_id: ", product_id);
     $.ajax({
         type: "GET", // "POST"
         url: "{% url 'cart' %}",
@@ -52,7 +53,7 @@ function addProductTocart(product_id) {
 // bu da aynı fonksiyonun quickview vb'inde çalışanı...
 $('#modal-add-to-cart').click( function(e) {
     e.preventDefault();
-    console.log('Add to cart clicklendi');
+    console.log('Add to cart clicklendi', this.dataset['productid']);
     var product_id = this.dataset['productid'];
     addProductTocart(product_id);
     }
@@ -77,7 +78,7 @@ $('.aa-add-card-btn').click( function(e) {
 
 function removeProduct(product) {
     var product_id = product.id;
-    //console.log('product_id : ', product_id);
+    console.log('product_id : ', product_id);
     $.ajax({
 
             type: "GET", // "POST"
@@ -86,9 +87,9 @@ function removeProduct(product) {
             success: function (data) {
                 console.log('success remove çalıştı');
                 console.log(data);
-                updateCartTotal();
-                updateCartItemCount();
                 $(product.parentElement).fadeOut(800);
+                updateCartItemCount();
+                updateCartTotal();
                 showFlashMessage(data.flash_message);
             },
             error: function (response, error) {
@@ -229,17 +230,10 @@ function updateCartTotal() {
         type: "GET",
         url: "{% url 'cart_api:api_cartitems_list' %}",
         success: function (data) {
-            var cart_total = 0;
-            console.log(data);
-            if (data.length > 0) {
-                var data_to_be_looped = data[0].items; // items arrayimiz
+            var cart_total = data[0].grand_total.cart_total;
+            var formatted_total_price = numberWithCommas(parseFloat(cart_total).toFixed(2));
 
-                $.each(data_to_be_looped, function (arrayID, object) {
-                    cart_total += object.sub_total;
-                });
-            }
-
-            $("#total-rakam").text(parseFloat(cart_total).toFixed(2) + ' ₺');
+            $("#total-rakam").text(formatted_total_price + ' ₺');
             if (cart_total == 0) {
                 //console.log('sepet boş da niye seçemiyor?');
                 $("#checkout").attr('href', '#');

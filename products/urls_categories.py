@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from .views import CategoryDetailView
-
+#
 urlpatterns = [
     # Examples:
     # url(r'^$', 'newsletter.views.home', name='home'),

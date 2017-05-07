@@ -59,8 +59,11 @@ class FilterMixin(object):
 
         if filter_class:
             f = filter_class(self.request.GET, queryset=qs)
+
             print(filter_class)
             print(type(filter_class))
+
             context["object_list"] = f.qs
+            print("gerçekten filtrelese sayı değişir => ", len(context["object_list"]))
             # f = UserFilter(request.GET, queryset=User.objects.all()) # bunda da bir sıkıntı yok...
         return context

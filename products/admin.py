@@ -129,6 +129,7 @@ class CategoryInline(admin.TabularInline):
     model = Category
     prepopulated_fields = {'slug': ('title',)}
     verbose_name = "Alt Kategoriler"
+    ordering = ("title",)
 
 
 class CategoryAdmin(admin.ModelAdmin):

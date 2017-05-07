@@ -228,7 +228,10 @@ class Variation(models.Model):
             return "{:.2f}".format(self.product.price * Decimal(self.buying_currency.value))
 
     def get_product_price(self):
-        return self.product.price * Decimal(self.buying_currency.value)
+        if self.product.price:
+            return self.product.price * Decimal(self.buying_currency.value)
+        else:
+            return 0
 
     def get_html_price(self):
         if self.sale_price is not None:
@@ -336,7 +339,7 @@ class CategoryQueryset(models.query.QuerySet):
 
 class CategoryManager(models.Manager):
     def get_queryset(self):
-        return CategoryQueryset(self.model, using=self._db)
+        return CategoryQueryset(self.model, using=self._db).order_by("title")
 
     def roots(self):
         return self.get_queryset().root_categories()
@@ -360,6 +363,7 @@ class Category(models.Model):
 
     objects = models.Manager()  # The default manager.
     with_childrens = CategoryManager()
+
 
     def __str__(self):
         return self.title

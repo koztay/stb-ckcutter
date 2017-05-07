@@ -248,17 +248,17 @@ def xml_latest(request, marketplace):
 #                                                           'section': "Products"})
 
 
-# class CategoryDetailView(DetailView):
-#     model = Category
-#
-#     def get_context_data(self, *args, **kwargs):
-#         context = super(CategoryDetailView, self).get_context_data(*args, **kwargs)
-#         obj = self.get_object()
-#         product_set = obj.product_set.all()
-#         default_products = obj.default_category.all()
-#         products = (product_set | default_products).distinct()
-#         context["products"] = products
-#         return context
+class CategoryDetailView(DetailView):
+    model = Category
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CategoryDetailView, self).get_context_data(*args, **kwargs)
+        obj = self.get_object()
+        product_set = obj.product_set.all()
+        default_products = obj.default_category.all()
+        products = (product_set | default_products).distinct()
+        context["products"] = products
+        return context
 
 
 class VariationListView(StaffRequiredMixin, ListView):
@@ -296,7 +296,7 @@ class VariationListView(StaffRequiredMixin, ListView):
 
 class ProductFilter(FilterSet):
     title = CharFilter(name='title', lookup_expr='icontains', distinct=True)
-    category = CharFilter(name='categories__title', lookup_expr='icontains', distinct=True)
+    category = CharFilter(name='categories__slug', lookup_expr='iexact', distinct=True)
     # category_id = CharFilter(name='categories__id', lookup_type='icontains', distinct=True)
     min_price = NumberFilter(name='variation__sale_price', lookup_expr='gte', distinct=True)  # (some_price__gte=somequery)
     max_price = NumberFilter(name='variation__sale_price', lookup_expr='lte', distinct=True)
@@ -476,13 +476,28 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, Pagination
         context["now"] = timezone.now()
         context["query"] = self.request.GET.get("q")  # None
         context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
-        if context.get('filtered_products'):
-            paginated = self.paginate_queryset(context["filtered_products"], self.paginate_by)
-            context["paginator"] = paginated[0]
-            context["page"] = paginated[0].get_page()
-            print("page_nedir?", context["page"])
-            context["page_obj"] = paginated[1]
-            context["object_list"] = paginated[2]
+
+        print("context_object_list var mı?", context["object_list"])
+        # paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
+        # context["paginator"] = paginated[0]
+        # context["page"] = paginated[0].get_page()
+        # print("page_nedir?", context["page"])
+        # context["page_obj"] = paginated[1]
+        # context["object_list"] = paginated[2]
+
+        minimum_price_aggregate = context["object_list"].aggregate(Min('price'))
+        minimum_price = minimum_price_aggregate['price__min']
+        context["minimum_price"] = minimum_price
+
+        maximum_price_aggregate = context["object_list"].aggregate(Max('price'))
+        maximum_price = maximum_price_aggregate['price__max']
+        context["maximum_price"] = maximum_price
+
+        paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
+        context["paginator"] = paginated[0]
+        context["page_obj"] = paginated[1]
+        context["object_list"] = paginated[2]
+
         context['queries'] = self.get_queries_without_page()
         context['categories'] = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
         context['tags'] = Tag.objects.all()
@@ -493,13 +508,6 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, Pagination
         most_viewed_product_list = Product.objects.annotate(num_views=Sum('productanalytics__count')).filter(num_views__gt=0).order_by('-num_views')
         context['most_popular_products'] = most_viewed_product_list[:3]
 
-        minimum_price_aggregate = context["object_list"].aggregate(Min('price'))
-        minimum_price = minimum_price_aggregate['price__min']
-        context["minimum_price"] = minimum_price
-
-        maximum_price_aggregate = context["object_list"].aggregate(Max('price'))
-        maximum_price = maximum_price_aggregate['price__max']
-        context["maximum_price"] = maximum_price
 
         if self.request.GET.get('min_price', '') is not '':
             context["minimum_set_price_value"] = str(self.request.GET.get('min_price', ''))
@@ -535,35 +543,85 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, Pagination
         return queries_without_page
 
 
-# bu da yine otomatik listeliyor
-class CategoryDetailView(NewProductListView):
-
-    # def get_queryset(self, *args, **kwargs):
-    #     qs = super(CategoryDetailView, self).get_queryset(*args, **kwargs)
-    #     slug = self.kwargs["slug"]
-    #     category = Category.objects.filter(slug=slug)
-    #     if slug:
-    #         qs = qs.filter(categories=category).distinct()
-    #     #     return qs
-    #     # else:
-    #     return qs
-
-    # aşağıdakini silersen pagination çalışmıyor ayrıca javascript ler de bu yüzden çalışmıyor olabilir...
-    def get_context_data(self, *args, **kwargs):
-        context = super(CategoryDetailView, self).get_context_data(*args, **kwargs)
-        slug = self.kwargs["slug"]
-        category = Category.objects.filter(slug=slug)
-        qs = self.get_queryset()
-        if slug:
-            products = qs.filter(categories=category).distinct()
-            context["object_list"] = products
-        if context.get('object_list'):
-            paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
-            context["paginator"] = paginated[0]
-            context["page_obj"] = paginated[1]
-            context["object_list"] = paginated[2]
-        return context
-
+# # bu da yine otomatik listeliyor ancak filtermixin çalışmıyor düzeltilecek...
+# class CategoryDetailView(FilterMixin, SignupFormView, LatestProducts, PaginationMixin, ListView):
+#     model = Product
+#     filter_class = ProductFilter
+#     paginate_by = 12
+#     paginate_orphans = 10  # maximum gözüken sayfa sayısı
+#     queryset = Product.objects.all()
+#
+#     def get_context_data(self, *args, **kwargs):
+#         context = super(CategoryDetailView, self).get_context_data(*args, **kwargs)
+#         context["now"] = timezone.now()
+#         context["query"] = self.request.GET.get("q")  # None
+#         context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
+#
+#         print("context_object_list var mı?", context["object_list"])
+#         # paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
+#         # context["paginator"] = paginated[0]
+#         # context["page"] = paginated[0].get_page()
+#         # print("page_nedir?", context["page"])
+#         # context["page_obj"] = paginated[1]
+#         # context["object_list"] = paginated[2]
+#
+#         minimum_price_aggregate = context["object_list"].aggregate(Min('price'))
+#         minimum_price = minimum_price_aggregate['price__min']
+#         context["minimum_price"] = minimum_price
+#
+#         maximum_price_aggregate = context["object_list"].aggregate(Max('price'))
+#         maximum_price = maximum_price_aggregate['price__max']
+#         context["maximum_price"] = maximum_price
+#
+#         paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
+#         context["paginator"] = paginated[0]
+#         context["page_obj"] = paginated[1]
+#         context["object_list"] = paginated[2]
+#
+#         context['queries'] = self.get_queries_without_page()
+#         context['categories'] = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
+#         context['tags'] = Tag.objects.all()
+#         context['banners'] = HorizontalTopBanner.objects.filter(category__title="Projeksiyon Cihazları")
+#         print(context['banners'])
+#
+#         # most popular products
+#         most_viewed_product_list = Product.objects.annotate(num_views=Sum('productanalytics__count')).filter(num_views__gt=0).order_by('-num_views')
+#         context['most_popular_products'] = most_viewed_product_list[:3]
+#
+#
+#         if self.request.GET.get('min_price', '') is not '':
+#             context["minimum_set_price_value"] = str(self.request.GET.get('min_price', ''))
+#
+#         if self.request.GET.get('max_price', '') is not '':
+#             context["maximum_set_price_value"] = str(self.request.GET.get('max_price', ''))
+#
+#         return context
+#
+#     def get_queryset(self, *args, **kwargs):
+#         qs = super(CategoryDetailView, self).get_queryset(*args, **kwargs)
+#         query = self.request.GET.get("q")
+#         if query:
+#             qs = self.model.objects.filter(
+#                 Q(title__icontains=query) |
+#                 Q(description__icontains=query)
+#             )
+#             try:
+#                 qs2 = self.model.objects.filter(
+#                     Q(price=query)
+#                 )
+#                 qs = (qs | qs2).distinct()
+#             except:
+#                 pass
+#         print("qs neymiş :", qs)
+#         return qs
+#
+#     # This utility function removes page parameter for preserving the query parameters.
+#     def get_queries_without_page(self):
+#         queries_without_page = self.request.GET.copy()
+#         if "page" in queries_without_page:
+#             del queries_without_page['page']
+#         return queries_without_page
+#
 
 # bu view tag üzerine tıklanınca filter yapıyor
 class ProductListTagFilterView(NewProductListView):
