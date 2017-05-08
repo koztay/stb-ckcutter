@@ -67,3 +67,14 @@ figure {
     background-color: #37c6f5;
     border: 1px solid #37c6f5;
 }
+
+#aa-login .aa-myaccount-login {
+  display: inline;
+  float: left;
+  margin-top: 50px;
+  padding: 100px 100px 130px;
+  /*text-align: center;*/
+  width: 100%;
+  border: 5px solid #37c6f5;
+
+}
