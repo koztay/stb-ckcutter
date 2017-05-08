@@ -30,5 +30,4 @@ def query_transform(context, **kwargs):
     query = context['request'].GET.copy()
     for k, v in kwargs.items():
         query[k] = v
-    print("url neden patlıyor? =>", query.urlencode())
     return query.urlencode()

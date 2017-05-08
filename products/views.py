@@ -529,7 +529,7 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, Pagination
                 qs = (qs | qs2).distinct()
             except:
                 pass
-        print("qs neymiş :", qs)
+        # print("qs neymiş :", qs)
         return qs
 
     # This utility function removes page parameter for preserving the query parameters.

@@ -30,7 +30,7 @@ class HomeView(SignupFormView, TemplateView):
         context['testimonials'] = Testimonial.objects.filter(active=True).order_by("?")[:3]
         # one_cikanlar, cok_satanlar, aradıklarınıza_benzer_urunler,
         context['one_cikanlar'] = get_popular_products(category_slug="one-cikanlar")
-        print("context['one_cikanlar'] ", context['one_cikanlar'])
+        # print("context['one_cikanlar'] ", context['one_cikanlar'])
         context['cok_satanlar'] = get_popular_products(category_slug="cok-satanlar")
         # TODO : bu aşağıdaki için algoritmik bir çözüm bulmak lazım...
         context['aradıklarınıza_benzerler'] = get_popular_products(category_slug="aradiklariniza-benzerler")
@@ -46,7 +46,6 @@ class HomeView(SignupFormView, TemplateView):
         context['promotions'] = promotions
 
         return context
-
 
 
 # Artık bu view 'ı her yerde kullanabiliriz.
