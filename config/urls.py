@@ -19,6 +19,7 @@ from newsletter.views import HomeView, ContactView
 from products.views import update_session
 # from my_importer.views import xml_upload_view, xml_map_view, TaskRunnerView
 
+
 urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),
     url(r'^contact/$', ContactView.as_view(), name='contact'),
@@ -73,7 +74,5 @@ if settings.DEBUG:
     ]
     if 'debug_toolbar' in settings.INSTALLED_APPS:
         import debug_toolbar
+        urlpatterns = [url(r'^__debug__/', include(debug_toolbar.urls)), ] + urlpatterns
 
-        urlpatterns += [
-            url(r'^__debug__/', include(debug_toolbar.urls)),
-        ]

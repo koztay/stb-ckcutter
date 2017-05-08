@@ -56,7 +56,7 @@ if os.environ.get('USE_DOCKER') == 'yes':
 
 def show_toolbar(request):
     if request.is_ajax():
-        return False
+        return True
     return True
 
 DEBUG_TOOLBAR_CONFIG = {
@@ -66,6 +66,7 @@ DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TEMPLATE_CONTEXT': True,
     'INTERCEPT_REDIRECTS': False,
     'SHOW_TOOLBAR_CALLBACK': show_toolbar,  # if you don 't add this and above function it does not show the toolbar...
+    'RESULTS_CACHE_SIZE': 100,  # default u 10 imiş o nedenle patlıyormuş, overrdie edip 100 yapınca düzeldi...
 }
 
 
