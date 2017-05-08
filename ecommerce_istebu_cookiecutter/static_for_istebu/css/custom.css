@@ -78,3 +78,17 @@ figure {
   border: 5px solid #37c6f5;
 
 }
+
+/* Display django-debug-toolbar.
+   See https://github.com/django-debug-toolbar/django-debug-toolbar/issues/742
+   and https://github.com/pydanny/cookiecutter-django/issues/317
+*/
+
+#djDebug[hidden], #djDebug [hidden] {
+    display: block !important;
+}
+
+#djDebug [hidden][style='display: none;'] {
+    display: none !important;
+}
+
