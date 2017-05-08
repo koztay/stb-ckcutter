@@ -1,0 +1,394 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-08 23:50+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: carts/templates/carts/checkout_view.html:42
+#: templates_for_istebu/carts/checkout_view.html:50
+msgid "Forgot password"
+msgstr "Şifremi unuttum"
+
+#: carts/templates/carts/checkout_view.html:42
+#: templates_for_istebu/carts/checkout_view.html:50
+msgid "Reset it"
+msgstr "Şifremi sıfırla"
+
+#: carts/templates/carts/checkout_view.html:43
+#: templates_for_istebu/carts/checkout_view.html:51
+msgid "Not member"
+msgstr "Üye değilim"
+
+#: carts/templates/carts/checkout_view.html:43
+#: templates_for_istebu/carts/checkout_view.html:51
+msgid "Register"
+msgstr "Kayıt ol"
+
+#: ecommerce_istebu_cookiecutter/templates/account/account_inactive.html:5
+#: ecommerce_istebu_cookiecutter/templates/account/account_inactive.html:8
+#: templates_for_istebu/account/account_inactive.html:5
+#: templates_for_istebu/account/account_inactive.html:8
+msgid "Account Inactive"
+msgstr "Hesap Aktif Değil"
+
+#: ecommerce_istebu_cookiecutter/templates/account/account_inactive.html:10
+#: templates_for_istebu/account/account_inactive.html:10
+msgid "This account is inactive."
+msgstr "Bu hesap aktif değil."
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:7
+#: templates_for_istebu/account/email.html:7
+msgid "Account"
+msgstr "Hesabım"
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:10
+#: templates_for_istebu/account/email.html:10
+msgid "E-mail Addresses"
+msgstr "E-posta Adresi"
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:13
+#: templates_for_istebu/account/email.html:13
+msgid "The following e-mail addresses are associated with your account:"
+msgstr "Aşağıdaki e-posta adresleri hesabınız ile ilişkilendirildi."
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:27
+#: templates_for_istebu/account/email.html:27
+msgid "Verified"
+msgstr "Onaylandı"
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:29
+#: templates_for_istebu/account/email.html:29
+msgid "Unverified"
+msgstr "Onaylanmadı"
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:31
+#: templates_for_istebu/account/email.html:31
+msgid "Primary"
+msgstr "Birincil"
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:37
+#: templates_for_istebu/account/email.html:37
+msgid "Make Primary"
+msgstr "Birinvil Yap"
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:38
+#: templates_for_istebu/account/email.html:38
+msgid "Re-send Verification"
+msgstr "Yeniden Onay Postası Gönder"
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:39
+#: templates_for_istebu/account/email.html:39
+msgid "Remove"
+msgstr "Kaldır"
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:46
+#: templates_for_istebu/account/email.html:46
+msgid "Warning:"
+msgstr "Uyarı:"
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:46
+#: templates_for_istebu/account/email.html:46
+msgid ""
+"You currently do not have any e-mail address set up. You should really add "
+"an e-mail address so you can receive notifications, reset your password, etc."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:51
+#: templates_for_istebu/account/email.html:51
+msgid "Add E-mail Address"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:56
+#: templates_for_istebu/account/email.html:56
+msgid "Add E-mail"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/email.html:66
+#: templates_for_istebu/account/email.html:66
+msgid "Do you really want to remove the selected e-mail address?"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/email_confirm.html:6
+#: ecommerce_istebu_cookiecutter/templates/account/email_confirm.html:10
+#: templates_for_istebu/account/email_confirm.html:6
+#: templates_for_istebu/account/email_confirm.html:10
+msgid "Confirm E-mail Address"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/email_confirm.html:16
+#: templates_for_istebu/account/email_confirm.html:16
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
+"address for user %(user_display)s."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/email_confirm.html:20
+#: templates_for_istebu/account/email_confirm.html:20
+msgid "Confirm"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/email_confirm.html:27
+#: templates_for_istebu/account/email_confirm.html:27
+#, python-format
+msgid ""
+"This e-mail confirmation link expired or is invalid. Please <a href="
+"\"%(email_url)s\">issue a new e-mail confirmation request</a>."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/login.html:8
+#: ecommerce_istebu_cookiecutter/templates/account/login.html:12
+#: ecommerce_istebu_cookiecutter/templates/account/login.html:45
+#: ecommerce_istebu_cookiecutter/templates/base.html:63
+#: templates_for_istebu/account/login.html:8
+#: templates_for_istebu/account/login.html:12
+#: templates_for_istebu/account/login.html:45
+msgid "Sign In"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/login.html:17
+#: templates_for_istebu/account/login.html:17
+#, python-format
+msgid ""
+"Please sign in with one\n"
+"of your existing third party accounts. Or, <a href=\"%(signup_url)s\">sign "
+"up</a>\n"
+"for a %(site_name)s account and sign in below:"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/login.html:27
+#: templates_for_istebu/account/login.html:27
+msgid "or"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/login.html:34
+#: templates_for_istebu/account/login.html:34
+#, python-format
+msgid ""
+"If you have not created an account yet, then please\n"
+"<a href=\"%(signup_url)s\">sign up</a> first."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/login.html:44
+#: templates_for_istebu/account/login.html:44
+msgid "Forgot Password?"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/logout.html:5
+#: ecommerce_istebu_cookiecutter/templates/account/logout.html:8
+#: ecommerce_istebu_cookiecutter/templates/account/logout.html:17
+#: ecommerce_istebu_cookiecutter/templates/base.html:56
+#: templates_for_istebu/account/logout.html:5
+#: templates_for_istebu/account/logout.html:8
+#: templates_for_istebu/account/logout.html:17
+msgid "Sign Out"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/logout.html:10
+#: templates_for_istebu/account/logout.html:10
+msgid "Are you sure you want to sign out?"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/password_change.html:6
+#: ecommerce_istebu_cookiecutter/templates/account/password_change.html:9
+#: ecommerce_istebu_cookiecutter/templates/account/password_change.html:14
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key.html:5
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key.html:8
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key_done.html:4
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key_done.html:7
+#: templates_for_istebu/account/password_change.html:6
+#: templates_for_istebu/account/password_change.html:9
+#: templates_for_istebu/account/password_change.html:14
+#: templates_for_istebu/account/password_reset_from_key.html:5
+#: templates_for_istebu/account/password_reset_from_key.html:8
+#: templates_for_istebu/account/password_reset_from_key_done.html:4
+#: templates_for_istebu/account/password_reset_from_key_done.html:7
+msgid "Change Password"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset.html:7
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset.html:11
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset_done.html:6
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset_done.html:9
+#: templates_for_istebu/account/password_reset.html:7
+#: templates_for_istebu/account/password_reset.html:11
+#: templates_for_istebu/account/password_reset_done.html:6
+#: templates_for_istebu/account/password_reset_done.html:9
+msgid "Password Reset"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset.html:16
+#: templates_for_istebu/account/password_reset.html:16
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll send you "
+"an e-mail allowing you to reset it."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset.html:21
+#: templates_for_istebu/account/password_reset.html:21
+msgid "Reset My Password"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset.html:24
+#: templates_for_istebu/account/password_reset.html:24
+msgid "Please contact us if you have any trouble resetting your password."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset_done.html:15
+#: templates_for_istebu/account/password_reset_done.html:15
+msgid ""
+"We have sent you an e-mail. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key.html:8
+#: templates_for_istebu/account/password_reset_from_key.html:8
+msgid "Bad Token"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key.html:12
+#: templates_for_istebu/account/password_reset_from_key.html:12
+#, python-format
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
+"a>."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key.html:18
+#: templates_for_istebu/account/password_reset_from_key.html:18
+msgid "change password"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key.html:21
+#: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key_done.html:8
+#: templates_for_istebu/account/password_reset_from_key.html:21
+#: templates_for_istebu/account/password_reset_from_key_done.html:8
+msgid "Your password is now changed."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/password_set.html:6
+#: ecommerce_istebu_cookiecutter/templates/account/password_set.html:9
+#: ecommerce_istebu_cookiecutter/templates/account/password_set.html:14
+#: templates_for_istebu/account/password_set.html:6
+#: templates_for_istebu/account/password_set.html:9
+#: templates_for_istebu/account/password_set.html:14
+msgid "Set Password"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/signup.html:6
+#: templates_for_istebu/account/signup.html:6
+msgid "Signup"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/signup.html:9
+#: ecommerce_istebu_cookiecutter/templates/account/signup.html:19
+#: ecommerce_istebu_cookiecutter/templates/base.html:60
+#: templates_for_istebu/account/signup.html:9
+#: templates_for_istebu/account/signup.html:19
+msgid "Sign Up"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/signup.html:11
+#: templates_for_istebu/account/signup.html:11
+#, python-format
+msgid ""
+"Already have an account? Then please <a href=\"%(login_url)s\">sign in</a>."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/signup_closed.html:5
+#: ecommerce_istebu_cookiecutter/templates/account/signup_closed.html:8
+#: templates_for_istebu/account/signup_closed.html:5
+#: templates_for_istebu/account/signup_closed.html:8
+msgid "Sign Up Closed"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/signup_closed.html:10
+#: templates_for_istebu/account/signup_closed.html:10
+msgid "We are sorry, but the sign up is currently closed."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/verification_sent.html:5
+#: ecommerce_istebu_cookiecutter/templates/account/verification_sent.html:8
+#: ecommerce_istebu_cookiecutter/templates/account/verified_email_required.html:5
+#: ecommerce_istebu_cookiecutter/templates/account/verified_email_required.html:8
+#: templates_for_istebu/account/verification_sent.html:5
+#: templates_for_istebu/account/verification_sent.html:8
+#: templates_for_istebu/account/verified_email_required.html:5
+#: templates_for_istebu/account/verified_email_required.html:8
+msgid "Verify Your E-mail Address"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/verification_sent.html:10
+#: templates_for_istebu/account/verification_sent.html:10
+msgid ""
+"We have sent an e-mail to you for verification. Follow the link provided to "
+"finalize the signup process. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/verified_email_required.html:12
+#: templates_for_istebu/account/verified_email_required.html:12
+msgid ""
+"This part of the site requires us to verify that\n"
+"you are who you claim to be. For this purpose, we require that you\n"
+"verify ownership of your e-mail address. "
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/verified_email_required.html:16
+#: templates_for_istebu/account/verified_email_required.html:16
+msgid ""
+"We have sent an e-mail to you for\n"
+"verification. Please click on the link inside this e-mail. Please\n"
+"contact us if you do not receive it within a few minutes."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/account/verified_email_required.html:20
+#: templates_for_istebu/account/verified_email_required.html:20
+#, python-format
+msgid ""
+"<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
+"mail address</a>."
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/templates/base.html:53
+msgid "My Profile"
+msgstr ""
+
+#: ecommerce_istebu_cookiecutter/users/models.py:16
+msgid "Name of User"
+msgstr ""
+
+#: orders/forms.py:54
+msgid "Cadde, Sokak, Mahalle"
+msgstr ""
+
+#: orders/forms.py:55
+msgid "İl:"
+msgstr ""
+
+#: orders/forms.py:56
+msgid "İlçe:"
+msgstr ""
+
+#: orders/forms.py:57
+msgid "Posta Kodu:"
+msgstr ""
+
+#: orders/forms.py:58
+msgid "Adres Tipi:"
+msgstr ""
