@@ -10,7 +10,12 @@ class ProductListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         # cart_id = self.request.session.get("cart_id")
-        return Product.objects.all()
+        return Product.objects.all()[:10]
+
+
+class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductModelSerializer
 
 
 class VariationListAPIView(generics.ListAPIView):

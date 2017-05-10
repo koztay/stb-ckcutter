@@ -1,0 +1,47 @@
+{% if is_paginated %}
+    {% if paginator.num_pages > 1 %}
+                    <div class="aa-product-catg-pagination">
+                        <nav>
+                            <ul class="pagination">
+
+                                {% if page_obj.has_previous %}
+                                    <li>
+                                        <a href="?page={{ page_obj.previous_page_number }}&amp;{{queries.urlencode}}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="disabled">
+                                        <a href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% for page in page_obj.pages %}
+                                    {% if page %}
+                                    <li id="aa-active" {% if page == page_obj.number %} class="active"{% endif %}>
+                                      <a href="?page={{ page }}&amp;{{queries.urlencode}}">{{ page }}</a>
+                                    </li>
+                                    {% else %}
+                                    <li><a href="#">...</a></li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                 {% if page_obj.has_next %}
+                                    <li>
+                                      <a href="?page={{ page_obj.next_page_number }}&amp;{{queries.urlencode}}" aria-label="Next">
+                                          <span aria-hidden="true">&raquo;</span>
+                                      </a>
+                                    </li>
+                                 {% else %}
+                                    <li {% if not page_obj.has_next %} class="disabled" {% endif %}>
+                                      <a href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                      </a>
+                                    </li>
+                                 {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+        {% endif %}
+{% endif %}

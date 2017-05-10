@@ -100,11 +100,15 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 # ------------------------
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# BUNU Volume için yazmak zorundayız.
+STATIC_ROOT = "/static_root"
 # COMPRESSOR
 # ------------------------------------------------------------------------------
 COMPRESS_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 COMPRESS_URL = STATIC_URL
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
+# bu aşağıdakini minify yapmak için yazdım ama yapıyor mu deneyeceğim. Çalışmadı...
+COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',  'compressor.filters.cssmin.CSSMinFilter']
 # EMAIL
 # ------------------------------------------------------------------------------
 DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
@@ -207,3 +211,25 @@ ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+# celery settings
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+# CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_BACKEND = None  # Think about this, not to write to results to the db...
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_IMPORTS = ('utils.tasks',)
+BROKER_POOL_LIMIT = 1  # Will decrease connection usage
+BROKER_HEARTBEAT = None  # We're using TCP keep-alive instead
+BROKER_CONNECTION_TIMEOUT = 30  # May require a long timeout due to Linux DNS timeouts etc
+CELERY_SEND_EVENTS = False  # Will not create celeryev.* queues
+CELERY_EVENT_QUEUE_EXPIRES = 60  # Will delete all celeryev. queues without consumers after 1 minute.
+# below is from https://library.launchkit.io/three-quick-tips-from-two-years-with-celery-c05ff9d7f9eb
+CELERYD_TASK_SOFT_TIME_LIMIT = 60  # Add a one-minute timeout to all Celery tasks.
+CELERYD_TASK_TIME_LIMIT = 60  # Add a one-minute timeout to all Celery tasks.
+WORKER_PREFETCH_MULTIPLIER = 1  # BU VE AŞAĞIDAKİ AYARI EN SON EKLEDİM VE YA İKİSİ BİRDEN YA DA BİRİSİ ÇÖZDÜ...
+WORKER_MAX_MEMORY_PER_CHILD = 32000  # 32MB --- SANIRIM BU/YUKARIDAKİ ÇÖZDÜ PROBLEMİ %6-7 civarına fixledi CPU Usage 'I
+
+# IMPORTER APP USES IT FOR EXCEL IMPORT
+IMPORTER_SALE_PRICE_FACTOR = 1.0

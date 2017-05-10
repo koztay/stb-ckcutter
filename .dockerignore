@@ -2,3 +2,24 @@
 !.coveragerc
 !.env
 !.pylintrc
+
+# ignore staticfiles directory
+staticfiles
+
+# ignore templaing_files directory
+templating_files
+
+# ignore deploy folder because in this case iti is not necessary
+deploy
+
+# ignore media directory
+*/media
+
+# */XML_Works
+
+# cloud-config / coreos creation
+core-os-cloud-config.yml
+create_coreos_droplet.sh
+
+# postgres_backups
+postgres_backups

@@ -18,6 +18,7 @@ isimde ilk ürünün klasöründe kalıyor. Çünkü image_upload_to bu şekilde
 """
 
 
+# bu fonksiyon muhtemelen production 'da çalışmayacak.
 def download_image(url, product_id):
 
     product = Product.objects.get(pk=product_id)
@@ -49,7 +50,8 @@ def download_image(url, product_id):
         #         del response
         #         raise ValueError('A very specific bad thing happened. Response code was not 200')
         http = urllib3.PoolManager()
-        with http.request('GET', url, preload_content=False) as resp, open(temp_file_path, 'wb') as out_file:
+        with http.request('GET', url, preload_content=False) as resp, \
+                open(temp_file_path, 'wb') as out_file:
             if resp.status is 200:
                 shutil.copyfileobj(resp, out_file)
             else:

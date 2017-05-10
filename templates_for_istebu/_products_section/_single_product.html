@@ -1,38 +1,37 @@
-{% load get_thumbnail %}
+{% load get_image_thumbnail %}
+{% load humanize %}
 {% load jsonify %}
 {% for product in products %}
-
                                         <!-- start single product item -->
+
+
                                         <li>
                                             <figure>
-                                                {% if product|get_thumbnail:"medium" %}
-                                                <a class="aa-product-img" href='{{ product.get_absolute_url }}'>
-                                                    <img src='{{ product|get_thumbnail:"medium"}}'
-                                                    alt="{{ product.title|lower }} img" />
-                                                </a>
+                                                {% if product.productimage_set.all.count > 0 %}
+                                                    <a class="aa-product-img" href='{{ product.get_absolute_url }}'>
+                                                        <img src='{{ product.productimage_set.all.0 | get_image_thumbnail:"medium" }}'
+                                                        alt="{{ product.title|lower }} img" />
+                                                    </a>
                                                 {% endif %}
+
                                                 {# aşağıya id değeri veremiyoruz. çünkü aynı id'den bir sürü oluyor.  #}
 
                                         {#            <input type="hidden" name='item' value='{{ product.variation_set.first.id }}'/>#}
                                         {#            <input type="hidden" class='form-control' type='number' name='qty' value='1'/>#}
+                                            {% if  product.variation_set.first.inventory > 0 %}
                                                 <a class="aa-add-card-btn" href="#" data-productid="{{ product.variation_set.first.id }}">
                                                     <span class="fa fa-shopping-cart"></span>Sepete At</a>
+                                            {% else %}
+                                                    <a class="aa-add-card-btn" href="#">
+                                                    <span class="fa fa-shopping-cart"></span>Stok Yok</a>
+                                            {% endif %}
 
                                                 <figcaption>
                                                     <h4 class="aa-product-title"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
-                                                    {% if product.variation_set.first.sale_price %}
-                                                        {% if product.variation_set.first.sale_price < product.price %}
-                                                            <span class="aa-product-price">{{ product.variation_set.first.sale_price }},-₺</span>
-                                                            <span class="aa-product-price"><del>{{ product.price }},-₺</del></span>
-                                                        {% else %}
-                                                            <span class="aa-product-price">{{ product.price }},-₺</span>
-                                                        {% endif %}
-
-                                                    {% else %}
-                                                        <span class="aa-product-price">{{ product.price }},-₺</span>
-                                                    {% endif %}
+                                                    {{ product.variation_set.first.get_html_price }}
                                                 </figcaption>
                                             </figure>
+
                                             <div class="aa-product-hvr-content">
                                         {#        <a href="#" data-toggle="tooltip" data-placement="top"#}
                                         {#           title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>#}
@@ -41,21 +40,11 @@
                                                 <a href="#" data-toggle2="tooltip" data-placement="top"
                                                    title="Quick View" data-toggle="modal"
                                                    data-target="#quick-view-modal"
-                                                   data-title="{{ product.title }}"
-                                                   data-price="{{ product.price }}"
-                                                   data-saleprice="{{ product.variation_set.first.sale_price }}"
-                                                   data-url="{{ product.get_absolute_url }}"
-                                                   data-description="{{ product.description|truncatechars:200}}"
-                                                   data-imagehd = '{{ product|get_thumbnail:"hd"}}'
-                                                   data-imagesd = '{{ product|get_thumbnail:"sd"}}'
-                                                   data-imagemedium = '{{ product|get_thumbnail:"medium"}}'
-                                                   data-imagemicro = '{{ product|get_thumbnail:"micro"}}'
-                                                   data-category = "{{ product.get_main_category }}"
-                                                   data-category_url = "{{ product.get_main_category.get_absolute_url }}"
-                                                   data-variation_set = "{{ product.variation_set.all|jsonify }}"
+                                                   data-product_pk="{{ product.id }}"
                                                 ><span class="fa fa-search"></span></a>
                                             </div>
+
                                             <!-- product badge -->
-                                            <span class="aa-badge aa-sale" href="#">SALE!</span>
+{#                                            <span class="aa-badge aa-sale" href="#">SALE!</span>#}
                                         </li>
 {% endfor %}

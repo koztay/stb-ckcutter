@@ -1,0 +1,37 @@
+{% extends '__base.html' %}
+
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
+<!-- !Important notice -->
+<!-- Only for product page body tag have to added .productPage class -->
+{% block class %} class="productPage" {% endblock %}
+
+{% block generic_page_header %}
+    {% include 'products/_head_banner.html' %}
+{% endblock %}
+
+
+{% block content %}
+    <!-- product category -->
+<section id="aa-product-category">
+    <div class="container">
+        <div class="row">
+            {% include 'products/_products_right_column.html' with object_list=object_list %}
+            {% include 'products/_products_left_column.html' with categories=categories products_count=object_list|length %}
+         </div>
+    </div>
+</section>
+<!-- / product category -->
+{% endblock %}
+
+
+{% block subscribe_section %}
+    {% include '_subscribe_section.html' %}
+{% endblock %}
+
+{% block javascript_section %}
+    {% include '_javascripts/_javascript_product_list.html' %}
+{% endblock %}
+
+

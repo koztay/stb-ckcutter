@@ -1,6 +1,6 @@
 from django.contrib import admin
 # import nested_admin
-
+admin.site.empty_value_display = '???'
 
 from .models import (
     Product,
@@ -69,7 +69,7 @@ class ProductImageInline(admin.StackedInline):
 
 
 class ProductImageAdmin(admin.ModelAdmin):
-    search_fields = ['product__title', ]
+    search_fields = ['product__title', 'thumbnail__width']
 
     inlines = [
         ThumbnailInline,
@@ -79,9 +79,15 @@ class ProductImageAdmin(admin.ModelAdmin):
         model = ProductImage
 
 
+class ThumbnailAdmin(admin.ModelAdmin):
+    list_filter = ('type',)
+    search_fields = ['type', 'width', 'height']
+
+
+#
 # class ThumbnailInline(nested_admin.NestedStackedInline):
 #     model = Thumbnail
-#
+
 #
 # class ProductImageInline(nested_admin.NestedStackedInline):
 #     model = ProductImage
@@ -94,9 +100,10 @@ class ProductImageAdmin(admin.ModelAdmin):
 
 # // TODO: Product Search ekle.
 class ProductAdmin(admin.ModelAdmin):
-    search_fields = ['title', ]
-    list_display = ['__str__', 'price']
+    search_fields = ['title', 'istebu_product_no']
+    list_display = ['__str__', 'istebu_product_no', 'price', 'sale_price', 'stok', 'active', 'show_on_homepage']
     prepopulated_fields = {'slug': ('title',)}
+    list_editable = ['active', 'show_on_homepage', ]
     inlines = [
         ProductImageInline,
         VariationInline,
@@ -106,12 +113,23 @@ class ProductAdmin(admin.ModelAdmin):
     class Meta:
         model = Product
 
+    def sale_price(self, obj):
+        return obj.variation_set.all()[0].sale_price
+
+    def stok(self, obj):
+        return obj.variation_set.all()[0].inventory
+
+    def queryset(self, request):
+        # Prefetch related objects
+        return super(ProductAdmin, self).queryset(request).select_related('variation')
+
 
 class CategoryInline(admin.TabularInline):
     extra = 3
     model = Category
     prepopulated_fields = {'slug': ('title',)}
     verbose_name = "Alt Kategoriler"
+    ordering = ("title",)
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -137,8 +155,10 @@ class CurrencyAdmin(admin.ModelAdmin):
     readonly_fields = ('value', 'updated')
 
 
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductImage, ProductImageAdmin)
+admin.site.register(Thumbnail, ThumbnailAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(ProductFeatured)
 admin.site.register(ProductType)

@@ -225,7 +225,7 @@
         parent_class: '.simpleLens-big-image-container',
         lens_class: 'simpleLens-lens-element',
         cursor_class: 'simpleLens-mouse-cursor',
-        loading_image: '../img/view-slider/loading.gif',
+        //loading_image: '../img/view-slider/loading.gif',
         open_lens_event: 'mouseenter'
     };
 

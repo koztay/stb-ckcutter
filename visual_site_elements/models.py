@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.utils.text import slugify
+
+from products.models import Category
 from utils import thumbnail_creator
 
 
@@ -30,8 +32,8 @@ class SliderImage(models.Model):
     Bu sınıf anasayfadaki en üstte çıkan en büyük resimlerin olduğu sliderları yönetmek için.
     """
     title = models.CharField(max_length=120)  # bu o slide  için en büyük başlık
-    sub_title = models.CharField(max_length=80)  # bu kısa açıklama
-    campaign = models.CharField(max_length=120)  # bu da en tepedeki kampanya başlığı
+    sub_title = models.CharField(max_length=80, null=True, blank=True)  # bu kısa açıklama
+    campaign = models.CharField(max_length=120, null=True, blank=True)  # bu da en tepedeki kampanya başlığı
     image = models.ImageField(upload_to=image_upload_to)  # slider size 1920x700 ebatında.
     url = models.CharField(max_length=250)
     active = models.BooleanField(default=True)
@@ -122,7 +124,18 @@ class Testimonial(models.Model):
         return str(self.name_of_person)
 
 
-#  Aşağıdaki signals fonksiyonlarını ayırmaya gerek görmedim...
+class HorizontalTopBanner(models.Model):  # 1920 x 300
+    category = models.ForeignKey(Category)
+    title = models.CharField(max_length=120)  # bu o slide  için en büyük başlık
+    image = models.ImageField(upload_to=image_upload_to)  # slider size 1920x300 ebatında.
+    url = models.CharField(max_length=250)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):  # __str__(self):
+        return str(self.title)
+
+
+#  Aşağıdaki signals fonksiyonlarını ayırmaya gerek görmedim... Populate ile çözsene slugify kısmını...
 def create_slug(instance, new_slug=None):
     slug = slugify(instance.title)
     if new_slug is not None:

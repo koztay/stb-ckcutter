@@ -25,8 +25,12 @@ def xsum(numbers):
 @task(name="EURO_cek")
 def euro_cek(currency_name='EURO'):
     kur_value = kur_cek.get(currency_name)
+    print(kur_value)
     currency, created = Currency.objects.get_or_create(name='EUR')
+    print("created:", created)
+    print(currency.name)
     currency.value = kur_value
+    print("currency_value: ", currency.value)
     currency.save()
     return kur_value
 

@@ -1,4 +1,6 @@
 import math
+
+import urllib3
 from django.conf import settings
 from django.core.files import File
 import os
@@ -8,7 +10,35 @@ import random
 
 
 def create_new_thumb(media_path, instance, owner_slug, max_width, max_height):
+    if media_path.startswith("http"):
+        print("I will download the file and use it as local")
+        temporary_download_location = settings.STATIC_ROOT + "/tmp"
+        filename = media_path.split("/")[-1]
+        temporary_download_path = temporary_download_location + filename
+        print(temporary_download_path)
+
+        # create tmp directory if not exists
+        if not os.path.exists(temporary_download_location):
+            os.makedirs(temporary_download_location)
+
+        if not os.path.exists(temporary_download_path):  # eğer file indirilmemişse indir.
+            # download the file
+            http = urllib3.PoolManager()
+            with http.request('GET', media_path, preload_content=False) as resp, open(temporary_download_path, 'wb') as out_file:
+                if resp.status is 200:
+                    shutil.copyfileobj(resp, out_file)
+                else:
+                    raise ValueError('A very specific bad thing happened. Response code was not 200')
+
+        # call the create new thumb func with new media path
+        create_new_thumb_local(temporary_download_path, instance, owner_slug, max_width, max_height)
+    else:
+        create_new_thumb_local(media_path, instance, owner_slug, max_width, max_height)
+
+
+def create_new_thumb_local(media_path, instance, owner_slug, max_width, max_height):
     filename = os.path.basename(media_path)
+    filename = str(max_width) + "x" + str(max_height) + "-" + filename  # hep aynı isimde yazıyor yoksa
     print("filename : %s" % filename)
     thumb = Image.open(media_path)
     width, height = thumb.size

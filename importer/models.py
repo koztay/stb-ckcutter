@@ -1,8 +1,24 @@
 from django.core.urlresolvers import reverse
+import os
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
 
 from products.models import AttributeType, ProductType
+
+
+class XMLFileSystemStorage(FileSystemStorage):
+
+    def __init__(self, xmlpath):
+        self.xmlpath = xmlpath
+        super(XMLFileSystemStorage, self).__init__(location=os.path.join(settings.STATIC_ROOT, self.xmlpath),
+                                                   base_url=settings.STATIC_URL+self.xmlpath)
+
+    def __eq__(self, other):
+            return self.xmlpath == other.xmlpath
+
+xmlStorage = XMLFileSystemStorage('xml/upload')
 
 # Create your models here.
 # buraya mapping ile ilgili bir model koyabilirim.
@@ -13,34 +29,6 @@ from products.models import AttributeType, ProductType
 # Burada default field 'lar view 'da işlenerek product 'lar ile ya eşleşip update ediliyorlar,
 # ya da yeni product yaratılıyor. Aşağıdaki mantıkta ileride istediğimiz kadar field ekleyip çıkartmamız mümkün.
 # Ve ekleme çıkarma nericesinde de  kodumuzda değişiklik yapmamız muhtemelen (eğer field foreign key değilse) gerekmez.
-default_fields = {
-    "Mağaza Kodu": {"model": "Variation", "field": "istebu_product_no"},
-    "Kategori": {"model": "Product", "field": "categories"},
-    "Alt Kategori": {"model": "Product", "field": "categories"},
-    "Ürün Tipi": {"model": "ProductType", "field": "name"},  # product.product_type olarak ekle
-    "Ürün Adı": {"model": "Product", "field": "title"},
-    "KDV": {"model": "Product", "field": "kdv"},
-    "Para Birimi": {"model": "Currency", "field": "name"},  # product.buying_currency olarak ekle
-    "Alış Fiyatı": {"model": "Variation", "field": "buying_price"},
-    "Satış Fiyatı": {"model": "Variation", "field": "sale_price"},
-    "Barkod": {"model": "Variation", "field": "product_barkod"},
-    "Kargo": {"model": "", "field": ""},
-}
-
-'''
-Mağaza Kodu  => Variation       => istebu_product_no
-Kategori     => Product         => categories
-Alt Kategori => Product         => categories
-Ürün Tipi    => Product Type    => name
-Ürün Adı     => Product         => title
-KDV          => Product         => kdv
-Para Birimi  => Currency        => buying_currency
-Alış Fiyatı  => Variation       => buying_price (eğer TL değilse o zaman buying_price_tl hesaplayarak yaz.)
-Satış Fiyatı => Variation       => sale_price
-Barkod       => Variation       => product_barkod
-Desi         => Product         => desi
-Kargo        => ???             => ???
-'''
 
 
 # bu map 'e ait bir de file field olmalı aslında ki o file'a ilişkin map olsun bu.
@@ -54,12 +42,21 @@ class ProductImportMap(models.Model):
                             help_text='Product Type değeri yazılacak, Örneğin: "Generic Product"')
     root = models.CharField(max_length=120, blank=True, null=True,
                             help_text='Eğer XML dosyası ise o zaman ürünlerin çekileceği root tagi yaz.')
+    replace_words = models.TextField(blank=True, null=True)
+    dropping_words = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name
 
 
 class Fields(models.Model):
+    """
+    import ast
+    ast.literal_eval("{'muffin' : 'lolz', 'foo' : 'kitty'}")
+    {'muffin': 'lolz', 'foo': 'kitty'}
+    
+    Yukarıdaki örnekten herhangi bir eşleştirme yapamadığımız yerler için default değer tanımlayabiliriz.
+    """
     map = models.ForeignKey(ProductImportMap, blank=True, null=True)
     product_field = models.CharField(max_length=20, blank=True, null=True)  # bizdeki
     #  eşleşeceği field
@@ -72,7 +69,38 @@ class Fields(models.Model):
         return "%s" % self.xml_field
 
 
-# Bu fonksiyon mapteki product_tipine göre fieldları oluşturuyor. Ancak tek excelde birçok produc tipinden ürün
+class ImporterFile(models.Model):
+    """
+    This model keeps the file information.
+    """
+    # import_map = models.OneToOneField(XMLImportMap, blank=True, null=True)
+    description = models.CharField(max_length=255, blank=True)
+    file = models.FileField(storage=xmlStorage)  # upload_to parametresi olmamalı burada, yoksa upload edemiyor.
+    remote_url = models.URLField(blank=True, null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.description
+
+    def get_file_path(self):
+        # img = self.image
+        if self.file and hasattr(self.file, 'url'):
+            file_url = self.file.url
+            print("before :", file_url)
+            # remove STATIC_URL from img_url in our case /static/
+            file_url = file_url.replace(settings.STATIC_URL, "/", 1)
+            print("after :", file_url)
+            # # combine with STATIC_ROOT location in our case /static_root (Trailing slash koyma!!!!!!!!)
+
+            file_path = settings.STATIC_ROOT + file_url  # os.path.join does not joins what the fuck!!!!
+            print("file_path :", file_path)
+
+            return file_path
+        else:
+            return None  # None
+
+
+# Bu fonksiyon mapteki product_tipine göre fieldları oluşturuyor. Ancak tek excelde birçok product tipinden ürün
 # gireceksek o zaman generic import oluşturabiliriz. Sonuçta default olarak product tipi oluşacak ve yukarıdaki
 # default fieldlar dönecek. Ürünleri process_row 'da import ederken de tip kategori vb. alanlar set edilecek.
 # Ancak product tipi oluşturmuşsak ve feature değerleri belirtmişsek o zaman specific tipte ürün girmeye de imkan
@@ -81,8 +109,9 @@ def import_map_post_save_receiver(sender, instance, *args, **kwargs):
     # print("map_post_save_receiver çalıştı:", sender)  # sender ile instance farklı birbirinden
     # print("instance:", instance)
     # yukarıda tanımlanan default fieldları oluşturuyoruz:
-    for field in default_fields:
-        Fields.objects.get_or_create(map=instance, product_field=field)
+    for field in settings.DEFAULT_FIELDS:
+        if field is not "IGNORE":
+            Fields.objects.get_or_create(map=instance, product_field=field)
     # eğer specific bir ürün grubu import edeceksek ve aynı zamanda da featureları da import edeceksek o zaman
     # map oluştururken generic değil de Projeksiyon Cihazı, Perde vb. gibi özel bir tip oluşturuyoruz. O zaman
     # o ürn tipine ilişkin özellik listesini excel ile eşleştirebilelim diye aşağıdaki kod çalışıyor.

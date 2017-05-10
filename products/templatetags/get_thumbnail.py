@@ -1,8 +1,7 @@
 from django import template
+from ..models import Product, THUMB_CHOICES
 
 register = template.Library()
-
-from ..models import Product, THUMB_CHOICES
 
 
 @register.filter

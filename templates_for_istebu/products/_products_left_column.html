@@ -1,0 +1,94 @@
+{% load get_image_thumbnail %}
+{% load query_transform %}
+{% load str_to_int %}
+<div class="col-lg-3 col-md-3 col-sm-4 col-md-pull-9">
+                <aside class="aa-sidebar">
+                    <!-- single sidebar -->
+                    <div class="aa-sidebar-widget">
+                        <h3>Kategoriler</h3>
+                        <ul class="aa-catg-nav">
+                            {% for category in categories %}
+                                <li><a href="?{% query_transform category=category.slug %}">{{ category.title }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+{#                    <!-- single sidebar -->#}
+{#                    <div class="aa-sidebar-widget">#}
+{#                        <h3>Etiketler</h3>#}
+{#                        <div class="tag-cloud">#}
+{#                            {% for tag in tags %}#}
+{#                                {% if tag.name %}#}
+{#                                    <a href="{% url "products:product_list_by_tag" tag_slug=tag.slug %}">{{ tag.name }}</a>#}
+{#                                {% endif %}#}
+{#                            {% endfor %}#}
+{#                        </div>#}
+{#                    </div>#}
+                {% ifnotequal minimum_price maximum_price %}
+                    {% if number_of_object_list < 100 %}
+                    <!-- single sidebar -->
+                    <div class="aa-sidebar-widget">
+                        <h3>Fiyat Aralığı</h3>
+                        <!-- price range -->
+                        <div class="aa-sidebar-price-range">
+                            <form id="price-slider-form" method="GET" action="">
+                                <div id="skipstep" class="noUi-target noUi-ltr noUi-horizontal noUi-background">
+                                </div>
+                                <span id="skip-value-lower" class="example-val">30.00</span>
+                                <span id="skip-value-upper" class="example-val">100.00</span>
+                                <button class="aa-filter-btn" type="submit">Filtrele</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                {% endifnotequal %}
+                {% if last_visited_item_list > 0 %}
+                    <!-- single sidebar -->
+                    <div class="aa-sidebar-widget">
+                        <h3>Son Gezilenler</h3>
+                        <div class="aa-recently-views">
+                            <ul>
+                                {% for product in last_visited_item_list %}
+                                    <li>
+                                    {% if product.productimage_set.all.count > 0 %}
+                                        <a href='{{ product.get_absolute_url }}' class="aa-cartbox-img">
+                                            <img alt="{{ product.title|lower }} img"
+                                                 src='{{ product.productimage_set.all.0 | get_image_thumbnail:"micro" }}'/>
+                                        </a>
+                                    {% endif %}
+                                    <div class="aa-cartbox-info">
+                                        <h4><a href='{{ product.get_absolute_url }}'>{{ product.title }}</a></h4>
+                                        <p>{{ product.variation_set.first.sale_price }}</p>
+                                    </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+                    <!-- single sidebar -->
+                    <div class="aa-sidebar-widget">
+                        <h3>En Popüler Ürünler</h3>
+                        <div class="aa-recently-views">
+                            <ul>
+                                {% for product in most_popular_products %}
+                                    <li>
+                                    {% if product.productimage_set.all.count > 0 %}
+                                        <a class="aa-cartbox-img" href='{{ product.get_absolute_url }}'>
+                                            <img src='{{ product.productimage_set.all.0 | get_image_thumbnail:"micro" }}'
+                                            alt="{{ product.title|lower }} img" />
+                                        </a>
+                                    {% endif %}
+                                    <div class="aa-cartbox-info">
+                                        <h4><a href='{{ product.get_absolute_url }}'>{{ product.title }}</a></h4>
+                                        <p>{{ product.variation_set.first.sale_price }}</p>
+                                    </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+

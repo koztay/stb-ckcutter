@@ -1,0 +1,49 @@
+ {% load query_transform %}
+    <div class="col-lg-9 col-md-9 col-sm-8 col-md-push-3">
+                <div class="aa-product-catg-content">
+                    <div class="aa-product-catg-head">
+                        <div class="aa-product-catg-head-left">
+                            <form action="" class="aa-sort-form">
+                                <label for="">Sıralama : </label>
+                                {% with request.GET.ordering as selected %}
+                                <select name="ordering" onChange="window.location.href=this.value" style="width: 200px">
+                                    <option value="?{% query_transform ordering='' %}" {% if selected == '' %} selected="Varsayılan"{% endif %}>Varsayılan</option>
+                                    <option value="?{% query_transform ordering='price' %}" {% if selected == 'price' %} selected="Fiyata Göre Artan"{% endif %}>Fiyata Göre Artan</option>
+                                    <option value="?{% query_transform ordering='-price' %}" {% if selected == '-price' %} selected="Fiyata Göre Azalan"{% endif %}>Fiyata Göre Azalan</option>
+                                    <option value="?{% query_transform ordering='title' %}" {% if selected == 'title' %} selected="İsme Göre Artan"{% endif %}>İsme Göre Artan</option>
+                                    <option value="?{% query_transform ordering='-title' %}" {% if selected == '-title' %} selected="İsme Göre Azalan"{% endif %}>İsme Göre Azalan</option>
+                                </select>
+                                {% endwith %}
+                            </form>
+                            <form action="" class="aa-show-form">
+                                <label for=""></label>
+                                <button class="aa-reset-btn" onclick="window.location.href={% url 'products:products' %}" type="submit">Filtreleri Temizle</button>
+                            </form>
+                        </div>
+                        <div class="aa-product-catg-head-right">
+                            <a id="grid-catg" href="#"><span class="fa fa-th"></span></a>
+                            <a id="list-catg" href="#"><span class="fa fa-list"></span></a>
+                        </div>
+                    </div>
+                    <div class="aa-product-catg-body">
+                        <ul class="aa-product-catg">
+                            {% include '_products_section/_single_product.html' with products=object_list %}
+                        </ul>
+                        <!-- quick view modal -->
+                        {% include '_products_section/_quick_view_modal.html' %}
+                        <!-- / quick view modal -->
+                    </div>
+{#                    {% if is_paginated %}{% load paginator %}{% paginator 3 %}{% endif %}#}
+{##}
+{#                    {% if object_list %}#}
+{#                    <ul>#}
+{#                        {% for photo in object_list %}#}
+{#                            <li />{{ photo.name }}#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
+{#                    {% endif %}#}
+{##}
+{#                    {% if is_paginated %}{% load paginator %}{% paginator 3 %}{% endif %}#}
+                    {% include "_pagination.html" %}
+                </div>
+            </div>

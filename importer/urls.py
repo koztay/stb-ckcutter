@@ -9,7 +9,7 @@ from .views import (
     # ProductImportMapUpdateView,
     # XLSImporterCreateView,
     # XLSXImporterCreateView,
-    # XMLImporterCreateView,
+    XMLImporterRunImportTaskView,
     ImporterHomePageView,
     GenericImporterCreateView,
 )
@@ -29,10 +29,10 @@ urlpatterns = [
 
     # aşağıdaki url 'ler ile yukarının örtüşmesi gerek. şimdilik aşağıyı disable edelim.
     url(r'^$', ImporterHomePageView.as_view(), name='product_importer_home'),
-    url(r'^import/$', GenericImporterCreateView.as_view(), name='generic_importer'),
+    url(r'^excel/$', GenericImporterCreateView.as_view(), name='generic_importer'),
     # url(r'^XLS/$', XLSImporterCreateView.as_view(), name='xls_importer'),
     # url(r'^XLSX/$', XLSXImporterCreateView.as_view(), name='xlsx_importer'),
-    # url(r'^XML/$', XMLImporterCreateView.as_view(), name='xml_importer'),
+    url(r'^XML/$', XMLImporterRunImportTaskView.as_view(), name='xml_importer'),
 ]
 
 

@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load query_transform %}
 <!-- Start header section -->
 <header id="aa-header">
     <!-- start header top  -->
@@ -27,11 +28,11 @@
                             {% endif %}
                             {% if request.user.is_authenticated %}
                                 <li><a href="{% url 'orders' %}">Siparişlerim</a></li>
-                                <li><a href="{% url 'auth_logout' %}">Çıkış</a></li>
+                                <li><a href="{% url 'account_logout' %}">Çıkış</a></li>
                             {% else %}
-                                <li><a href="{% url 'about' %}">Kayıt Ol</a></li>
+                                <li><a href="{% url 'account_signup' %}">Kayıt Ol</a></li>
                                 {% if not request.user.is_authenticated and not "/accounts/login" in request.get_full_path %}
-                                    <li><a href="" data-toggle="modal" data-target="#login-modal">Giriş Yap</a></li>
+                                    <li><a href="#" data-toggle="modal" data-target="#login-modal">Giriş Yap</a></li>
                                 {% endif %}
 
                             {% endif %}
@@ -58,7 +59,7 @@
 {#                                <p>daily<strong>Shop</strong> <span>Your Shopping Partner</span></p>#}
 {#                            </a>#}
                             <!-- img based logo -->
-                            <a href="index.html"><img src="{% static 'img/istebu_logo.png' %}" alt="logo img"></a>
+                            <a href="{% url 'home' %}"><img src="{% static 'img/istebu_logo.png' %}" alt="logo img"></a>
                         </div>
                         <!-- / logo  -->
                         <!-- cart box -->
@@ -87,7 +88,7 @@
                                             <h4><a href="#">Product Name</a></h4>
                                             <p>1 x $250</p>
                                         </div>
-                                        <a class="aa-remove-product" href="#"><span class="fa fa-times"></span></a>
+                                        <a class="aa-remove-product" href=""><span class="fa fa-times"></span></a>
                                     </li>
                                     <li>
                       <span id="total text" class="aa-cartbox-total-title">
@@ -104,11 +105,13 @@
                         <!-- / cart box -->
                         <!-- search box -->
                         <div class="aa-search-box">
+
                             <form method="GET" role="search" action='{% url "products:products" %}'>
                                 <input type="text" id="" placeholder="Ara" name="q"
-                                value='{{ request.GET.q }}'>
+                                value='{{ request.GET.q }}' >
                                 <button type="submit"><span class="fa fa-search"></span></button>
                             </form>
+
                         </div>
                         <!-- / search box -->
                     </div>

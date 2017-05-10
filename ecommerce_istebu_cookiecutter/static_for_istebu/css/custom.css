@@ -43,3 +43,52 @@ figure {
     padding-bottom: 35px;
 }
 
+.simpleLens-thumbnails-container img{
+    max-width: 45px;
+}
+
+#aa-product-category .aa-product-catg-content .aa-product-catg-body .aa-product-catg li {
+  margin: 0 0 10px 10px; !important;
+}
+
+.pagination > li.active > a {
+    z-index: 3;
+    color: #fff; !important;
+    cursor: default;
+    background-color: #37c6f5;
+    border-color: #37c6f5;
+}
+
+.aa-reset-btn {
+    color: #fff;
+    font-size: 15px;
+    height: 30px;
+    width: 140px;
+    background-color: #37c6f5;
+    border: 1px solid #37c6f5;
+}
+
+#aa-login .aa-myaccount-login {
+  display: inline;
+  float: left;
+  margin-top: 50px;
+  padding: 100px 100px 130px;
+  /*text-align: center;*/
+  width: 100%;
+  border: 5px solid #37c6f5;
+
+}
+
+/* Display django-debug-toolbar.
+   See https://github.com/django-debug-toolbar/django-debug-toolbar/issues/742
+   and https://github.com/pydanny/cookiecutter-django/issues/317
+*/
+
+#djDebug[hidden], #djDebug [hidden] {
+    display: block !important;
+}
+
+#djDebug [hidden][style='display: none;'] {
+    display: none !important;
+}
+

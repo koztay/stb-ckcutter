@@ -1,0 +1,402 @@
+{% load staticfiles %}
+<script>
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// bu fonksiyon custom_message.js dosyasımda idi...
+function showFlashMessage(message) {
+    //console.log("showFlashMessaje çalıştı");
+    var template = "<div id='flash-message' class='container container-alert-flash'>" +
+        "<div class='col-sm-3 col-sm-offset-8'> " +
+        "<div class='alert alert-success alert-dismissible' role='alert'>" +
+        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+        "<span aria-hidden='true'>&times;</span></button>"
+        + message + "</div></div></div>";
+    //console.log(template)
+    $("body").append(template);
+    $(".container-alert-flash").fadeIn();
+
+    setTimeout(function () {
+        $(".container-alert-flash").fadeOut();
+        $(".container-alert-flash").promise().done(function() {
+            var element = document.getElementById("flash-message");
+            element.parentNode.removeChild(element);
+        });
+    }, 1800);
+
+}
+
+function addProductTocart(product_id) {
+    console.log("eklenenen product_id: ", product_id);
+    $.ajax({
+        type: "GET", // "POST"
+        url: "{% url 'cart' %}",
+        data: "item=" + product_id + "&qty=" + 1,
+        success: function (data) {
+            //console.log('success çalıştı');
+            //console.log(data);
+            updateCartItemCount();
+            getCartItems();
+            showFlashMessage(data.flash_message);
+        },
+        error: function (response, error) {
+            // console.log(response)
+            // console.log(error)
+            $("#add-form").submit(); //bu çalışmaz
+        }
+    });
+    return false;
+}
+
+// bu da aynı fonksiyonun quickview vb'inde çalışanı...
+$('#modal-add-to-cart').click( function(e) {
+    e.preventDefault();
+    console.log('Add to cart clicklendi', this.dataset['productid']);
+    var product_id = this.dataset['productid'];
+    addProductTocart(product_id);
+    }
+);
+
+// product detail 'de çalışan da bu...
+$('#detail-add-to-cart').click( function(e) {
+    e.preventDefault();
+    console.log('Add to cart clicklendi');
+    var product_id = this.dataset['productid'];
+    addProductTocart(product_id);
+    } );
+//aa-add-to-cart-btn
+// bu anasayfadaki herhangi bir ürüne tıklandığında çalışan fonksiyon...
+$('.aa-add-card-btn').click( function(e) {
+    e.preventDefault();
+    console.log('Add to cart clicklendi');
+    var product_id = this.dataset['productid'];
+    addProductTocart(product_id);
+} );
+
+
+function removeProduct(product) {
+    var product_id = product.id;
+    console.log('product_id : ', product_id);
+    $.ajax({
+
+            type: "GET", // "POST"
+            url: "{% url 'cart' %}",
+            data: "item=" + product_id + "&qty=0",
+            success: function (data) {
+                console.log('success remove çalıştı');
+                console.log(data);
+                $(product.parentElement).fadeOut(800);
+                updateCartItemCount();
+                updateCartTotal();
+                showFlashMessage(data.flash_message);
+            },
+            error: function (response, error) {
+                // console.log(response)
+                // console.log(error)
+                $("#add-form").submit(); //bu çalışmaz
+            }
+        });
+
+}
+
+function updateCartItemCount() {
+    var badge = $("#cart-count-badge");
+
+    $.ajax({
+        type: "GET",
+        url: "{% url 'item_count' %}",
+        success: function (data) {
+            console.log("badge text update edilmeli:!", data.count);
+            badge.text(data.count);
+
+        },
+        error: function (response, error) {
+            console.log(response);
+            console.log(error);
+        }
+
+    });
+
+}
+
+function getCartItems() {
+    var template = '<li id="list-id" style="display: none;">' +
+                        '<a class="aa-cartbox-img" id="product-image" href="#"><img src="#" alt="img"></a>' +
+                            '<div class="aa-cartbox-info">' +
+                               '<h4><a id="some-id" href="#">Product Name</a></h4>' +
+                                '<p><span id="adet">1</span> x <span id="fiyat">$250</span></p>' +
+                            '</div>' +
+                            '<a id="product-id" class="aa-remove-product" href="#" onclick="return removeProduct(this);">' +
+                            '<span class="fa fa-times"></span></a>' +
+                    '</li>';
+    var cart_summary = $("#cartbox-summary");
+
+    cart_summary.empty();
+    $.ajax({
+        type: "GET",
+        url: "{% url 'cart_api:api_cartitems_list' %}",
+        success: function (data) {
+            var cart_total = 0;
+            //console.log(data);
+            if (data.length > 0) {
+
+                var data_to_be_looped = data[0].items; // items arrayimiz
+
+                $.each(data_to_be_looped, function (arrayID, object) {
+
+                    //önce ekledik.
+                    cart_summary.append(template);
+
+                    var new_title_id = "product" + arrayID;
+                    var new_image_id = "image" + arrayID;
+                    var new_adet_id = "adet" + arrayID;
+                    var new_fiyat_id = "fiyat" + arrayID;
+                    var new_list_id = "list" + arrayID;
+
+                    $('#some-id').attr('id', new_title_id);
+                    $('#product-image').attr('id', new_image_id);
+                    $('#adet').attr('id', new_adet_id);
+                    $('#fiyat').attr('id', new_fiyat_id);
+                    $('#product-id').attr('id', object.product_id);
+                    $('#list-id').attr('id', new_list_id);
+
+                    var product_title = $("#" + new_title_id);
+                    var product_image = $("#" + new_image_id);
+                    var product_adet = $("#" + new_adet_id);
+                    var product_fiyat = $("#" + new_fiyat_id);
+                    var list = $("#" + new_list_id);
+
+                    product_title.text(object.product_title);
+                    product_title.attr('href', object.product_url);
+                    product_image.find('img').attr('src', object.image);
+                    product_image.attr('href', object.product_url);
+
+                    var formatted_sale_price = numberWithCommas(object.sale_price);
+                    //console.log(formatted_sale_price);
+
+                    product_fiyat.text(formatted_sale_price + ' ,-₺');
+                    product_adet.text(object.quantity);
+
+
+                    cart_total += parseFloat(object.sub_total);
+                    //console.log("cart_total: ", cart_total);
+
+                    $(list).appendTo('#cartbox-summary').show(1000);
+                    //console.log('list = ', list);
+
+
+                });
+
+                var total_section = '<li>' +
+                    '<span class="aa-cartbox-total-title">' +
+                    'Toplam :' +
+                    '</span>' +
+                    '<span id="total-rakam" class="aa-cartbox-total-price">' +
+                    '$500' +
+                    '</span>' + '</li>';
+                cart_summary.append(total_section);
+            }
+
+            var formatted_total_price = numberWithCommas(parseFloat(cart_total).toFixed(2));
+            //console.log(formatted_total_price);
+
+            $("#total-rakam").text(formatted_total_price + ' ,-₺');
+            //console.log($("#total-rakam").text(parseFloat(cart_total).toFixed(2) + ' ₺'));
+            if (cart_total == 0) {
+                //console.log('sepet boş da niye seçemiyor?');
+                $("#checkout").attr('href', '#');
+                $("#checkout").text('Sepetiniz Boş');
+            }else{
+                $("#checkout").attr('href', '{% url "checkout" %}');
+                $("#checkout").text('Alışverişi Tamamla');
+            }
+
+        },
+
+        error: function (response, error) {
+            console.log(response);
+            console.log(error);
+        }
+
+    });
+
+}
+
+function updateCartTotal() {
+
+    $.ajax({
+        type: "GET",
+        url: "{% url 'cart_api:api_cartitems_list' %}",
+        success: function (data) {
+            var cart_total = data[0].grand_total.cart_total;
+            var formatted_total_price = numberWithCommas(parseFloat(cart_total).toFixed(2));
+
+            $("#total-rakam").text(formatted_total_price + ' ₺');
+            if (cart_total == 0) {
+                //console.log('sepet boş da niye seçemiyor?');
+                $("#checkout").attr('href', '#');
+                $("#checkout").text('Sepetiniz Boş');
+            }else{
+                $("#checkout").attr('href', '{% url "checkout" %}');
+                $("#checkout").text('Alışverişi Tamamla');
+            }
+
+
+        },
+
+        error: function (response, error) {
+            console.log(response);
+            console.log(error);
+        }
+
+    });
+
+}
+
+
+// quick view modal
+$('#quick-view-modal').on('show.bs.modal', function (event) {
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or
+    // other methods instead.
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var title = button.data('title'); // Extract info from data-* attributes
+    var product_pk = button.data('product_pk');
+    console.log(product_pk);
+    console.log("ajax çalıştı");
+        $.ajax({
+            type: "GET", // "POST"
+            url: "/api/products/" + product_pk,
+
+            success: function (data) {
+                var modal = $(this);
+
+                $('#modal-product-title').text(data['product']['title']);
+                console.log("thumb array length:" + data['thumbnails'].length );
+                if (data['thumbnails'].length > 0 ){
+                    for (var i = 1; i < 4; i++) {
+                        $('#modal-thumb-' + i).show();
+                    }
+                    console.log("arkadaş neden sapıtıyor bu?");
+                    console.log(data['thumbnails'] );
+                    //$(slika2).attr('src', slika + '?' + new Date().getTime());
+                    $('.simpleLens-big-image-container').find('.simpleLens-lens-image').attr('data-lens-image', data['thumbnails'][0]['hd_thumb'] + '?_=' + new Date().getTime());
+                    console.log(data['thumbnails'][0]['hd_thumb'] + '?_=' + new Date().getTime());
+                    console.log("bunu neden yazmıyorsun?");
+                    $('.simpleLens-big-image-container').find('.simpleLens-big-image').attr('src', data['thumbnails'][0]['sd_thumb'] + '?_=' + new Date().getTime());
+                    $('#modal-thumb-1').attr('data-lens-image', data['thumbnails'][0]['hd_thumb'] + '?_=' + new Date().getTime());
+                    $('#modal-thumb-1').attr('data-big-image', data['thumbnails'][0]['sd_thumb'] + '?_=' + new Date().getTime());
+                    $('#modal-thumb-1').find('.simpleLens-thumbnail-wrapper').attr('src', data['thumbnails'][0]['micro_thumb'] + '?_=' + new Date().getTime());
+
+                    // Aşağıdaki döngü ile diğer thumbnailleri set ediyoruz.
+                    for (var i = 2; i < 4; i++) {
+                        if (data['thumbnails'][i - 1]) {
+                            //$('.simpleLens-big-image-container').attr('data-lens-image', data['thumbnails'][i-1]['hd_thumb'] + '?_=' + new Date().getTime());
+                            //$('.simpleLens-big-image-container').find('.simpleLens-big-image').attr('src', data['thumbnails'][i-1]['sd_thumb'] + '?_=' + new Date().getTime());
+                            $('#modal-thumb-' + i).attr('data-lens-image', data['thumbnails'][i - 1]['hd_thumb'] + '?_=' + new Date().getTime());
+                            $('#modal-thumb-' + i).attr('data-big-image', data['thumbnails'][i - 1]['sd_thumb'] + '?_=' + new Date().getTime());
+                            $('#modal-thumb-' + i).find('.simpleLens-thumbnail-wrapper').attr('src', data['thumbnails'][i - 1]['micro_thumb'] + '?_=' + new Date().getTime());
+                        }else{
+                            $('#modal-thumb-' + i).hide();
+                        }
+                    }
+                }else{
+                    console.log("hepsini sıfırlıyorum.");
+                    //Burada resetlemiyoruz diye mi sapıtıyor?
+                    $('.simpleLens-big-image-container').find('.simpleLens-lens-image').attr('data-lens-image', "{% static 'img/view-slider/large/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('.simpleLens-big-image-container').find('.simpleLens-big-image').attr('src', "{% static 'img/view-slider/medium/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-1').attr('data-lens-image', "{% static 'img/view-slider/large/polo-shirt-1.png' %}"+ '?_=' + new Date().getTime());
+                    $('#modal-thumb-1').attr('data-big-image', "{% static 'img/view-slider/medium/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-1').find('.simpleLens-thumbnail-wrapper').attr('src', "{% static 'img/view-slider/thumbnail/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-2').attr('data-lens-image', "{% static 'img/view-slider/large/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-2').attr('data-big-image', "{% static 'img/view-slider/medium/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-2').find('.simpleLens-thumbnail-wrapper').attr('src', "{% static 'img/view-slider/thumbnail/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-3').attr('data-lens-image', "{% static 'img/view-slider/large/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-3').attr('data-big-image', "{% static 'img/view-slider/medium/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+                    $('#modal-thumb-3').find('.simpleLens-thumbnail-wrapper').attr('src', "{% static 'img/view-slider/thumbnail/polo-shirt-1.png' %}" + '?_=' + new Date().getTime());
+
+                    console.log("hepsini sıfırladım, bitti.");
+                    //eğer hiç resim yoksa thumb gösterme...
+                    for (var i = 1; i < 4; i++) {
+                        $('#modal-thumb-' + i).hide();
+                    }
+                }
+
+                //artık class selectorlar ile çalışabiliriz, kendini tekrar eden birşey yok.
+                console.log(data);
+                console.log(data['variation']['sale_price']);
+                var sale_price = data['variation']['sale_price'];
+                // humanize price ;
+                var formatted_sale_price = numberWithCommas(sale_price);
+{#                sale_price = sale_price.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + ' ,-₺';#}
+                $('#modal-sale-price').text(formatted_sale_price + ',-₺');
+                if(data['variation']['stok'] > 0){
+                    $('#modal-inventory').text("Stok mevcut");
+                }else{
+                    $('#modal-inventory').text("Stokta yok");
+                }
+
+
+                $('#modal-description').text("");
+                if ( data['product']['description'].indexOf("table") > -1 ) {
+                    console.log("table elementi bulundu, birşey yapma...");
+                }else {
+                    $('#modal-description').append(data['product']['description']);
+                }
+
+                //modal.find('.simpleLens-big-image').attr("src", imagemedium);
+                //modal.find('.simpleLens-lens-image').attr('data-lens-image', imagehd);
+                //modal.find('.simpleLens-thumbnail-wrapper').attr('data-lens-image', imagemedium);
+                //modal.find('.simpleLens-thumbnail-wrapper').attr('data-big-image', imagemedium);
+                //modal.find('.simpleLens-thumbnail-wrapper').attr('src', imagemedium);
+                //modal.find('.category-url').attr("href", category_url);
+                //modal.find(".category-url").text(category);
+                if (data['variation']['stok']==0){
+                    $('#modal-add-to-cart').remove();
+                    $('#modal-info').text('Ürün geçici olarak temin edilememektedir.');
+                }
+
+                /////
+                function isHTML(str) {
+                    var a = document.createElement('div');
+                    a.innerHTML = str;
+                    for (var c = a.childNodes, i = c.length; i--; ) {
+                        if (c[i].nodeType == 1) return true;
+                    }
+                    return false;
+                }
+                /////
+
+                $("#modal-add-to-cart").attr('data-productid', product_pk);
+                $("#modal-view-details").attr('href', data['product']['url']);
+                $("#kategori").text(data['product']['category']);
+                $("#kategori").attr('href', data['product']['category_url']);
+
+                data = "";
+            },
+            error: function (response, error) {
+                console.log(response);
+                console.log(error)
+
+            }
+        });
+
+
+});
+
+jQuery('.simpleLens-thumbnails-container img').simpleGallery({
+    loading_image: '{% static 'img/view-slider/loading.gif' %}'
+});
+
+jQuery('.simpleLens-big-image').simpleLens({
+    loading_image: '{% static 'img/view-slider/loading.gif' %}'
+});
+
+$(document).ready(function () {
+    updateCartItemCount();
+    getCartItems();
+});
+
+</script>

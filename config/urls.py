@@ -15,11 +15,14 @@ from orders.views import (
     OrderList,
     OrderDetail)
 
-from newsletter.views import home, contact
+from newsletter.views import HomeView, ContactView
+from products.views import update_session
+# from my_importer.views import xml_upload_view, xml_map_view, TaskRunnerView
+
 
 urlpatterns = [
-    url(r'^$', home, name='home'),
-    url(r'^contact/$', contact, name='contact'),
+    url(r'^$', HomeView.as_view(), name='home'),
+    url(r'^contact/$', ContactView.as_view(), name='contact'),
     # url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
                   url(r'^hakkimizda/$', views.flatpage, {'url': '/hakkimizda/'}, name='hakkimizda'),
@@ -51,6 +54,12 @@ urlpatterns = [
 
     # data-importer
     url(r'^data-importer/', include('importer.urls', namespace='importer')),
+    url(r'^update_session/$', update_session, name='update_session'),
+
+    # url(r'^xml-upload/$', xml_upload_view, name='xml_upload'),
+    # url(r'^xml-map/$', xml_map_view, name='xml_map'),
+    # url(r'^run-xml-task/$', TaskRunnerView.as_view(), name='run_xml_task'),
+
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
@@ -65,7 +74,5 @@ if settings.DEBUG:
     ]
     if 'debug_toolbar' in settings.INSTALLED_APPS:
         import debug_toolbar
+        urlpatterns = [url(r'^__debug__/', include(debug_toolbar.urls)), ] + urlpatterns
 
-        urlpatterns += [
-            url(r'^__debug__/', include(debug_toolbar.urls)),
-        ]

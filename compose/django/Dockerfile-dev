@@ -1,6 +1,8 @@
-FROM python:3.5
+FROM python:3.5.3
 
 ENV PYTHONUNBUFFERED 1
+
+RUN apt-get update && apt-get install -y gettext && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Requirements have to be pulled and installed here, otherwise caching won't work
 COPY ./requirements /requirements

@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -59,10 +60,11 @@ class ProductManager(models.Manager):
         return self.get_queryset().active()
 
     def get_related(self, instance):
-        products_one = self.get_queryset().filter(categories__in=instance.categories.all())
-        products_two = self.get_queryset().filter(default=instance.default)
+        products_one = self.get_queryset().filter(categories__in=instance.categories.all()).filter(variation__inventory__gte=0)
+        products_two = self.get_queryset().filter(default=instance.default).filter(variation__inventory__gte=0)
         qs = (products_one | products_two).exclude(id=instance.id).distinct()
         return qs
+
 
 
 class Product(models.Model):
@@ -84,35 +86,29 @@ class Product(models.Model):
     # taggable manager ile ilgili bir hata veriyor test edilemiyor.
     kdv = models.FloatField(default=18.0)
     desi = models.IntegerField(default=1)
-
+    istebu_product_no = models.CharField(max_length=100, null=True, blank=True)
+    vendor_product_no = models.CharField(max_length=100, null=True, blank=True)
     objects = ProductManager()
 
     class Meta:
-        ordering = ["-title"]
+        ordering = ["-variation__inventory", "id", "title", ]
 
     def __str__(self):  # def __str__(self):
         return self.title
 
-    # def get_absolute_url(self):
-    #     return reverse("products:product_detail", kwargs={"pk": self.pk})
+    def get_brand(self):
+        attr_type = AttributeType.objects.filter(type="Marka", product=self)
+        attr = AttributeValue.objects.filter(attribute_type=attr_type, product=self)
+        for attribute in attr:
+            if attribute.value:
+                return attribute.value
+            else:
+                return "No Brand Set for Product"
 
     def get_absolute_url(self):
         view_name = "products:product_detail"
         # view_name = "products:product_detail_slug_function"
         return reverse(view_name, kwargs={"slug": self.slug})
-
-        # return reverse('blog:post_detail',
-        #                args=[self.publish.year,
-        #                      self.publish.strftime('%m'),
-        #                      self.publish.strftime('%d'),
-        #                      self.slug])
-
-        #
-        # def get_image_url(self): # buna gerek yok o zaman
-        #     img = self.productimage_set.first()
-        #     if img:
-        #         return img.image.url
-        #     return img  # None
 
     def get_main_category(self):  # bu quickview 'da ürününü kategorisini göstermek için...
         categories = Category.objects.all().filter(product=self)
@@ -130,27 +126,28 @@ class Product(models.Model):
         print(number_of_views)
         return number_of_views
 
+    # Bu metodu sol üst köşedeki cart list içerisindeki imajı set etmek için kullanıyoruz.
+    # O nedenle bu metodu silme. Diğerlerini silmek için şimdilşk bir sakınca görünmüyor.
     @property
     def micro_thumb(self):
         first_image = ProductImage.objects.all().filter(product=self).first()
         micro_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='micro').first()
-        print(micro_thumb.media.url)
+        # print(micro_thumb.media.url)
         return micro_thumb.media.url
-
-    @property
-    def medium_thumb(self):
-        first_image = ProductImage.objects.all().filter(product=self).first()
-        medium_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='medium').first()
-        print(medium_thumb.media.url)
-        return medium_thumb.media.url
-
-    @property
-    def sd_thumb(self):
-        first_image = ProductImage.objects.all().filter(product=self).first()
-        sd_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='sd').first()
-        print(sd_thumb.media.url)
-        return sd_thumb.media.url
-
+    #
+    # @property
+    # def medium_thumb(self):
+    #     first_image = ProductImage.objects.all().filter(product=self).first()
+    #     medium_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='medium').first()
+    #     # print(medium_thumb.media.url)
+    #     return medium_thumb.media.url
+    #
+    # @property
+    # def sd_thumb(self):
+    #     first_image = ProductImage.objects.all().filter(product=self).first()
+    #     sd_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='sd').first()
+    #     # print(sd_thumb.media.url)
+    #     return sd_thumb.media.url
 
     # bu metodu import edilince save ederken valueset parametresini göndermek için override ettik.
     # def save(self, *args, **kwargs):
@@ -202,31 +199,49 @@ class Variation(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     buying_currency = models.ForeignKey(Currency, null=True, blank=True)  # null means TL
     buying_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
-    buying_price_tl = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)  # calculated field.
     sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
+    gittigidiyor_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
+    n11_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     inventory = models.IntegerField(null=True, blank=True)  # refer none == unlimited amount
     product_barkod = models.CharField(max_length=100, null=True, blank=True)
-    istebu_product_no = models.CharField(max_length=100, null=True, blank=True)
+    # vendor = models.ForeignKey('vendors.Vendor', null=True, blank=True)
+    # vendor_product_no = models.CharField(max_length=100, null=True, blank=True)
+    # product alanı içerisinde de vendor_product_no var. XML çekerken, XML 'e de vendoru eklemek lazım. Dolayısıyla,
+    # her xml kendine ait olan variationa yazar buying price ve buying currency değerlerini. Sitede göstermek için de
+    # product sayfasında hangi vendor seçiliyse onun ürünü gösterilir. Eşleştirirken de önce vendoru kendi olan ürünleri
+    # bulur sonra kendine ait vendor no.lu ürün var mı bakar varsa update eder yoksa pas geçer. Şimdilik yukarıdaki
+    # modelleri eklemeyeyim.
 
     def __str__(self):
         return self.title
 
     # eğer ürünü import ederek eklemişsek variation'ın hem price hem de sale price kısmı empty geliyordu.
     # aşağıdaki revizyon ile düzelttim bakalım düzgün çalışacak mı?
-    def get_price(self):
+    # "{:,.2f}".format(self.sale_price * Decimal(self.buying_currency.value))
+    # "{:,.2f}".format(value) => thousands seperator işlevi sağlıyor, ancak sepete eklerken bu sorun yaratıyor...
+
+    def get_sale_price(self):
         if self.sale_price is not None:
-            return self.sale_price
+            return "{:.2f}".format(self.sale_price * Decimal(self.buying_currency.value))
         elif self.price is not None:
-            return self.price
+            return "{:.2f}".format(self.price * Decimal(self.buying_currency.value))
         else:
-            return self.product.price
+            return "{:.2f}".format(self.product.price * Decimal(self.buying_currency.value))
+
+    def get_product_price(self):
+        if self.product.price:
+            return self.product.price * Decimal(self.buying_currency.value)
+        else:
+            return 0
 
     def get_html_price(self):
         if self.sale_price is not None:
-            html_text = "<span class='sale-price'>%s</span> <span class='og-price'>%s</span>" % (self.sale_price,
-                                                                                                 self.price)
+            if float(self.get_sale_price()) < float(self.get_product_price()):
+                html_text = '<span class="aa-product-price">%s ,-₺</span> <span class="aa-product-price"><del>%s ,-₺</del></span>' % ("{:,.2f}".format(float(self.get_sale_price())), "{:,.2f}".format(float(self.get_product_price())))
+            else:
+                html_text = "<span class='aa-product-price'>%s ,-₺</span>" % "{:,.2f}".format(float(self.get_sale_price()))
         else:
-            html_text = "<span class='price'>%s</span>" % self.price
+            html_text = "<span class='aa-product-price'>%s ,-₺</span>" % "{:,.2f}".format(float(self.get_product_price()))
         return mark_safe(html_text)
 
     def get_absolute_url(self):
@@ -252,16 +267,56 @@ class ProductImage(models.Model):
         # img = self.image
         if self.image and hasattr(self.image, 'url'):
             img_url = self.image.url
-            # remove MEDIA_URL from img_url
-            img_url = img_url.replace(settings.MEDIA_URL, "/", 1)
-            # combine with media_root
-            img_path = settings.MEDIA_ROOT + img_url
-            return img_path
+
+            if "http" not in img_url:  # cloud kullanmıyoruz demektir
+                print("img_url", img_url)
+                # remove MEDIA_URL from img_url
+                img_url = img_url.replace(settings.MEDIA_URL, "/", 1)
+                # combine with media_root
+                img_path = settings.MEDIA_ROOT + img_url
+                print("img_path", img_url)
+                print("amazon 'da bu ikisi arasındaki fark nasıl acaba?")
+                return img_path
+            else:
+                return img_url
         else:
             return None  # None
 
     def __str__(self):
         return self.product.title
+
+    # // Aşağıdakiler için parametre olarak 'type' alan tek bir fonksiyon yazaydın ya...
+    @property
+    def micro_thumb(self):
+        micro_thumb = Thumbnail.objects.all().filter(main_image=self, type='micro').first()
+        if micro_thumb.media:
+            return micro_thumb.media.url
+        else:
+            return "Image has no Micro Thumbnail"
+
+    @property
+    def medium_thumb(self):
+        medium_thumb = Thumbnail.objects.all().filter(main_image=self, type='medium').first()
+        if medium_thumb.media:
+            return medium_thumb.media.url
+        else:
+            return "Image has no Medium Thumbnail"
+
+    @property
+    def sd_thumb(self):
+        sd_thumb = Thumbnail.objects.all().filter(main_image=self, type='sd').first()
+        if sd_thumb.media:
+            return sd_thumb.media.url
+        else:
+            return "Image has no SD Thumbnail"
+
+    @property
+    def hd_thumb(self):
+        hd_thumb = Thumbnail.objects.all().filter(main_image=self, type='hd').first()
+        if hd_thumb.media:
+            return hd_thumb.media.url
+        else:
+            return "Image has no HD Thumbnail"
 
 # ************************************************************************************************************ #
 
@@ -285,7 +340,7 @@ class CategoryQueryset(models.query.QuerySet):
 
 class CategoryManager(models.Manager):
     def get_queryset(self):
-        return CategoryQueryset(self.model, using=self._db)
+        return CategoryQueryset(self.model, using=self._db).order_by("title")
 
     def roots(self):
         return self.get_queryset().root_categories()
@@ -310,6 +365,7 @@ class Category(models.Model):
     objects = models.Manager()  # The default manager.
     with_childrens = CategoryManager()
 
+
     def __str__(self):
         return self.title
 
@@ -333,7 +389,7 @@ class Category(models.Model):
 
 # ************************************************************************************************************ #
 
-
+# Bu ürünleri Justin anasayfada tam ekran resim ise banner gibi gösteriyordu, bizde kullanılmıyor bu model.
 class ProductFeatured(models.Model):
     product = models.ForeignKey(ProductImage)
     image = models.ImageField(upload_to=image_upload_to_featured, max_length=2000)
@@ -400,8 +456,8 @@ class Thumbnail(models.Model):
         upload_to=thumbnail_location,
         max_length=2000)
 
-    def __unicode__(self):  # __str__(self):
-        return str(self.media.path)
+    def __str__(self):  # __str__(self):
+        return str(self.product.title + " " + self.type + " thumbnail image for main image with pk :" + str(self.main_image.pk))
 
 
 # ************************************************************************************************************ #

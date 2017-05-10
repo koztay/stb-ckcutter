@@ -1,4 +1,4 @@
-from django.views.generic.base import TemplateView
+from django.views.generic import TemplateView, FormView
 # from_valid metodunu override edersek aşağıdakiler gerekiyor
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType  # bu neden gerekli?
@@ -6,13 +6,16 @@ from data_importer.models import FileHistory
 
 
 from data_importer.views import DataImporterForm
-from data_importer.importers import XMLImporter, GenericImporter  # ileride XMLImporterı da kaldırabilirsek süper olur.
+from data_importer.importers import GenericImporter  # ileride XMLImporterı da kaldırabilirsek süper olur.
+from utils.generic_importer import run_all_steps
+
 from products.models import Product, ProductType, Currency, Variation, AttributeType, AttributeValue, Category, ProductImage
 from products.mixins import StaffRequiredMixin
 
-from .forms import ProductImporterMapTypeForm, ProductXMLImporterMapRootValueForm
-from .models import ProductImportMap, default_fields
-from .tasks import process_xls_row, download_image_for_product
+
+from .forms import ProductImporterMapTypeForm, ImporterForm
+from .models import ProductImportMap
+from .tasks import process_xls_row
 
 # https://www.youtube.com/watch?v=z0Gxxjbos4k linkinde anlatmış nasıl yapıldığını
 # from pycharmdebug import pydevd
@@ -91,11 +94,12 @@ def process_xls_row_no_task(importer_map_pk, row, values):
     update_default_fields(product_instance=product)
     # update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...
 
-    img_url = get_cell_for_field("Image")
+    # img_url = get_cell_for_field("Image")
 
     # aşağıdaki fonsiyon da import ediyor ürünleri sorunsuz şekilde...
-    print("IMG URL => :", img_url)
-    download_image_for_product.delay(img_url, product.id)
+    # print("IMG URL => :", img_url)
+    # download_image_for_product.delay(img_url, product.id)
+    # download_image_for_product.apply_async(args=[img_url, product.id], kwargs={}, queue='images')
     return "%s update edildi." % product.title
 
 
@@ -115,7 +119,11 @@ class ProductGenericImporter(GenericImporter):
     def process_row(self, row, values):
         importer_map = ProductImportMap.objects.get(pk=self.importer_type)
         # process_xls_row_no_task(importer_map.pk, row, values)
-        process_xls_row.delay(importer_map_pk=importer_map.pk, row=row, values=values)
+        # download_image_for_product.apply_async(args=[img_url, product.id], kwargs={}, queue='image')
+        # process_xls_row.delay(importer_map_pk=importer_map.pk, row=row, values=values)
+        process_xls_row.apply_async(args=[], kwargs={'importer_map_pk': importer_map.pk,
+                                                     'row': row,
+                                                     'values': values}, queue='xml')
 
 
 class GenericImporterCreateView(StaffRequiredMixin, DataImporterForm):
@@ -142,9 +150,11 @@ class GenericImporterCreateView(StaffRequiredMixin, DataImporterForm):
 
         if self.importer.Meta.model:
             content_type = ContentType.objects.get_for_model(self.importer.Meta.model)
-            file_history, _ = FileHistory.objects.get_or_create(file_upload=form.cleaned_data['file_upload'],
-                                                                owner=owner,
-                                                                content_type=content_type)
+        else:
+            content_type = None
+        file_history, _ = FileHistory.objects.get_or_create(file_upload=form.cleaned_data['file_upload'],
+                                                            owner=owner,
+                                                            content_type=content_type)
         # Bu satırı celery 'yi dikkate almaması için yazdık.
         self.is_task = False
         if not self.is_task or not hasattr(self.task, 'delay'):
@@ -172,3 +182,30 @@ class GenericImporterCreateView(StaffRequiredMixin, DataImporterForm):
 
         return super(DataImporterForm, self).form_valid(form)
 
+
+class XMLImporterRunImportTaskView(StaffRequiredMixin, FormView):
+    template_name = 'importer/start_xml_task.html'
+    form_class = ImporterForm
+    success_url = '.'
+
+    def form_valid(self, form, owner=None):
+        xml_file_instance = form.cleaned_data.get('import_file')
+        import_map_instance = form.cleaned_data.get('import_map')
+        number_of_items = form.cleaned_data.get('number_of_items_for_testing')
+        download_images = form.cleaned_data.get('download_images')
+        allow_item_creation = form.cleaned_data.get('allow_item_creation')
+
+        # print("xml_file_instance :", xml_file_instance.pk)
+        # print("import_map_instance", import_map_instance.pk)
+        # print("number_of_items :", number_of_items)
+        # print("download_images ", download_images)
+        # print("allow_item_creation ", allow_item_creation)
+
+        run_all_steps(xml_file_pk=xml_file_instance.pk,
+                      import_map_pk=import_map_instance.pk,
+                      number_of_items=number_of_items,
+                      download_images=download_images,
+                      allow_item_creation=allow_item_creation
+                      )
+        messages.success(self.request,"Import İşlemi Başlatıldı!")
+        return super(XMLImporterRunImportTaskView, self).form_valid(form)

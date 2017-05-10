@@ -66,11 +66,35 @@ node_modules/
 
 # virtual environments
 .env
+.env_staging
 
 # User-uploaded media
 ecommerce_istebu_cookiecutter/media/
-
-
-
 staticfiles/
 templating_files/
+
+# cloud-config
+core-os-cloud-config.yml
+create_coreos_droplet.sh
+
+# py-test cache files bu sanırım...
+.cache
+
+# postgres_backups
+postgres_backups
+
+# ignore this trial file
+eval.sh
+
+# ignore xls, xlsx, xml files
+*.xls
+*.xlsx
+*.xml
+
+!/products/templates/products/xml/base.xml
+!/products/templates/products/xml/products.xml
+!/products/templates/products/xml/products_test.xml
+
+# miscellaneous files
+rm_cached.sh
+

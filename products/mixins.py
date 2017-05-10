@@ -47,16 +47,23 @@ class FilterMixin(object):
             raise ImproperlyConfigured("You must have a queryset in order to use the FilterMixin")
 
     def get_context_data(self, *args, **kwargs):
+
         context = super(FilterMixin, self).get_context_data(*args, **kwargs)
         qs = self.get_queryset()
         ordering = self.request.GET.get(self.search_ordering_param)
 
         if ordering:
             qs = qs.order_by(ordering)
+            print("ordering var qs niye değiişmiyor ? qs =", qs)
         filter_class = self.filter_class
 
         if filter_class:
             f = filter_class(self.request.GET, queryset=qs)
-            context["object_list"] = f
 
+            print(filter_class)
+            print(type(filter_class))
+
+            context["object_list"] = f.qs
+            print("gerçekten filtrelese sayı değişir => ", len(context["object_list"]))
+            # f = UserFilter(request.GET, queryset=User.objects.all()) # bunda da bir sıkıntı yok...
         return context

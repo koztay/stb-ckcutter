@@ -29,7 +29,7 @@ jQuery(function ($) {
 
 
     /* ----------------------------------------------------------- */
-    /*  1. CARTBOX 
+    /*  1. CARTBOX
      /* ----------------------------------------------------------- */
 
     jQuery(".aa-cartbox").hover(function () {
@@ -47,16 +47,16 @@ jQuery(function ($) {
     jQuery('[data-toggle2="tooltip"]').tooltip();
 
     /* ----------------------------------------------------------- */
-    /*  3. PRODUCT VIEW SLIDER 
+    /*  3. PRODUCT VIEW SLIDER
      /* ----------------------------------------------------------- */
 
-    jQuery('#demo-1 .simpleLens-thumbnails-container img').simpleGallery({
-        loading_image: 'static/img/view-slider/loading.gif'
-    });
-
-    jQuery('#demo-1 .simpleLens-big-image').simpleLens({
-        loading_image: 'static/img/view-slider/loading.gif'
-    });
+    // jQuery('#demo-1 .simpleLens-thumbnails-container img').simpleGallery({
+    //     loading_image: 'static/img/view-slider/loading.gif'
+    // });
+    //
+    // jQuery('#demo-1 .simpleLens-big-image').simpleLens({
+    //     loading_image: 'static/img/view-slider/loading.gif'
+    // });
 
     /* ----------------------------------------------------------- */
     /*  4. POPULAR PRODUCT SLIDER (SLICK SLIDER)
@@ -237,38 +237,38 @@ jQuery(function ($) {
     /*  9. PRICE SLIDER  (noUiSlider SLIDER)
      /* ----------------------------------------------------------- */
 
-    jQuery(function () {
-        if ($('body').is('.productPage')) {
-            var skipSlider = document.getElementById('skipstep');
-            noUiSlider.create(skipSlider, {
-                range: {
-                    'min': 0,
-                    '10%': 10,
-                    '20%': 20,
-                    '30%': 30,
-                    '40%': 40,
-                    '50%': 50,
-                    '60%': 60,
-                    '70%': 70,
-                    '80%': 80,
-                    '90%': 90,
-                    'max': 100
-                },
-                snap: true,
-                connect: true,
-                start: [20, 70]
-            });
-            // for value print
-            var skipValues = [
-                document.getElementById('skip-value-lower'),
-                document.getElementById('skip-value-upper')
-            ];
-
-            skipSlider.noUiSlider.on('update', function (values, handle) {
-                skipValues[handle].innerHTML = values[handle];
-            });
-        }
-    });
+    // jQuery(function () {
+    //     if ($('body').is('.productPage')) {
+    //         var skipSlider = document.getElementById('skipstep');
+    //         noUiSlider.create(skipSlider, {
+    //             range: {
+    //                 'min': 0,
+    //                 '10%': 10,
+    //                 '20%': 20,
+    //                 '30%': 30,
+    //                 '40%': 40,
+    //                 '50%': 50,
+    //                 '60%': 60,
+    //                 '70%': 70,
+    //                 '80%': 80,
+    //                 '90%': 90,
+    //                 'max': 100
+    //             },
+    //             snap: true,
+    //             connect: true,
+    //             start: [20, 70]
+    //         });
+    //         // for value print
+    //         var skipValues = [
+    //             document.getElementById('skip-value-lower'),
+    //             document.getElementById('skip-value-upper')
+    //         ];
+    //
+    //         skipSlider.noUiSlider.on('update', function (values, handle) {
+    //             skipValues[handle].innerHTML = values[handle];
+    //         });
+    //     }
+    // });
 
 
     /* ----------------------------------------------------------- */
@@ -296,12 +296,12 @@ jQuery(function ($) {
     /*  11. PRELOADER
      /* ----------------------------------------------------------- */
 
-    jQuery(window).load(function () { // makes sure the whole site is loaded      
-        jQuery('#wpf-loader-two').delay(200).fadeOut('slow'); // will fade out      
+    jQuery(window).load(function () { // makes sure the whole site is loaded
+        jQuery('#wpf-loader-two').delay(200).fadeOut('slow'); // will fade out
     })
 
     /* ----------------------------------------------------------- */
-    /*  12. GRID AND LIST LAYOUT CHANGER 
+    /*  12. GRID AND LIST LAYOUT CHANGER
      /* ----------------------------------------------------------- */
 
     jQuery("#list-catg").click(function (e) {
