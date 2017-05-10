@@ -1,4 +1,4 @@
-version: '2'
+version: '3.1'
 
 volumes:
   postgres_data: {}
@@ -7,6 +7,7 @@ volumes:
 
 services:
   postgres:
+    restart: always
     build: ./compose/postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -14,6 +15,7 @@ services:
     env_file: .env_staging
 
   django:
+    restart: always
     build:
       context: .
       dockerfile: ./compose/django/Dockerfile
@@ -33,8 +35,6 @@ services:
       - django
     volumes:
       - static-data:/static_root
-    volumes_from:
-      - django
     ports:
       - "0.0.0.0:80:80"
 
@@ -60,8 +60,6 @@ services:
      - redis
     volumes:
       - static-data:/static_root
-    volumes_from:
-      - django
 #    command: /celery.sh
 #    command: celery multi start worker1 -A ecommerce_istebu_cookiecutter.taskapp -l INFO -Ofair --pidfile="/app/%n.pid" --logfile="/app/%n%I.log"
     command: celery -A ecommerce_istebu_cookiecutter.taskapp worker -Q images,xml,default -l INFO -Ofair --without-gossip --without-mingle --without-heartbeat
@@ -80,7 +78,5 @@ services:
       - redis
     volumes:
       - static-data:/static_root
-    volumes_from:
-      - django
     command: celery -A ecommerce_istebu_cookiecutter.taskapp beat -l INFO -S django
 # -S django parametresini koymazsan çalışmıyor periyodik tasklar...

@@ -83,7 +83,7 @@ msgstr "Birincil"
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:37
 #: templates_for_istebu/account/email.html:37
 msgid "Make Primary"
-msgstr "Birinvil Yap"
+msgstr "Birincil Yap"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:38
 #: templates_for_istebu/account/email.html:38
@@ -356,6 +356,10 @@ msgid ""
 "verification. Please click on the link inside this e-mail. Please\n"
 "contact us if you do not receive it within a few minutes."
 msgstr ""
+"Posta adresininizi doğrulamanız için size bir onay e-postası gönderdik.\n"
+"Lütfen size gelen e-postadaki linke tıklayarak e-posta adresinizi doğrulayın."
+"Birkaç dakika içerisinde onay e-postası almazsanız spam klasörünüzü kontrol\n"
+"edin ve e-posta almamışsanız bizimle iletişime geçin."
 
 #: ecommerce_istebu_cookiecutter/templates/account/verified_email_required.html:20
 #: templates_for_istebu/account/verified_email_required.html:20
