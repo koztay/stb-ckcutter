@@ -37,6 +37,7 @@ services:
       - static-data:/static_root
     ports:
       - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
 
 
 #  redis:

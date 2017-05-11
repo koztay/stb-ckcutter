@@ -1,0 +1,293 @@
+#!/bin/bash
+
+
+APP_ENV="${APP_ENV:-staging}"
+SERVER_IP="${SERVER_IP:-138.68.107.162}"
+SSH_USER="core"
+KEY_USER="core"
+DOCKER_VERSION="${DOCKER_VERSION:-1.8.3}"
+
+DOCKER_PULL_IMAGES=("postgres:9.4.5" "redis:2.8.22")
+COPY_UNIT_FILES=("swap" "postgres" "redis" "mobydock" "nginx")
+SSL_CERT_BASE_NAME="productionexample"
+
+
+
+function docker_pull () {
+  echo "Pulling Docker images..."
+  for image in "${DOCKER_PULL_IMAGES[@]}"
+  do
+    ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'docker pull ${image}'"
+  done
+  echo "done!"
+}
+
+function git_init () {
+  echo "Initialize git repo and hooks..."
+  scp "git/post-receive/istebu" "${SSH_USER}@${SERVER_IP}:/tmp/istebu"
+  scp "git/post-receive/nginx" "${SSH_USER}@${SERVER_IP}:/tmp/nginx"
+  ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'
+sudo apt-get update && sudo apt-get install -y -q git
+sudo rm -rf /var/git/istebu.git /var/git/istebu /var/git/nginx.git /var/git/nginx
+sudo mkdir -p /var/git/istebu.git /var/git/istebu /var/git/nginx.git /var/git/nginx
+sudo git --git-dir=/var/git/istebu.git --bare init
+sudo git --git-dir=/var/git/nginx.git --bare init
+
+sudo mv /tmp/istebu /var/git/istebu.git/hooks/post-receive
+sudo mv /tmp/nginx /var/git/nginx.git/hooks/post-receive
+sudo chmod +x /var/git/istebu.git/hooks/post-receive /var/git/nginx.git/hooks/post-receive
+sudo chown ${SSH_USER}:${SSH_USER} -R /var/git/istebu.git /var/git/istebu /var/git/nginx.git /var/git/nginx
+  '"
+  echo "done!"
+}
+
+function configure_firewall () {
+  echo "Configuring iptables firewall..."
+  scp "iptables/rules-save" "${SSH_USER}@${SERVER_IP}:/tmp/rules-save"
+  ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'
+sudo mkdir -p /var/lib/iptables
+sudo mv /tmp/rules-save /var/lib/iptables
+sudo chown root:root -R /var/lib/iptables
+  '"
+  echo "done!"
+}
+
+function copy_units () {
+  echo "Copying systemd unit files..."
+  for unit in "${COPY_UNIT_FILES[@]}"
+  do
+    scp "units/${unit}.service" "${SSH_USER}@${SERVER_IP}:/tmp/${unit}.service"
+    ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'
+sudo mv /tmp/${unit}.service /etc/systemd/system
+sudo chown ${SSH_USER}:${SSH_USER} /etc/systemd/system/${unit}.service
+  '"
+  done
+  echo "done!"
+}
+
+function enable_base_units () {
+  echo "Enabling base systemd units..."
+  ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'
+sudo systemctl enable iptables-restore.service
+sudo systemctl start iptables-restore.service
+sudo systemctl enable swap.service
+sudo systemctl start swap.service
+sudo systemctl enable postgres.service
+sudo systemctl start postgres.service
+sudo systemctl enable redis.service
+sudo systemctl start redis.service
+  '"
+  ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'sudo systemctl restart docker'"
+  echo "done!"
+}
+
+function copy_env_config_files () {
+  echo "Copying environment/config files..."
+  scp "${APP_ENV}/__init__.py" "${SSH_USER}@${SERVER_IP}:/tmp/__init__.py"
+  scp "${APP_ENV}/settings.py" "${SSH_USER}@${SERVER_IP}:/tmp/settings.py"
+  ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'
+sudo mkdir -p /home/${SSH_USER}/config
+sudo mv /tmp/__init__.py /home/${SSH_USER}/config/__init__.py
+sudo mv /tmp/settings.py /home/${SSH_USER}/config/settings.py
+sudo chown ${SSH_USER}:${SSH_USER} -R /home/${SSH_USER}/config
+  '"
+  echo "done!"
+}
+
+function copy_ssl_certs () {
+  echo "Copying SSL certificates..."
+if [[ "${APP_ENV}" == "staging" ]]; then
+  scp "nginx/certs/${SSL_CERT_BASE_NAME}.crt" "${SSH_USER}@${SERVER_IP}:/tmp/${SSL_CERT_BASE_NAME}.crt"
+  scp "nginx/certs/${SSL_CERT_BASE_NAME}.key" "${SSH_USER}@${SERVER_IP}:/tmp/${SSL_CERT_BASE_NAME}.key"
+  scp "nginx/certs/dhparam.pem" "${SSH_USER}@${SERVER_IP}:/tmp/dhparam.pem"
+else
+  scp "production/certs/${SSL_CERT_BASE_NAME}.crt" "${SSH_USER}@${SERVER_IP}:/tmp/${SSL_CERT_BASE_NAME}.crt"
+  scp "production/certs/${SSL_CERT_BASE_NAME}.key" "${SSH_USER}@${SERVER_IP}:/tmp/${SSL_CERT_BASE_NAME}.key"
+  scp "production/certs/dhparam.pem" "${SSH_USER}@${SERVER_IP}:/tmp/dhparam.pem"
+fi
+  ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'
+sudo mv /tmp/${SSL_CERT_BASE_NAME}.crt /etc/ssl/certs/${SSL_CERT_BASE_NAME}.crt
+sudo mv /tmp/${SSL_CERT_BASE_NAME}.key /etc/ssl/private/${SSL_CERT_BASE_NAME}.key
+sudo mv /tmp/dhparam.pem /etc/ssl/private/dhparam.pem
+sudo chown root:root -R /etc/ssl
+  '"
+  echo "done!"
+}
+
+function run_application () {
+  echo "Running the application..."
+  ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'
+sudo systemctl enable mobydock.service nginx.service
+sudo systemctl start mobydock.service nginx.service
+  '"
+  echo "done!"
+}
+
+function provision_server () {
+  echo "---"
+  docker_pull
+  echo "---"
+  git_init
+  echo "---"
+  configure_firewall
+  echo "---"
+  copy_units
+  echo "---"
+  enable_base_units
+  echo "---"
+  copy_env_config_files
+  echo "---"
+  copy_ssl_certs
+}
+
+
+function help_menu () {
+cat << EOF
+Usage: ${0} (-h | -S | -u | -k | -s | -d [docker_ver] | -l | -g | -f | -c | -b | -e | -x | -r | -a [docker_ver])
+
+ENVIRONMENT VARIABLES:
+   APP_ENV          Environment that is being deployed to, 'staging' or 'production'
+                    Defaulting to ${APP_ENV}
+
+   SERVER_IP        IP address to work on, ie. staging or production
+                    Defaulting to ${SERVER_IP}
+
+   SSH_USER         User account to ssh and scp in as
+                    Defaulting to ${SSH_USER}
+
+   KEY_USER         User account linked to the SSH key
+                    Defaulting to ${KEY_USER}
+
+   DOCKER_VERSION   Docker version to install
+                    Defaulting to ${DOCKER_VERSION}
+
+OPTIONS:
+   -h|--help                 Show this message
+   -l|--docker-pull          Pull necessary Docker images
+   -g|--git-init             Install and initialize git
+   -f|--firewall             Configure the iptables firewall
+   -c|--copy-units           Copy systemd unit files
+   -b|--enable-base-units    Enable base systemd unit files
+   -e|--copy--environment    Copy app environment/config files
+   -x|--ssl-certs            Copy SSL certificates
+   -r|--run-app              Run the application
+   -a|--all                  Provision everything except preseeding
+
+EXAMPLES:
+   Configure passwordless sudo:
+        $ deploy -u
+
+   Add SSH key:
+        $ deploy -k
+
+   Configure secure SSH:
+        $ deploy -s
+
+   Install Docker v${DOCKER_VERSION}:
+        $ deploy -d
+
+   Install custom Docker version:
+        $ deploy -d 1.8.1
+
+   Pull necessary Docker images:
+        $ deploy -l
+
+   Install and initialize git:
+        $ deploy -g
+
+   Configure the iptables firewall:
+        $ deploy -f
+
+   Copy systemd unit files:
+        $ deploy -c
+
+   Enable base systemd unit files:
+        $ deploy -b
+
+   Copy app environment/config files:
+        $ deploy -e
+
+   Copy SSL certificates:
+        $ deploy -x
+
+   Run the application:
+        $ deploy -r
+
+   Configure everything together:
+        $ deploy -a
+
+   Configure everything together with a custom Docker version:
+        $ deploy -a 1.8.1
+EOF
+}
+
+
+while [[ $# > 0 ]]
+do
+case "${1}" in
+  -S|--preseed-staging)
+  preseed_staging
+  shift
+  ;;
+  -u|--sudo)
+  configure_sudo
+  shift
+  ;;
+  -k|--ssh-key)
+  add_ssh_key
+  shift
+  ;;
+  -s|--ssh)
+  configure_secure_ssh
+  shift
+  ;;
+  -d|--docker)
+  install_docker "${2:-${DOCKER_VERSION}}"
+  shift
+  ;;
+  -l|--docker-pull)
+  docker_pull
+  shift
+  ;;
+  -g|--git-init)
+  git_init
+  shift
+  ;;
+  -f|--firewall)
+  configure_firewall
+  shift
+  ;;
+  -c|--copy-units)
+  copy_units
+  shift
+  ;;
+  -b|--enable-base-units)
+  enable_base_units
+  shift
+  ;;
+  -e|--copy--environment)
+  copy_env_config_files
+  shift
+  ;;
+  -x|--ssl-certs)
+  copy_ssl_certs
+  shift
+  ;;
+  -r|--run-app)
+  run_application
+  shift
+  ;;
+  -a|--all)
+  provision_server "${2:-${DOCKER_VERSION}}"
+  shift
+  ;;
+  -h|--help)
+  help_menu
+  shift
+  ;;
+  *)
+  echo "${1} is not a valid flag, try running: ${0} --help"
+  ;;
+esac
+shift
+done

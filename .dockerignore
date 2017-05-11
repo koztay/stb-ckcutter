@@ -9,8 +9,9 @@ staticfiles
 # ignore templaing_files directory
 templating_files
 
-# ignore deploy folder because in this case iti is not necessary
-deploy
+# ignore deploy folder because in this case it is not necessary
+deploy-ssh-nginx
+deploy-original
 
 # ignore media directory
 */media

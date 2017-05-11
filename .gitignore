@@ -98,3 +98,5 @@ eval.sh
 # miscellaneous files
 rm_cached.sh
 
+# certificate files:
+/compose/nginx/certs
