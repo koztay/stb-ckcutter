@@ -10,6 +10,7 @@ from .views import (
     xml_test,
     stream_response,
     update_session,
+    download_xml_streaming,
     ProductListTagFilterView,
 )
 
@@ -28,7 +29,7 @@ urlpatterns = [
     # url(r'^(?P<id>\d+)', 'products.views.product_detail_view_func', name='product_detail_function'),
     # url(r'^(?P<slug>[\w-]+)/$', 'products.views.detail_slug_view', name='product_detail_slug_function'),
     # url(r'^(?P<slug>[\w-]+)/$', ProductDetailView.as_view(), name='detail_slug'),
-    url(r'^stream/stream.xml$', stream_response, name='stream_xml'),
+    url(r'^stream/stream.xml$', download_xml_streaming, name='stream_xml'),
 
 
 ]

@@ -1,4 +1,5 @@
 import time
+from io import StringIO
 from lxml import etree
 from django.conf import settings
 from django.contrib import messages
@@ -53,8 +54,26 @@ def some_view(request):
 
 
 """
+"""
+atom_set = Atom.objects.all()
+# One database query to start fetching the rows in batches.
+atom_iterator = atom_set.iterator()
+# Peek at the first item in the iterator.
+try:
+    first_atom = next(atom_iterator)
+except StopIteration:
+    # No rows were found, so do nothing.
+    pass
+else:
+    # At least one row was found, so iterate over
+    # all the rows, including the first one.
+    from itertools import chain
+    for atom in chain([first_atom], atom_iterator):
+        print(atom.mass)
+"""
 
 
+# bunu price slider 'ın düzgün çalışması için kullanıyorum...
 def update_session(request, *args, **kwargs):
 
     # if not request.is_ajax() or not request.method == 'POST':
@@ -78,6 +97,56 @@ def stream_response_generator():
         yield "%s\n" % x  # Returns a chunk of the response to the browser
         time.sleep(1)
 
+
+def big_xml():
+
+    products = Product.objects.all()
+
+    def write_header():
+        # global line_number_after
+        output.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+        output.write('<products>\n')
+
+    def write_xml_node(product_instance):
+
+        output.write('<product>\n')
+        output.write(
+            '<istebu_product_no>' + '<![CDATA[{}]]>'.format(product_instance.istebu_product_no) + '</istebu_product_no>\n')
+        output.write('</product>\n')
+
+    product_iterator = products.iterator()
+
+    for num, product in enumerate(product_iterator):
+        output = StringIO()
+
+        last_number = len(products) - 1
+
+        if num == 0:
+            # write header
+            write_header()
+        elif num == last_number:
+            # write xml node + closing tag
+            write_xml_node(product_instance=product)
+            output.write('</products>')
+        else:
+            # write xml_nodes
+            write_xml_node(product)
+
+        output.seek(0)
+        yield output.read()
+        time.sleep(0.2)
+
+
+def download_xml_streaming(request):
+    """Returns an XML file.
+    This view responds with a generator that yields each row of the response as
+    it's created.
+    """
+    # products = Product.objects.all()
+    response = StreamingHttpResponse(big_xml(), content_type='text/xml')
+    response['Content-Disposition'] = 'attachment; filename=big.xml'
+
+    return response
 
 # def big_csv(num_rows):
 #     for row in range(num_rows):
@@ -103,11 +172,12 @@ def stream_response_generator():
 #
 #     return response
 
-
+# bunu sil
 def xml_generator():
 
     products = Product.objects.all()
-    for item, urun in enumerate(products):
+    products_iterator = products.iterator()  # we have converted the queryset to iterator
+    for item, urun in enumerate(products_iterator):
         if item == 0:
             row = '<?xml version="1.0" encoding="UTF-8"?>\n'
             root_node = '<products>\n'
@@ -131,16 +201,18 @@ def xml_generator():
     #     time.sleep(1)
 
 
+# bunu da sil
 def xml_generator_2():
 
     template_vars = dict()
-    template_vars['products'] = Product.objects.all()
+    products = Product.objects.all()
+    template_vars['products'] = products.iterator()
     template_vars['buffer'] = ' ' * 1024
 
     t = loader.get_template('products/xml/base.xml')  # or whatever
     buffer = ' ' * 1024
 
-    for product in Product.objects.all():
+    for product in products.iterator():
         c = Context({"product": product})
         yield t.render(c)
 
@@ -158,6 +230,8 @@ def xml_generator_2():
     #         c = Context({'mydata': x})
     #         yield t.render(c)
 
+
+# bunu da sil
 def xml_test(request, marketplace):
     """
     returns an XML of the most latest posts
