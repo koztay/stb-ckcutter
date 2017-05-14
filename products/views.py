@@ -1,6 +1,7 @@
 import time
 from io import StringIO
 from lxml import etree
+from django.contrib.sites.models import Site
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -11,6 +12,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Context, loader
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.html import escape
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
@@ -98,9 +100,41 @@ def stream_response_generator():
         time.sleep(1)
 
 
-def big_xml():
+"""
+ <product>
+  {% with product.variation_set as variation_set %}
+    <istebu_product_no><![CDATA[ {{ product.istebu_product_no }} ]]></istebu_product_no>
+    <product_barkod><![CDATA[{% if variation_set.first.product_barkod %}{{ variation_set.first.product_barkod }}{% else %}No Product Barkod{% endif %}]]></product_barkod>
+    <product_brand><![CDATA[ {{ product.get_brand }} ]]></product_brand>
+    <product_title><![CDATA[ {{ product.title }} ]]></product_title>
+    <product_description><![CDATA[ {{ product.description }} ]]></product_description>
+    <product_category><![CDATA[ {{ product.get_main_category }} ]]></product_category>
+    {% if marketplace == "n11" %}
+        {% if variation_set.first.n11_price %}
+    <product_price>{{ variation_set.first.n11_price }}</product_price>
+        {% else %}
+    <product_price>{{ variation_set.first.sale_price }}</product_price>
+        {% endif %}
+    {% elif marketplace == "gittigidiyor" %}
+        {% if variation_set.first.n11_price %}
+    <product_price>{{ variation_set.first.gittigidiyor_price }}</product_price>
+        {% else %}
+    <product_price>{{ variation_set.first.sale_price }}</product_price>
+        {% endif %}
+    {% endif %}
+    <product_image>{{ product|get_thumbnail:"sd"}}</product_image>
+    <product_url>
+        {% if request.is_secure %}https://{% else %}http://{% endif %}{{host}}{{product.get_absolute_url}}
+    </product_url>
+    <stok_adedi>{{ variation_set.all.0.inventory }}</stok_adedi>
+  {% endwith %}
+  </product>
 
-    products = Product.objects.all()
+"""
+
+
+def big_xml(marketplace):
+    products = Product.objects.all().order_by('istebu_product_no')
 
     def write_header():
         # global line_number_after
@@ -108,10 +142,55 @@ def big_xml():
         output.write('<products>\n')
 
     def write_xml_node(product_instance):
-
+        variation_instance = product.variation_set.first()
         output.write('<product>\n')
         output.write(
-            '<istebu_product_no>' + '<![CDATA[{}]]>'.format(product_instance.istebu_product_no) + '</istebu_product_no>\n')
+            '<istebu_product_no>' + '<![CDATA[{}]]>'.format(product_instance.istebu_product_no)
+            + '</istebu_product_no>\n')
+        output.write(
+            '<product_barkod>' + '<![CDATA[{}]]>'.format(variation_instance.product_barkod) + '</product_barkod>\n')
+        output.write(
+            '<product_brand>' + '<![CDATA[{}]]>'.format(product_instance.get_brand()) + '</product_brand>\n')
+        output.write(
+            '<product_title>' + '<![CDATA[{}]]>'.format(product_instance.title) + '</product_title>\n')
+        output.write(
+            '<product_description>' + '<![CDATA[{}]]>'.format(escape(product_instance.description))
+            + '</product_description>\n')
+        output.write(
+            '<product_category>' + '<![CDATA[{}]]>'.format(product_instance.get_main_category())
+            + '</product_category>\n')
+        # TODO : Aşağıdaki iç içe geçmiş if blokalrı daha kısa yazılabilir mi?
+        if marketplace == "n11":
+            if variation_instance.gittigidiyor_price:
+                price = variation_instance.gittigidiyor_price
+            else:
+                price = variation_instance.sale_price
+            output.write(
+                '<product_price>' + '<![CDATA[{}]]>'.format(price) + '</product_price>\n')
+        elif marketplace == "gittigidiyor":
+            if variation_instance.n11_price:
+                price = variation_instance.gittigidiyor_price
+            else:
+                price = variation_instance.sale_price
+            output.write(
+                '<product_price>' + '<![CDATA[{}]]>'.format(price) + '</product_price>\n')
+        else:  # test ise
+            output.write(
+                '<product_price>' + '<![CDATA[{}]]>'.format(variation_instance.sale_price) + '</product_price>\n')
+        try:
+            media_url = product.productimage_set.first().sd_thumb
+        except:
+            media_url = "No Image"
+        output.write(
+            '<product_image>' + '<![CDATA[{}]]>'.format(media_url) + '</product_image>\n')
+
+        domain = Site.objects.get_current().domain
+        path = product.get_absolute_url()
+        output.write(
+            '<product_url>' + '<![CDATA[http://{domain}{path}]]>'.format(domain=domain, path=path)
+            + '</product_url>\n')
+        output.write(
+            '<stok_adedi>' + '<![CDATA[{}]]>'.format(variation_instance.inventory) + '</stok_adedi>\n')
         output.write('</product>\n')
 
     product_iterator = products.iterator()
@@ -134,17 +213,22 @@ def big_xml():
 
         output.seek(0)
         yield output.read()
-        time.sleep(0.2)
+        # time.sleep(0.2)
 
 
-def download_xml_streaming(request):
+def download_xml_streaming(request, marketplace):
     """Returns an XML file.
     This view responds with a generator that yields each row of the response as
     it's created.
     """
+    if marketplace in ("n11", "gittigidiyor", "test",):
+        # print("if mi çalışmıyor ? :", marketplace)
+        pass
+    else:
+        raise Http404("The link is not available!")
     # products = Product.objects.all()
-    response = StreamingHttpResponse(big_xml(), content_type='text/xml')
-    response['Content-Disposition'] = 'attachment; filename=big.xml'
+    response = StreamingHttpResponse(big_xml(marketplace), content_type='text/xml')
+    response['Content-Disposition'] = 'attachment; filename=istebu.xml'
 
     return response
 

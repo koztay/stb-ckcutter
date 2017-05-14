@@ -33,6 +33,7 @@ class ProductModelSerializer(serializers.ModelSerializer):
             'url': product.get_absolute_url(),
             'category': category,
             'category_url': category_url,
+            'marka': product.get_brand(),
         }
         return product_json
 

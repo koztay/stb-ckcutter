@@ -13,7 +13,7 @@ class ProductListAPIView(generics.ListAPIView):
         return Product.objects.all()[:10]
 
 
-class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductModelSerializer
 

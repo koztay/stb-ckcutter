@@ -66,7 +66,6 @@ class ProductManager(models.Manager):
         return qs
 
 
-
 class Product(models.Model):
     title = models.CharField(max_length=1000)
     # description = models.TextField(blank=True, null=True)
@@ -97,13 +96,16 @@ class Product(models.Model):
         return self.title
 
     def get_brand(self):
-        attr_type = AttributeType.objects.filter(type="Marka", product=self)
+        attr_type = AttributeType.objects.filter(type="Marka")
         attr = AttributeValue.objects.filter(attribute_type=attr_type, product=self)
+        # print("attr : ", attr)
+        marka = "No Brand Set for Product"
         for attribute in attr:
+            # print(attribute)
             if attribute.value:
-                return attribute.value
-            else:
-                return "No Brand Set for Product"
+                # print("marka niye yazmaz baba :", attribute.value)
+                marka = attribute.value
+        return marka
 
     def get_absolute_url(self):
         view_name = "products:product_detail"
