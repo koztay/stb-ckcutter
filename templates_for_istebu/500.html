@@ -1,15 +1,29 @@
 {% extends "__base.html" %}
 
-{% block title %}Server Error{% endblock %}
+{% block title %}Server Hatası{% endblock %}
 
 {% block content %}
-<h1>Ooops!!! 500</h1>
+<!- 500 error section -->
 
-<h3>Looks like something went wrong!</h3>
-
-<p>We track these errors automatically, but if the problem persists feel free to contact us. In the meantime, try refreshing.</p>
+<section id="aa-error">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="aa-error-area">
+                    <h2>Ooops!!! 500</h2>
+                    <h3>Kritik bir hata oluştu!</h3>
+                    <span>Serverımızda oluşan hatalar teknik ekibimize raporlanıyor,</span>
+                    <p>Az önce oluşan hata da ekibimizce incelenecek ve en hızlı şekilde gerekli önlemler alınacaktır.
+                        Kısa süre sonra tekrar denediğinizde hata devam ediyorsa, muhtemelen ekibimizin gözünden kaçmış
+                        demektir. Bu gibi durumlarda bize ulaşıp hatayı bildirirseniz teknik ekibimiz size minnettar
+                        kalacaktır :-) . Hata bildirimi için: <a href="{% url 'contact' %}"> bize yazın.</a> Ya da:</p>
+                    <p><a href="{% url 'home' %}"> Anasayfa</a> 'ya dönün. </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock content %}
-
 
 {% block javascript_section %}
     {% include '_javascripts/_javascript_home.html' %}

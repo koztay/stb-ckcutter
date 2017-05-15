@@ -1,6 +1,11 @@
 {% extends "__base.html" %}
 {% block title %}{% block head_title %}{% endblock head_title %}{% endblock title %}
 
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
+
+
 {% block content %}
 
 <section id="aa-login">
