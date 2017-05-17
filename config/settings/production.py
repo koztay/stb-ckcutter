@@ -199,9 +199,9 @@ LOGGING = {
             'propagate': True
         },
         'django.security.DisallowedHost': {
-            'level': 'ERROR',
+            'level': 'CRITICAL',
             'handlers': ['console', 'mail_admins', ],
-            'propagate': True
+            'propagate': False
         }
     }
 }

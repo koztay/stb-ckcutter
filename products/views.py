@@ -160,23 +160,11 @@ def big_xml(marketplace):
             '<product_category>' + '<![CDATA[{}]]>'.format(product_instance.get_main_category())
             + '</product_category>\n')
         # TODO : Aşağıdaki iç içe geçmiş if blokalrı daha kısa yazılabilir mi?
-        if marketplace == "n11":
-            if variation_instance.gittigidiyor_price:
-                price = variation_instance.gittigidiyor_price
-            else:
-                price = variation_instance.sale_price
-            output.write(
-                '<product_price>' + '<![CDATA[{}]]>'.format(price) + '</product_price>\n')
-        elif marketplace == "gittigidiyor":
-            if variation_instance.n11_price:
-                price = variation_instance.gittigidiyor_price
-            else:
-                price = variation_instance.sale_price
-            output.write(
-                '<product_price>' + '<![CDATA[{}]]>'.format(price) + '</product_price>\n')
-        else:  # test ise
-            output.write(
-                '<product_price>' + '<![CDATA[{}]]>'.format(variation_instance.sale_price) + '</product_price>\n')
+
+        output.write(
+            '<product_price>' + '<![CDATA[{}]]>'.format(variation_instance.get_xml_sale_price(market=marketplace))
+            + '</product_price>\n')
+
         try:
             media_url = product.productimage_set.first().sd_thumb
         except:

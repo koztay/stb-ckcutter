@@ -67,10 +67,10 @@ class ProductManager(models.Manager):
 
 
 class Product(models.Model):
-    title = models.CharField(max_length=1000)
+    title = models.CharField(db_index=True, max_length=1000)
     # description = models.TextField(blank=True, null=True)
-    description = RichTextField(default="<h1>default description</h1>", blank=True, null=True)
-    price = models.DecimalField(decimal_places=2, max_digits=20, blank=True, null=True)
+    description = RichTextField(db_index=True, default="<h1>default description</h1>", blank=True, null=True)
+    price = models.DecimalField(db_index=True, decimal_places=2, max_digits=20, blank=True, null=True)
     active = models.BooleanField(default=True)
     categories = models.ManyToManyField('Category', blank=True)
     product_type = models.ForeignKey('ProductType', null=True, blank=True)
@@ -79,14 +79,22 @@ class Product(models.Model):
     # yukarıdaki default field 'ı related products için gerekli. Algoritmayı incelemedim ama daha
     # iyi bir yol bulunabilir. // TODO: Bu field 'a gerek olmayacak şekilde düzenleme yap.
     slug = models.SlugField(blank=True, unique=True, max_length=1000)  # unique=True)
+
     show_on_homepage = models.BooleanField(default=True)
     show_on_popular = models.BooleanField(default=True)
+
     tags = TaggableManager(blank=True)
     # taggable manager ile ilgili bir hata veriyor test edilemiyor.
+
     kdv = models.FloatField(default=18.0)
     desi = models.IntegerField(default=1)
+
     istebu_product_no = models.CharField(max_length=100, null=True, blank=True)
     vendor_product_no = models.CharField(max_length=100, null=True, blank=True)
+
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
     objects = ProductManager()
 
     class Meta:
@@ -222,13 +230,22 @@ class Variation(models.Model):
     # "{:,.2f}".format(self.sale_price * Decimal(self.buying_currency.value))
     # "{:,.2f}".format(value) => thousands seperator işlevi sağlıyor, ancak sepete eklerken bu sorun yaratıyor...
 
+    def get_xml_sale_price(self, market):
+        if market == "gittigidiyor":
+            if self.gittigidiyor_price is not None:
+                return "{:.2f}".format(self.gittigidiyor_price * Decimal(self.buying_currency.value))
+        elif market == "n11":
+            if self.n11_price is not None:
+                return "{:.2f}".format(self.n11_price * Decimal(self.buying_currency.value))
+        return self.get_sale_price()
+
     def get_sale_price(self):
         if self.sale_price is not None:
             return "{:.2f}".format(self.sale_price * Decimal(self.buying_currency.value))
         elif self.price is not None:
             return "{:.2f}".format(self.price * Decimal(self.buying_currency.value))
         else:
-            return "{:.2f}".format(self.product.price * Decimal(self.buying_currency.value))
+            return "{:.2f}".format(self.get_product_price())
 
     def get_product_price(self):
         if self.product.price:
@@ -367,6 +384,10 @@ class Category(models.Model):
     objects = models.Manager()  # The default manager.
     with_childrens = CategoryManager()
 
+    class Meta:
+        ordering = ('title',)
+        verbose_name = 'category'
+        verbose_name_plural = 'categories'
 
     def __str__(self):
         return self.title
