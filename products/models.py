@@ -88,6 +88,7 @@ class Product(models.Model):
 
     kdv = models.FloatField(default=18.0)
     desi = models.IntegerField(default=1)
+    kargo = models.CharField(max_length=50, null=True, blank=True)
 
     istebu_product_no = models.CharField(max_length=100, null=True, blank=True)
     vendor_product_no = models.CharField(max_length=100, null=True, blank=True)

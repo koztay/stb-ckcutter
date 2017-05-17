@@ -58,7 +58,7 @@
                                     {% endif %}
                                     <div class="aa-cartbox-info">
                                         <h4><a href='{{ product.get_absolute_url }}'>{{ product.title }}</a></h4>
-                                        <p>{{ product.variation_set.first.sale_price }}</p>
+                                        <p>{{ product.variation_set.first.get_html_price }}</p>
                                     </div>
                                     </li>
                                 {% endfor %}
@@ -81,7 +81,7 @@
                                     {% endif %}
                                     <div class="aa-cartbox-info">
                                         <h4><a href='{{ product.get_absolute_url }}'>{{ product.title }}</a></h4>
-                                        <p>{{ product.variation_set.first.sale_price }}</p>
+                                        <p>{{ product.variation_set.first.get_html_price }}</p>
                                     </div>
                                     </li>
                                 {% endfor %}
