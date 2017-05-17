@@ -106,7 +106,7 @@ MIDDLEWARE = [
 # ------------------------------------------------------------------------------
 MIGRATION_MODULES = {
     'sites': 'ecommerce_istebu_cookiecutter.contrib.sites.migrations',
-    'data_importer': 'data_importer.django_migrations',
+    # 'data_importer': 'data_importer.django_migrations',  # bu satır hata verdiriyor...
 }
 
 # DEBUG
@@ -357,7 +357,7 @@ DEFAULT_FIELDS = {
     "N11_Satis_Fiyati": {"model": "Variation", "local_field": "n11_price"},
     "GG_Satis_fiyati": {"model": "Variation", "local_field": "gittigidiyor_price"},
     "Barkod": {"model": "Variation", "local_field": "product_barkod"},
-    "Kargo": {"model": "NA", "local_field": "NA"},
+    "Kargo": {"model": "Product", "local_field": "kargo"},
     "Urun_Resmi": {"model": "ProductImage", "local_field": "image"},
 }
 

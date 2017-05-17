@@ -159,12 +159,11 @@ def big_xml(marketplace):
         output.write(
             '<product_category>' + '<![CDATA[{}]]>'.format(product_instance.get_main_category())
             + '</product_category>\n')
-        # TODO : Aşağıdaki iç içe geçmiş if blokalrı daha kısa yazılabilir mi?
-
         output.write(
             '<product_price>' + '<![CDATA[{}]]>'.format(variation_instance.get_xml_sale_price(market=marketplace))
             + '</product_price>\n')
-
+        output.write(
+            '<kargo>' + '<![CDATA[{}]]>'.format(product.kargo) + '</kargo>\n')
         try:
             media_url = product.productimage_set.first().sd_thumb
         except:

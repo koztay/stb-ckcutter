@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.views.generic import TemplateView, FormView
 # from_valid metodunu override edersek aşağıdakiler gerekiyor
 from django.contrib import messages
@@ -43,25 +44,25 @@ def process_xls_row_no_task(importer_map_pk, row, values):
 
     def update_default_fields(product_instance=None):
         variation_instance = product_instance.variation_set.all()[0]  # product save edilince otomatik yaratılıyor.
-        for main_field in default_fields:
+        for main_field in settings.DEFAULT_FIELDS:
             cell = get_cell_for_field(main_field)
             print("cell_value :", cell)
-            cell_value_model = default_fields[main_field]["model"]
+            cell_value_model = settings.DEFAULT_FIELDS[main_field]["model"]
             print("cell_value_model: ", cell_value_model)
 
             if cell_value_model is "Product":
-                print("attribute: ", default_fields[main_field]["field"])
+                print("attribute: ", settings.DEFAULT_FIELDS[main_field]["field"])
                 print("value: ", cell)
-                attribute = default_fields[main_field]["field"]
+                attribute = settings.DEFAULT_FIELDS[main_field]["field"]
                 if attribute is 'categories':
                     pass
                 else:
                     setattr(product_instance, attribute, cell)
 
             elif cell_value_model is "Variation":
-                print("attribute: ", default_fields[main_field]["field"])
+                print("attribute: ", settings.DEFAULT_FIELDS[main_field]["field"])
                 print("value: ", cell)
-                setattr(variation_instance, default_fields[main_field]["field"], cell)
+                setattr(variation_instance, settings.DEFAULT_FIELDS[main_field]["field"], cell)
 
             elif cell_value_model is "ProductType":
                 # product_type_name = default_fields[main_field]["field"]
@@ -70,7 +71,7 @@ def process_xls_row_no_task(importer_map_pk, row, values):
                 product_instance.product_type = product_type_instance
 
             elif cell_value_model is "Currency":
-                print("attribute: ", default_fields[main_field]["field"])
+                print("attribute: ", settings.DEFAULT_FIELDS[main_field]["field"])
                 print("value: ", cell)
                 # Eğer currency veriatabanında yoksa o zaman ürünü ekleme. Dolayısıyla "Para Birimi" önceden eklenmeli.
                 try:
@@ -78,6 +79,7 @@ def process_xls_row_no_task(importer_map_pk, row, values):
                 except:
                     print("Currency bulunamadı, %s eklenmedi!" % product.title)
                     pass
+                currency_instance = Currency.objects.get(name="TL")  # set default value
                 variation_instance.buying_currency = currency_instance
                 print("variation_instance.buying_currency", variation_instance.buying_currency)
 
