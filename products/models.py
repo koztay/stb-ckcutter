@@ -179,6 +179,10 @@ class Currency(models.Model):
     updated = models.DateField(auto_now=True)
     value = models.FloatField(default=1.0)
 
+    class Meta:
+        verbose_name = 'currency'
+        verbose_name_plural = 'currencies'
+
     def __str__(self):
         return self.name
 
