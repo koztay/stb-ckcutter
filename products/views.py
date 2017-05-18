@@ -641,16 +641,20 @@ class NewProductListView(FilterMixin, SignupFormView, PaginationMixin, ListView)
         context["object_list"] = paginated[2]
 
         context['queries'] = self.get_queries_without_page()
-        context['categories'] = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
+        context['categories'] = Category.objects.all().filter(active=True).filter(
+            show_on_homepage=True).order_by('order', 'pk')
         context['tags'] = Tag.objects.all()
         context['banners'] = HorizontalTopBanner.objects.filter(category__title="Projeksiyon Cihazları")
         print(context['banners'])
 
         # most popular products
-        most_viewed_product_list = Product.objects.annotate(num_views=Sum('productanalytics__count')).filter(num_views__gt=0).order_by('-num_views')
+        most_viewed_product_list = Product.objects.annotate(num_views=Sum('productanalytics__count')).filter(
+            num_views__gt=0).order_by('-num_views')
         context['most_popular_products'] = most_viewed_product_list[:3]
 
-        context['last_visited_item_list'] = Product.objects.filter(pk__in=self.request.session['last_visited_item_list']).reverse()
+        if self.request.session.get('last_visited_item_list'):  # eğer varsa set et yoksa etme...
+            context['last_visited_item_list'] = Product.objects.filter(
+                pk__in=self.request.session.get('last_visited_item_list')).reverse()
 
         if self.request.GET.get('min_price', '') is not '':
             context["minimum_set_price_value"] = str(self.request.GET.get('min_price', ''))
@@ -826,7 +830,7 @@ class ProductDetailView(SignupFormView, DetailView):
             self.request.session['last_visited_item_list'] = []
             self.request.session['last_visited_item_list'].append(instance.pk)
             self.request.session.modified = True
-        print("last visited list :", self.request.session['last_visited_item_list'])
+        # print("last visited list :", self.request.session['last_visited_item_list'])
         return context
 
 
