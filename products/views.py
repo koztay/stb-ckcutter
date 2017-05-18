@@ -563,19 +563,19 @@ class ProductListView(FilterMixin, ListView):
                 pass
         return qs
 
-
-class LatestProducts(ListView):
-    model = Product
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(LatestProducts, self).get_context_data(*args, **kwargs)
-        qs = Product.objects.all()
-        # TODO: Buraya son gezilenleri listeleyen bir algoritma yaz.
-        if self.request.session.get('last_visited_item_list'):
-            last_visited_items = [Product.objects.get(pk=pk) for pk in self.request.session.get('last_visited_item_list')]
-            context['last_visited_item_list'] = last_visited_items[:3]
-
-        return context
+#
+# class LatestProducts(ListView):
+#     model = Product
+#
+#     def get_context_data(self, *args, **kwargs):
+#         context = super(LatestProducts, self).get_context_data(*args, **kwargs)
+#         qs = Product.objects.all()
+#         # TODO: Buraya son gezilenleri listeleyen bir algoritma yaz.
+#         if self.request.session.get('last_visited_item_list'):
+#             last_visited_items = [Product.objects.get(pk=pk) for pk in self.request.session.get('last_visited_item_list')]
+#             context['last_visited_item_list'] = last_visited_items[:3]
+#
+#         return context
 
 
 # Artık bu view 'ı her yerde kullanabiliriz.
@@ -607,7 +607,7 @@ class SignupFormView(FormView):
         return FormView.post(self, request, *args, **kwargs)
 
 
-class NewProductListView(FilterMixin, SignupFormView, LatestProducts, PaginationMixin, ListView):
+class NewProductListView(FilterMixin, SignupFormView, PaginationMixin, ListView):
     model = Product
     filter_class = ProductFilter
     paginate_by = 12
@@ -650,6 +650,7 @@ class NewProductListView(FilterMixin, SignupFormView, LatestProducts, Pagination
         most_viewed_product_list = Product.objects.annotate(num_views=Sum('productanalytics__count')).filter(num_views__gt=0).order_by('-num_views')
         context['most_popular_products'] = most_viewed_product_list[:3]
 
+        context['last_visited_item_list'] = Product.objects.filter(pk__in=self.request.session['last_visited_item_list']).reverse()
 
         if self.request.GET.get('min_price', '') is not '':
             context["minimum_set_price_value"] = str(self.request.GET.get('min_price', ''))
@@ -787,12 +788,12 @@ class ProductListTagFilterView(NewProductListView):
 import random  # related products için kullanılıyor...
 
 
-class ProductDetailView(SignupFormView, DetailView):
+class ProductDetailView(DetailView):
     model = Product
 
-    def get_success_url(self):
-        instance = self.get_object()
-        return reverse_lazy('products:product_detail', kwargs={'slug': instance.slug})
+    # def get_success_url(self):
+    #     instance = self.get_object()
+    #     return reverse_lazy('products:product_detail', kwargs={'slug': instance.slug})
 
     def get_context_data(self, **kwargs):
         context = super(ProductDetailView, self).get_context_data(**kwargs)
@@ -824,7 +825,7 @@ class ProductDetailView(SignupFormView, DetailView):
             self.request.session['last_visited_item_list'] = []
             self.request.session['last_visited_item_list'].append(instance.pk)
             self.request.session.modified = True
-
+        print("last visited list :", self.request.session['last_visited_item_list'])
         return context
 
 

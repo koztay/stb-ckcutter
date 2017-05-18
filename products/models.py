@@ -254,7 +254,7 @@ class Variation(models.Model):
 
     def get_product_price(self):
         if self.product.price:
-            return self.product.price * Decimal(self.buying_currency.value)
+            return "{:.2f}".format(self.product.price * Decimal(self.buying_currency.value))
         else:
             return 0
 

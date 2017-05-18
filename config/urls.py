@@ -36,7 +36,7 @@ urlpatterns = [
     # Your stuff: custom urls includes go here
     url(r'^blog/', include('blog.urls', namespace='blog')),
     url(r'^products/', include('products.urls', namespace='products')),
-    url(r'^categories/', include('products.urls_categories', namespace='categories')),
+    # url(r'^categories/', include('products.urls_categories', namespace='categories')),
     url(r'^orders/$', OrderList.as_view(), name='orders'),
     url(r'^orders/(?P<pk>\d+)/$', OrderDetail.as_view(), name='order_detail'),
     url(r'^cart/$', CartView.as_view(), name='cart'),

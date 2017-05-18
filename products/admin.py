@@ -98,7 +98,6 @@ class ThumbnailAdmin(admin.ModelAdmin):
 #     model = ProductImage
 #     inlines = [ThumbnailInline]
 
-# // TODO: Product Search ekle.
 class ProductAdmin(admin.ModelAdmin):
     search_fields = ['title', 'istebu_product_no']
     list_display = ['__str__', 'istebu_product_no', 'price', 'sale_price', 'stok', 'active', 'show_on_homepage',

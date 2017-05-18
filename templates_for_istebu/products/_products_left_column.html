@@ -42,10 +42,11 @@
                     {% endif %}
 
                 {% endifnotequal %}
-                {% if last_visited_item_list > 0 %}
+
+                {% if last_visited_item_list.all.count > 0 %}
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
-                        <h3>Son Gezilenler</h3>
+                        <h3>Son Gezdikleriniz</h3>
                         <div class="aa-recently-views">
                             <ul>
                                 {% for product in last_visited_item_list %}

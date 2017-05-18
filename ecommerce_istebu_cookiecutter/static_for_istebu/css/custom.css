@@ -51,6 +51,13 @@ figure {
   margin: 0 0 10px 10px; !important;
 }
 
+.aa-recently-views li .aa-product-price {
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  font-size: 14px;
+  color: #37c6f5;
+}
+
 .pagination > li.active > a {
     z-index: 3;
     color: #fff; !important;
