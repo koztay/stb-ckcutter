@@ -1,7 +1,5 @@
 from django.contrib import admin
 # import nested_admin
-admin.site.empty_value_display = '???'
-
 from .models import (
     Product,
     Variation,
@@ -14,6 +12,8 @@ from .models import (
     Thumbnail,
     Currency
     )
+
+admin.site.empty_value_display = '???'
 
 
 class VariationInline(admin.StackedInline):

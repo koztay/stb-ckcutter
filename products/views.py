@@ -788,12 +788,13 @@ class ProductListTagFilterView(NewProductListView):
 import random  # related products için kullanılıyor...
 
 
-class ProductDetailView(DetailView):
+# SignupFormView sayfanın altındaki newsletter formu için gerekli.
+class ProductDetailView(SignupFormView, DetailView):
     model = Product
 
-    # def get_success_url(self):
-    #     instance = self.get_object()
-    #     return reverse_lazy('products:product_detail', kwargs={'slug': instance.slug})
+    def get_success_url(self):
+        instance = self.get_object()
+        return reverse_lazy('products:product_detail', kwargs={'slug': instance.slug})
 
     def get_context_data(self, **kwargs):
         context = super(ProductDetailView, self).get_context_data(**kwargs)
