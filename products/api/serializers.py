@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.reverse import reverse_lazy
 
 from products.models import Product, Variation
 
@@ -17,9 +18,10 @@ class ProductModelSerializer(serializers.ModelSerializer):
         product = Product.objects.get(id=product_id)
 
         main_category = product.get_main_category()
+        products_url = reverse_lazy('products:products')
         if main_category:
             category = main_category.title
-            category_url = main_category.get_absolute_url()
+            category_url = products_url + "?category=" + main_category.slug
         else:
             category = "No category"
             category_url = None
