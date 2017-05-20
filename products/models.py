@@ -4,11 +4,12 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Case, Count, F, Max, Q, Value, When
 from django.utils.safestring import mark_safe
+
+# third party apps
+from multiselectfield import MultiSelectField
 from uuslug import slugify
 from taggit.managers import TaggableManager
-# from tinymce.models import HTMLField
 from ckeditor.fields import RichTextField
-# from utils import thumbnail_location, THUMB_CHOICES
 
 
 # for Thumbnail Class
@@ -67,6 +68,24 @@ class ProductManager(models.Manager):
 
 
 class Product(models.Model):
+
+    FRONT_PAGE_TABS = (
+        ("OC", "ÖNE ÇIKANLAR"),
+        ("FU", "FIRSAT ÜRÜNLERİ"),
+        ("KU", "KAMPANYALI ÜRÜNLER"),
+        ("CS", "ÇOK SATANLAR"),
+        ("GT", "GÜNÜN TEKLİFLERİ"),
+        ("HT", "HAFTANIN ÜRÜNLERİ"),
+        ("DU", "DİĞER ÜRÜNLER")  # TODO : ARADIKLARINIZA BENZER ÜRÜNLER ALGORİTMASI YAZ
+    )
+
+    """
+    Günün Teklifleri
+*Haftanın ürünleri
+*Aradıklarınıza Benzer Ürünler (Aradıkları ürün gruplarından ürünleri gösterebilirsek bu olsun)
+*İlginizi Çekebilecek Diğer Ürünler (Bir üstteki olmazsa bu olsun)
+    """
+
     title = models.CharField(db_index=True, max_length=1000)
     # description = models.TextField(blank=True, null=True)
     description = RichTextField(db_index=True, default="<h1>default description</h1>", blank=True, null=True)
@@ -79,7 +98,7 @@ class Product(models.Model):
     # yukarıdaki default field 'ı related products için gerekli. Algoritmayı incelemedim ama daha
     # iyi bir yol bulunabilir. // TODO: Bu field 'a gerek olmayacak şekilde düzenleme yap.
     slug = models.SlugField(blank=True, unique=True, max_length=1000)  # unique=True)
-
+    frontpage_grup = MultiSelectField(choices=FRONT_PAGE_TABS, null=True, blank=True)
     show_on_homepage = models.BooleanField(default=True)
     show_on_popular = models.BooleanField(default=True)
 
@@ -138,33 +157,13 @@ class Product(models.Model):
         return number_of_views
 
     # Bu metodu sol üst köşedeki cart list içerisindeki imajı set etmek için kullanıyoruz.
-    # O nedenle bu metodu silme. Diğerlerini silmek için şimdilşk bir sakınca görünmüyor.
+    # O nedenle bu metodu silme. Diğerlerini silmek için şimdilik bir sakınca görünmüyor.
     @property
     def micro_thumb(self):
         first_image = ProductImage.objects.all().filter(product=self).first()
         micro_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='micro').first()
         # print(micro_thumb.media.url)
         return micro_thumb.media.url
-    #
-    # @property
-    # def medium_thumb(self):
-    #     first_image = ProductImage.objects.all().filter(product=self).first()
-    #     medium_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='medium').first()
-    #     # print(medium_thumb.media.url)
-    #     return medium_thumb.media.url
-    #
-    # @property
-    # def sd_thumb(self):
-    #     first_image = ProductImage.objects.all().filter(product=self).first()
-    #     sd_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='sd').first()
-    #     # print(sd_thumb.media.url)
-    #     return sd_thumb.media.url
-
-    # bu metodu import edilince save ederken valueset parametresini göndermek için override ettik.
-    # def save(self, *args, **kwargs):
-    #     super(Product, self).save(*args, **kwargs)
-    #     self.valueset = None
-    #     self.importer_map = None
 
 # ************************************************************************************************************ #
 

@@ -28,12 +28,22 @@ class HomeView(SignupFormView, TemplateView):
         context['horizontal_banner'] = HorizontalBanner.objects.all().filter(active=True).order_by("?").first()
         context['categories'] = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
         context['testimonials'] = Testimonial.objects.filter(active=True).order_by("?")[:3]
-        # one_cikanlar, cok_satanlar, aradıklarınıza_benzer_urunler,
-        context['one_cikanlar'] = get_popular_products(category_slug="one-cikanlar")
-        # print("context['one_cikanlar'] ", context['one_cikanlar'])
-        context['cok_satanlar'] = get_popular_products(category_slug="cok-satanlar")
-        # TODO : bu aşağıdaki için algoritmik bir çözüm bulmak lazım...
-        context['aradıklarınıza_benzerler'] = get_popular_products(category_slug="aradiklariniza-benzerler")
+
+        # FRONTPAGE GRUPLARIN ÜRÜNLERİ:
+        context["one_cikanlar"] = Product.objects.filter(frontpage_grup__icontains="OC",
+                                                         variation__inventory__gt=0).order_by("?")[:16]
+        context["firsat_urunleri"] = Product.objects.filter(frontpage_grup__icontains="FU",
+                                                            variation__inventory__gt=0).order_by("?")[:16]
+        context["kampanyali_urunler"] = Product.objects.filter(frontpage_grup__icontains="KU",
+                                                               variation__inventory__gt=0).order_by("?")[:16]
+        context["cok_satanlar"] = Product.objects.filter(frontpage_grup__icontains="CS",
+                                                         variation__inventory__gt=0).order_by("?")[:16]
+        context["günün_teklifleri"] = Product.objects.filter(frontpage_grup__icontains="GT",
+                                                             variation__inventory__gt=0).order_by("?")[:8]
+        context["haftanin_urunleri"] = Product.objects.filter(frontpage_grup__icontains="HT",
+                                                              variation__inventory__gt=0).order_by("?")[:8]
+        context["diger_urunler"] = Product.objects.filter(frontpage_grup__icontains="DU",
+                                                          variation__inventory__gt=0).order_by("?")[:8]
 
         # sol taraftaki promosyon için rastgele bir promosyon seç:
         promotion_left = Promotion.objects.all().filter(active=True).order_by("?").first()

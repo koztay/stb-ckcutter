@@ -63,6 +63,7 @@ THIRD_PARTY_APPS = [
     'django_celery_results',
     'django_cleanup',
     'django_filters',
+    'multiselectfield',
     'pure_pagination',
     'rest_framework',
     'taggit',

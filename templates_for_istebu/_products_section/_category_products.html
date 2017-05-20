@@ -7,7 +7,7 @@
                                 <!-- Start one-cikanlar product category -->
                                 <div class="tab-pane fade in active" id="one-cikanlar">
                                     <ul class="aa-product-catg">
-                                        {% include '_products_section/_single_product.html' with products=products%}
+                                        {% include '_products_section/_single_product.html' with products=one_cikanlar%}
                                     </ul>
                                     <a class="aa-browse-btn" href="{% url 'products:products' %}">TÜMÜNE GÖZAT <span
                                             class="fa fa-long-arrow-right"></span></a>
@@ -17,7 +17,7 @@
                                 <!-- Start firsat ürünleri product category -->
                                 <div class="tab-pane fade" id="firsat">
                                     <ul class="aa-product-catg">
-                                        {% include '_products_section/_single_product.html' with products=products %}
+                                        {% include '_products_section/_single_product.html' with products=firsat_urunleri %}
                                     </ul>
 
                                     <a class="aa-browse-btn" href="{% url 'products:products' %}">TÜMÜNE GÖZAT <span
@@ -29,7 +29,7 @@
                                 <!-- Start kampanya ürünleri product category -->
                                 <div class="tab-pane fade" id="kampanya">
                                     <ul class="aa-product-catg">
-                                        {% include '_products_section/_single_product.html' with products=products %}
+                                        {% include '_products_section/_single_product.html' with products=kampanyali_urunler %}
                                     </ul>
 
                                     <a class="aa-browse-btn" href="{% url 'products:products' %}">TÜMÜNE GÖZAT <span
@@ -41,7 +41,7 @@
                                 <!-- Start cok-satanlar ürünleri product category -->
                                 <div class="tab-pane fade" id="cok-satan">
                                     <ul class="aa-product-catg">
-                                        {% include '_products_section/_single_product.html' with products=products %}
+                                        {% include '_products_section/_single_product.html' with products=cok_satanlar %}
                                     </ul>
 
                                     <a class="aa-browse-btn" href="{% url 'products:products' %}">TÜMÜNE GÖZAT <span

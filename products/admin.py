@@ -100,10 +100,11 @@ class ThumbnailAdmin(admin.ModelAdmin):
 
 class ProductAdmin(admin.ModelAdmin):
     search_fields = ['title', 'istebu_product_no']
-    list_display = ['__str__', 'istebu_product_no', 'price', 'sale_price', 'stok', 'active', 'show_on_homepage',
+    list_display = ['__str__', 'istebu_product_no', 'price', 'sale_price', 'stok', 'active', 'frontpage_grup',
                     'updated']
     prepopulated_fields = {'slug': ('title',)}
-    list_editable = ['active', 'show_on_homepage', ]
+    list_editable = ['active', 'frontpage_grup']
+
     inlines = [
         ProductImageInline,
         VariationInline,
@@ -153,7 +154,6 @@ class CategoryAdmin(admin.ModelAdmin):
 class CurrencyAdmin(admin.ModelAdmin):
     list_display = ('name', 'value', 'updated')
     readonly_fields = ('value', 'updated')
-
 
 
 admin.site.register(Product, ProductAdmin)

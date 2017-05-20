@@ -361,14 +361,8 @@ class NewProductListView(FilterMixin, SignupFormView, PaginationMixin, ListView)
         context = super(NewProductListView, self).get_context_data(*args, **kwargs)
         context["now"] = timezone.now()
         context["query"] = self.request.GET.get("q")  # None
-        context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
-        print("context_object_list var mı?", context["object_list"])
-        # paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
-        # context["paginator"] = paginated[0]
-        # context["page"] = paginated[0].get_page()
-        # print("page_nedir?", context["page"])
-        # context["page_obj"] = paginated[1]
-        # context["object_list"] = paginated[2]
+        context["filter_form"] = ProductFilterForm(data=self.request.GET or None)  # BUNU KULLANMIYOR OLABİLİRİZ.
+
         context["number_of_object_list"] = len(context["object_list"])
         minimum_price_aggregate = context["object_list"].aggregate(Min('price'))
         minimum_price = minimum_price_aggregate['price__min']
@@ -388,7 +382,6 @@ class NewProductListView(FilterMixin, SignupFormView, PaginationMixin, ListView)
             show_on_homepage=True).order_by('order', 'pk')
         context['tags'] = Tag.objects.all()
         context['banners'] = HorizontalTopBanner.objects.filter(category__title="Projeksiyon Cihazları")
-        print(context['banners'])
 
         # most popular products
         most_viewed_product_list = Product.objects.annotate(num_views=Sum('productanalytics__count')).filter(
