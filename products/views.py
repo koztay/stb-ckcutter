@@ -31,50 +31,6 @@ from .mixins import StaffRequiredMixin, FilterMixin
 from .models import Product, Variation, Category
 
 
-"""
-from django.http import HttpResponse
-from django.template import loader, Context
-
-def some_view(request):
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
-
-    # The data is hard-coded here, but you could load it from a database or
-    # some other source.
-    csv_data = (
-        ('First row', 'Foo', 'Bar', 'Baz'),
-        ('Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"),
-    )
-
-    t = loader.get_template('my_template_name.txt')
-    c = Context({
-        'data': csv_data,
-    })
-    response.write(t.render(c))
-    return response
-
-
-"""
-"""
-atom_set = Atom.objects.all()
-# One database query to start fetching the rows in batches.
-atom_iterator = atom_set.iterator()
-# Peek at the first item in the iterator.
-try:
-    first_atom = next(atom_iterator)
-except StopIteration:
-    # No rows were found, so do nothing.
-    pass
-else:
-    # At least one row was found, so iterate over
-    # all the rows, including the first one.
-    from itertools import chain
-    for atom in chain([first_atom], atom_iterator):
-        print(atom.mass)
-"""
-
-
 # bunu price slider 'ın düzgün çalışması için kullanıyorum...
 def update_session(request, *args, **kwargs):
 
@@ -86,51 +42,6 @@ def update_session(request, *args, **kwargs):
     request.session['min_value'] = minimum_value
     request.session['max_value'] = maximum_value
     return HttpResponse('ok')
-
-
-def stream_response(request):
-    response = StreamingHttpResponse(xml_generator_2(), content_type='text/xml')
-    response['Content-Disposition'] = 'attachment; filename="istebu.xml"'
-    return response
-
-
-def stream_response_generator():
-    for x in range(1, 150):
-        yield "%s\n" % x  # Returns a chunk of the response to the browser
-        time.sleep(1)
-
-
-"""
- <product>
-  {% with product.variation_set as variation_set %}
-    <istebu_product_no><![CDATA[ {{ product.istebu_product_no }} ]]></istebu_product_no>
-    <product_barkod><![CDATA[{% if variation_set.first.product_barkod %}{{ variation_set.first.product_barkod }}{% else %}No Product Barkod{% endif %}]]></product_barkod>
-    <product_brand><![CDATA[ {{ product.get_brand }} ]]></product_brand>
-    <product_title><![CDATA[ {{ product.title }} ]]></product_title>
-    <product_description><![CDATA[ {{ product.description }} ]]></product_description>
-    <product_category><![CDATA[ {{ product.get_main_category }} ]]></product_category>
-    {% if marketplace == "n11" %}
-        {% if variation_set.first.n11_price %}
-    <product_price>{{ variation_set.first.n11_price }}</product_price>
-        {% else %}
-    <product_price>{{ variation_set.first.sale_price }}</product_price>
-        {% endif %}
-    {% elif marketplace == "gittigidiyor" %}
-        {% if variation_set.first.n11_price %}
-    <product_price>{{ variation_set.first.gittigidiyor_price }}</product_price>
-        {% else %}
-    <product_price>{{ variation_set.first.sale_price }}</product_price>
-        {% endif %}
-    {% endif %}
-    <product_image>{{ product|get_thumbnail:"sd"}}</product_image>
-    <product_url>
-        {% if request.is_secure %}https://{% else %}http://{% endif %}{{host}}{{product.get_absolute_url}}
-    </product_url>
-    <stok_adedi>{{ variation_set.all.0.inventory }}</stok_adedi>
-  {% endwith %}
-  </product>
-
-"""
 
 
 def big_xml(marketplace):
@@ -162,8 +73,13 @@ def big_xml(marketplace):
         output.write(
             '<product_price>' + '<![CDATA[{}]]>'.format(variation_instance.get_xml_sale_price(market=marketplace))
             + '</product_price>\n')
-        output.write(
-            '<kargo>' + '<![CDATA[{}]]>'.format(product.kargo) + '</kargo>\n')
+        if not product.kargo == "None":
+            output.write(
+                '<kargo>' + '<![CDATA[{}]]>'.format(product.kargo) + '</kargo>\n')
+        else:
+            output.write(
+                '<kargo>' + '<![CDATA[{}]]>'.format("Mağaza Öder") + '</kargo>\n')
+
         try:
             media_url = product.productimage_set.first().sd_thumb
         except:
@@ -218,179 +134,6 @@ def download_xml_streaming(request, marketplace):
     response['Content-Disposition'] = 'attachment; filename=istebu.xml'
 
     return response
-
-# def big_csv(num_rows):
-#     for row in range(num_rows):
-#         output = StringIO()
-#         writer = csv.writer(output)
-#
-#         if row == 0:
-#             writer.writerow(['One', 'Two', 'Three'])
-#         else:
-#             writer.writerow(['Hello', 'world', row])
-#
-#         output.seek(0)
-#         yield output.read()
-
-
-# def download_csv_streaming(request):
-#     """Return a CSV file.
-#     This view responds with a generator that yields each row of the response as
-#     it's created.
-#     """
-#     response = StreamingHttpResponse(big_csv(100), content_type='text/csv')
-#     response['Content-Disposition'] = 'attachment; filename=big.csv'
-#
-#     return response
-
-# bunu sil
-def xml_generator():
-
-    products = Product.objects.all()
-    products_iterator = products.iterator()  # we have converted the queryset to iterator
-    for item, urun in enumerate(products_iterator):
-        if item == 0:
-            row = '<?xml version="1.0" encoding="UTF-8"?>\n'
-            root_node = '<products>\n'
-            product_node = '<product>\n'
-            istebu_product_no = '<istebu_product_no>'+'<![CDATA[{}]]>'.format(urun.istebu_product_no)+'</istebu_product_no>\n'
-            baslik = '<title>' + '<![CDATA[{}]]>'.format(urun.title) + '</title>\n'
-            end_product_node = '<product>'
-        else:
-            row = ''
-            root_node = ''
-            product_node = '<product>\n'
-            istebu_product_no = '<istebu_product_no>'+'<![CDATA[{}]]>'.format(urun.istebu_product_no)+'</istebu_product_no>\n'
-            baslik = '<title>' + '<![CDATA[{}]]>'.format(urun.title) + '</title>\n'
-            end_product_node = '<product>'
-        print(row + root_node + product_node + istebu_product_no + baslik + end_product_node)
-        yield "%s%s%s%s%s%s" % (row, root_node, product_node, istebu_product_no, baslik, end_product_node)
-        time.sleep(3)
-
-    # for x in range(1, 150):
-    #     yield "%s\n" % x  # Returns a chunk of the response to the browser
-    #     time.sleep(1)
-
-
-# bunu da sil
-def xml_generator_2():
-
-    template_vars = dict()
-    products = Product.objects.all()
-    template_vars['products'] = products.iterator()
-    template_vars['buffer'] = ' ' * 1024
-
-    t = loader.get_template('products/xml/base.xml')  # or whatever
-    buffer = ' ' * 1024
-
-    for product in products.iterator():
-        c = Context({"product": product})
-        yield t.render(c)
-
-    # c = Context(template_vars)
-    # yield t.render(c)
-    # yield t.render(Context({'varname': 'some value', 'buffer': buffer}))
-    #                                                 ^^^^^^
-    #    embed that {{ buffer }} somewhere in your template
-    #        (unless it's already long enough) to force display
-
-    # for x in range(1, 11):
-    #     yield '<p>x = {}</p>{}\n'.format(x, buffer)
-    # def gen_rendered():
-    #     for x in range(1, 11):
-    #         c = Context({'mydata': x})
-    #         yield t.render(c)
-
-
-# bunu da sil
-def xml_test(request, marketplace):
-    """
-    returns an XML of the most latest posts
-    """
-
-    template_vars = dict()
-    template_vars['products'] = Product.objects.all()
-    template_vars['host'] = request.get_host()
-    # print("marketplace :", marketplace)
-    if marketplace in ("n11", "gittigidiyor", "test",):
-        # print("if mi çalışmıyor ? :", marketplace)
-        template_vars['marketplace'] = marketplace
-    else:
-        raise Http404("The link is not available!")
-
-    # TODO: Burada henüz domain çalışmıyorkenki URL 'yi de koymayı unutma...
-    if settings.DEBUG:
-        domain = 'http://127.0.0.1:8000'
-    else:
-        domain = 'http://www.istebu.com'
-
-    template_vars['domain'] = domain
-
-    t = loader.get_template('products/xml/products.xml')
-    c = Context(template_vars)
-
-    # return HttpResponse(t.render(c), content_type="text/xml")
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(t.render(c), content_type='text/xml')
-    response['Content-Disposition'] = 'attachment; filename="istebu.xml"'
-    return response
-
-
-def xml_latest(request, marketplace):
-    """
-    returns an XML of the most latest posts
-    """
-
-    template_vars = dict()
-    template_vars['products'] = Product.objects.filter(istebu_product_no__startswith="PRJ")
-    print("number_of_products : %s" % template_vars['products'].count())
-    template_vars['host'] = request.get_host()
-    # print("marketplace :", marketplace)
-    if marketplace in ("n11", "gittigidiyor"):
-        # print("if mi çalışmıyor ? :", marketplace)
-        template_vars['marketplace'] = marketplace
-    else:
-        raise Http404("The link is not available!")
-
-    # TODO: Burada henüz domain çalışmıyorkenki URL 'yi de koymayı unutma...
-    if settings.DEBUG:
-        domain = 'http://127.0.0.1:8000'
-    else:
-        domain = 'http://www.istebu.com'
-
-    template_vars['domain'] = domain
-
-    t = loader.get_template('products/xml/products.xml')
-    c = Context(template_vars)
-
-    # return HttpResponse(t.render(c), content_type="text/xml")
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(t.render(c), content_type='text/xml')
-    response['Content-Disposition'] = 'attachment; filename="istebu.xml"'
-    return response
-
-# # aşağıdaki view filtreleri context olarak gönderemiyor. Dolayısıyla
-# def product_list_by_tag(request, tag_slug=None):
-#     object_list = Product.objects.all()  # This is automatically returns active products.
-#     tag = None
-#     if tag_slug:
-#         tag = get_object_or_404(Tag, slug=tag_slug)
-#         object_list = object_list.filter(tags__in=[tag])
-#     paginator = Paginator(object_list, 9)  # 3 products in each page
-#     page = request.GET.get('page')
-#     try:
-#         products = paginator.page(page)
-#     except PageNotAnInteger:
-#         # If page is not an integer deliver the first page
-#         products = paginator.page(1)
-#     except EmptyPage:
-#         # If page is out of range deliver the last page of results
-#         products = paginator.page(paginator.num_pages)
-#
-#     return render(request, 'products/product_list.html', {'page': page,
-#                                                           'page_products': products,
-#                                                           'tag': tag,
-#                                                           'section': "Products"})
 
 
 class CategoryDetailView(DetailView):
