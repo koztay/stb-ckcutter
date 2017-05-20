@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+
 # import nested_admin
 from .models import (
     Product,
@@ -14,6 +16,119 @@ from .models import (
     )
 
 admin.site.empty_value_display = '???'
+
+
+class StokListFilter(admin.SimpleListFilter):
+
+    """
+    This filter will always return a subset of the instances in a Model, either filtering by the
+    user choice or by a default value.
+    """
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = 'Stok VAR / YOK'
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'stok_miktari'
+
+    default_value = None
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        list_of_lookups = [(0, "Stokta YOK"), (1, "Stokta VAR")]
+        return sorted(list_of_lookups, key=lambda tp: tp[1])
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        # Compare the requested value to decide how to filter the queryset.
+        if self.value():
+            print("value :", self.value())
+            if int(self.value()) == 0:
+                return queryset.filter(variation__inventory=self.value())
+            else:
+                return queryset.filter(variation__inventory__gt=0)
+        return queryset
+
+    def value(self):
+        """
+        Overriding this method will allow us to always have a default value.
+        """
+        value = super(StokListFilter, self).value()
+        if value is None:
+            if self.default_value is None:
+                self.default_value = 1
+            else:
+                value = self.default_value
+        return str(value)
+
+
+class CategoriesListFilter(admin.SimpleListFilter):
+
+    """
+    This filter will always return a subset of the instances in a Model, either filtering by the
+    user choice or by a default value.
+    """
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = 'Kategori'
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'category'
+
+    default_value = None
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        list_of_categories = []
+        queryset = Category.objects.all()
+        for category in queryset:
+            list_of_categories.append(
+                (str(category.id), category.title)
+            )
+        return sorted(list_of_categories, key=lambda tp: tp[1])
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        # Compare the requested value to decide how to filter the queryset.
+        if self.value():
+            category_object = Category.objects.get(id=self.value())
+            return queryset.filter(categories=category_object)
+        return queryset
+
+    def value(self):
+        """
+        Overriding this method will allow us to always have a default value.
+        """
+        value = super(CategoriesListFilter, self).value()
+        if value is None:
+            if self.default_value is None:
+                # If there is at least one Species, return the first by name. Otherwise, None.
+                first_categories = Category.objects.order_by('title').first()
+                value = None if first_categories is None else first_categories.id
+                self.default_value = value
+            else:
+                value = self.default_value
+        return str(value)
 
 
 class VariationInline(admin.StackedInline):
@@ -84,27 +199,13 @@ class ThumbnailAdmin(admin.ModelAdmin):
     search_fields = ['type', 'width', 'height']
 
 
-#
-# class ThumbnailInline(nested_admin.NestedStackedInline):
-#     model = Thumbnail
-
-#
-# class ProductImageInline(nested_admin.NestedStackedInline):
-#     model = ProductImage
-#     inlines = [ThumbnailInline]
-#
-#
-# class ProductImageAdmin(nested_admin.NestedModelAdmin):
-#     model = ProductImage
-#     inlines = [ThumbnailInline]
-
 class ProductAdmin(admin.ModelAdmin):
     search_fields = ['title', 'istebu_product_no']
     list_display = ['__str__', 'istebu_product_no', 'price', 'sale_price', 'stok', 'active', 'frontpage_grup',
                     'updated']
     prepopulated_fields = {'slug': ('title',)}
     list_editable = ['active', 'frontpage_grup']
-
+    list_filter = (StokListFilter, CategoriesListFilter)
     inlines = [
         ProductImageInline,
         VariationInline,
