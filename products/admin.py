@@ -59,17 +59,17 @@ class StokListFilter(admin.SimpleListFilter):
                 return queryset.filter(variation__inventory__gt=0)
         return queryset
 
-    def value(self):
-        """
-        Overriding this method will allow us to always have a default value.
-        """
-        value = super(StokListFilter, self).value()
-        if value is None:
-            if self.default_value is None:
-                self.default_value = 1
-            else:
-                value = self.default_value
-        return str(value)
+    # def value(self):
+    #     """
+    #     Overriding this method will allow us to always have a default value.
+    #     """
+    #     value = super(StokListFilter, self).value()
+    #     if value is None:
+    #         if self.default_value is None:
+    #             self.default_value = 1
+    #         else:
+    #             value = self.default_value
+    #     return str(value)
 
 
 class CategoriesListFilter(admin.SimpleListFilter):
@@ -115,20 +115,20 @@ class CategoriesListFilter(admin.SimpleListFilter):
             return queryset.filter(categories=category_object)
         return queryset
 
-    def value(self):
-        """
-        Overriding this method will allow us to always have a default value.
-        """
-        value = super(CategoriesListFilter, self).value()
-        if value is None:
-            if self.default_value is None:
-                # If there is at least one Species, return the first by name. Otherwise, None.
-                first_categories = Category.objects.order_by('title').first()
-                value = None if first_categories is None else first_categories.id
-                self.default_value = value
-            else:
-                value = self.default_value
-        return str(value)
+    # def value(self):
+    #     """
+    #     Overriding this method will allow us to always have a default value.
+    #     """
+    #     value = super(CategoriesListFilter, self).value()
+    #     if value is None:
+    #         if self.default_value is None:
+    #             # If there is at least one Species, return the first by name. Otherwise, None.
+    #             first_categories = Category.objects.order_by('title').first()
+    #             value = None if first_categories is None else first_categories.id
+    #             self.default_value = value
+    #         else:
+    #             value = self.default_value
+    #     return str(value)
 
 
 class VariationInline(admin.StackedInline):
