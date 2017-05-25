@@ -24,8 +24,12 @@ urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),
     url(r'^contact/$', ContactView.as_view(), name='contact'),
     # url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name='home'),
-    url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
-                  url(r'^hakkimizda/$', views.flatpage, {'url': '/hakkimizda/'}, name='hakkimizda'),
+    # url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
+    url(r'^iade-kosullari/$', views.flatpage, {'url': '/iade-kosullari/'}, name='iade_kosullari'),
+    url(r'^hakkimizda/$', views.flatpage, {'url': '/hakkimizda/'}, name='hakkimizda'),
+    # url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
+    # url(r'^hakkimida/$', views.flatpage, {'url': '/hakkimizda/'}, name='hakkimizda'),
+
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
 

@@ -404,17 +404,20 @@ class NewProductListView(FilterMixin, SignupFormView, PaginationMixin, ListView)
         qs = super(NewProductListView, self).get_queryset(*args, **kwargs)
         query = self.request.GET.get("q")
         if query:
-            qs = self.model.objects.filter(
-                Q(title__icontains=query) |
-                Q(description__icontains=query)
-            )
-            try:
-                qs2 = self.model.objects.filter(
-                    Q(price=query)
-                )
-                qs = (qs | qs2).distinct()
-            except:
-                pass
+            # qs = self.model.objects.filter(
+            #     Q(title__icontains=query) |
+            #     Q(description__icontains=query)
+            # )
+            # try:
+            #     qs2 = self.model.objects.filter(
+            #         Q(price=query)
+            #     )
+            #     qs = (qs | qs2).distinct()
+            # except:
+            #     pass
+            qs = self.model.objects.filter(title__icontains=query)
+            # yukarıdakileri kaldırdım, sadece title yeterli.
+            # description 'da aramaya gerek yok.
         # print("qs neymiş :", qs)
         return qs
 

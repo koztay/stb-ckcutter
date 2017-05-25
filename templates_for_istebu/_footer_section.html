@@ -13,7 +13,7 @@
                                     <h3>istebu.com</h3>
                                     <ul class="aa-footer-nav">
                                         <li><a href="#">Hakkımızda</a></li>
-                                        <li><a href="#">İletişim</a></li>
+                                        <li><a href="{% url 'contact' %}">İletişim</a></li>
                                         <li><a href="#">Hesabım</a></li>
                                         <li><a href="#">İşlem Rehberi</a></li>
                                         <li><a href="#">Bizden Haberler</a></li>
@@ -25,16 +25,56 @@
                                     <div class="aa-footer-widget">
                                         <h3>Kategoriler</h3>
                                         <ul class="aa-footer-nav">
-                                            <li><a href="#">Ofis Kırtasiye</a></li>
-                                            <li><a href="#">Kağıt Ürünleri</a></li>
-                                            <li><a href="#">Okul Kırtasiye</a></li>
-                                            <li><a href="#">Projeksiyon Sistemleri</a></li>
-                                            <li><a href="#">Ofis Makineleri</a></li>
-                                            <li><a href="#">Kartuş Toner</a></li>
-                                            <li><a href="#">Ofis Mobilyaları</a></li>
-                                            <li><a href="#">Ofis Elektroniği</a></li>
-                                            <li><a href="#">Temizlik Ürünleri</a></li>
-                                            <li><a href="#">Gıda Ürünleri</a></li>
+                                            <li>
+                                                <a href="{% url 'products:products' %}?category=ofis-kirtasiye">
+                                                    Ofis Kırtasiye
+                                                </a>">
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'products:products' %}?category=kagit-urunleri">
+                                                    Kağıt Ürünleri
+                                                </a>">
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'products:products' %}?category=okul-kirtasiye">
+                                                    Okul Kırtasiye
+                                                </a>">
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'products:products' %}?category=projeksiyon-cihazlari">
+                                                    Projeksiyon Sistemleri
+                                                </a>">
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'products:products' %}?category=ofis-makineleri">
+                                                    Ofis Makineleri
+                                                </a>">
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'products:products' %}?category=kartus-toner">
+                                                    Kartuş Toner
+                                                </a>">
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'products:products' %}?category=ofis-mobilyaları">
+                                                    Ofis Mobilyaları
+                                                </a>">
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'products:products' %}?category=ofis-elektroniği">
+                                                    Ofis Elektroniği
+                                                </a>">
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'products:products' %}?category=temizlik-urunleri">
+                                                    Temizlik Ürünleri
+                                                </a>">
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'products:products' %}?category=gida-urunleri">
+                                                    Gıda Ürünleri
+                                                </a>">
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -58,7 +98,7 @@
                                     <div class="aa-footer-widget">
                                         <h3>Bize Ulaşın</h3>
                                         <address>
-                                            <p> Perpa Ticaret Merkezi A Blok Kat:4-5 No:95-97</p>
+                                            <p>Perpa Ticaret Merkezi A Blok Kat:4-5 No:95-97</p>
                                             <p><span class="fa fa-phone"></span>0 (212) 210 8890</p>
                                             <p><span class="fa fa-envelope"></span>info@istebu.com</p>
                                         </address>

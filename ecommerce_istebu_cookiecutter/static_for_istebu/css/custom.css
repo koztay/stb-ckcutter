@@ -98,7 +98,8 @@ figure {
   display: inline;
   float: left;
   margin-top: 50px;
-  padding: 10px 10px 130px;
+  margin-bottom: 50px;
+  padding: 50px 10px 50px;
   /*text-align: center;*/
   width: 100%;
   border: 5px solid #37c6f5;
@@ -111,10 +112,10 @@ figure {
 */
 
 #djDebug[hidden], #djDebug [hidden] {
-    display: block !important;
+  display: block !important;
 }
 
 #djDebug [hidden][style='display: none;'] {
-    display: none !important;
+  display: none !important;
 }
 

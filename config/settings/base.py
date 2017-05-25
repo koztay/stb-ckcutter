@@ -332,12 +332,24 @@ PAYNET_PRODUCTION_PAYNETJS_URL = env('PAYNET_PRODUCTION_PAYNETJS_URL', default='
 
 CKEDITOR_UPLOAD_PATH = 'ck_uploads/'
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Styles', 'Format', 'Bold', 'Italic', 'Underline', 'Strike', 'SpellChecker', 'Undo', 'Redo'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['Image', 'Flash', 'Table', 'HorizontalRule'],
+            ['TextColor', 'BGColor'],
+            ['Smiley', 'SpecialChar'], ['RemoveFormat', 'Source'],
+        ]
+    }
+}
 
 
 PAGINATION_SETTINGS = {
     'PAGE_RANGE_DISPLAYED': 4,
     'MARGIN_PAGES_DISPLAYED': 2,
-
     'SHOW_FIRST_PAGE_WHEN_INVALID': True,
 }
 
