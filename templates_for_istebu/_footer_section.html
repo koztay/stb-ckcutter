@@ -14,7 +14,12 @@
                                     <ul class="aa-footer-nav">
                                         <li><a href="#">Hakkımızda</a></li>
                                         <li><a href="{% url 'contact' %}">İletişim</a></li>
-                                        <li><a href="#">Hesabım</a></li>
+                                        {% if request.user.is_authenticated %}
+                                        <li><a href="{% url 'users:detail' username=request.user.username %}">Hesabım</a></li>
+                                        {% else %}
+                                        <li><a href="{% url 'account_login' %}">Hesabım</a></li>
+                                        {% endif %}
+
                                         <li><a href="#">İşlem Rehberi</a></li>
                                         <li><a href="#">Bizden Haberler</a></li>
                                     </ul>
@@ -84,7 +89,11 @@
                                     <div class="aa-footer-widget">
                                         <h3>Hesabım</h3>
                                         <ul class="aa-footer-nav">
-                                            <li><a href="#">Üyelik Bilgilerim</a></li>
+                                            {% if request.user.is_authenticated %}
+                                            <li><a href="{% url 'users:detail' username=request.user.username %}">Üyelik Bilgilerim</a></li>
+                                            {% else %}
+                                            <li><a href="{% url 'account_login' %}">Üyelik Bilgilerim</a></li>
+                                            {% endif %}
                                             <li><a href="#">Favori Ürünlerim</a></li>
                                             <li><a href="#">Son Siparişim</a></li>
                                             <li><a href="#">istebu Kurumsal</a></li>

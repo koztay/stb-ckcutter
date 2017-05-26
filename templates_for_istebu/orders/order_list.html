@@ -1,5 +1,9 @@
 {% extends "__base.html" %}
 
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
+
 {% block content %}
 
     {% if object_list|length <= 0 %}

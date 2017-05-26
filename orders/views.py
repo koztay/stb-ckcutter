@@ -36,9 +36,15 @@ class OrderList(LoginRequiredMixin, ListView):
         user_check_id = self.request.user.id
         try:
             user_checkout = UserCheckout.objects.get(id=user_check_id)
-            return super(OrderList, self).get_queryset().filter(user=user_checkout)
+        except UserCheckout.DoesNotExist:
+            user_checkout = UserCheckout.objects.get(user=self.request.user)
         except:
-            return super(OrderList, self).get_queryset()
+            user_checkout = None
+
+        if user_checkout is not None:
+            return super(OrderList, self).get_queryset().filter(user=user_checkout)
+        else:
+            raise Http404
 
 
 class UserAddressCreateView(CreateView):

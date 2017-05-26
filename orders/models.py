@@ -18,7 +18,7 @@ class UserCheckout(models.Model):
     email = models.EmailField(unique=True)  # --> required
     braintree_id = models.CharField(max_length=120, null=True, blank=True) # burada paynet id verelim
 
-    def __unicode__(self):  # def __str__(self):
+    def __str__(self):  # def __str__(self):
         return self.email
 
     @property
