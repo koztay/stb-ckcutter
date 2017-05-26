@@ -3,7 +3,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, FormView
-from  django.views.generic.list import ListView
+from django.views.generic.list import ListView
 
 from .forms import AddressForm, UserAddressForm
 from .mixins import CartOrderMixin, LoginRequiredMixin
