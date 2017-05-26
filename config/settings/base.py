@@ -154,7 +154,7 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True
 TIME_ZONE = 'Europe/Istanbul'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
-LANGUAGE_CODE = 'tr-tr'
+LANGUAGE_CODE = 'tr'
 ADMIN_LANGUAGE_CODE = 'en-us'
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
@@ -213,7 +213,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = str(ROOT_DIR('staticfiles'))
+STATIC_ROOT = str(ROOT_DIR.path('staticfiles'), )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
@@ -238,7 +238,7 @@ MEDIA_ROOT = str(APPS_DIR('media'))
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
 
-LOCALE_PATHS = (str(ROOT_DIR('staticfiles')), )
+LOCALE_PATHS = (str(ROOT_DIR.path('locale')), )
 
 # URL Configuration
 # ------------------------------------------------------------------------------

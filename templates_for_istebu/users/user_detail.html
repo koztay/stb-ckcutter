@@ -1,15 +1,18 @@
-{% extends "__base.html" %}
+{% extends "account/base.html" %}
 {% load static %}
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
 
-{% block title %}User: {{ object.username }}{% endblock %}
+{% block title %}Kullanıcı: {{ object.username }}{% endblock %}
 
-{% block content %}
+{% block inner %}
 <div class="container">
 
   <div class="row">
     <div class="col-sm-12">
-
-      <h2>{{ object.username }}</h2>
+    <h1>Hesap Bilgilerim</h1>
+      <h2>Kullanıcı Adınız: {{ object.username }}</h2>
       {% if object.name %}
         <p>{{ object.name }}</p>
       {% endif %}
@@ -21,8 +24,8 @@
 <div class="row">
 
   <div class="col-sm-12">
-    <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
-    <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
+    <a class="btn btn-primary aa-submit-btn" href="{% url 'users:update' %}" role="button">Profilimi Düzenle</a>
+    <a class="btn btn-primary aa-submit-btn" href="{% url 'account_email' %}" role="button">E-Postamı Değiştir</a>
     <!-- Your Stuff: Custom user template urls -->
   </div>
 
@@ -32,5 +35,8 @@
 
 
 </div>
-{% endblock content %}
+{% endblock inner %}
 
+{% block javascript_section %}
+    {% include '_javascripts/_javascript_home.html' %}
+{% endblock %}

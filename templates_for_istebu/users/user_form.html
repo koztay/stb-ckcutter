@@ -1,17 +1,24 @@
-{% extends "__base.html" %}
+{% extends "account/base.html" %}
 {% load crispy_forms_tags %}
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
 
 {% block title %}{{ user.username }}{% endblock %}
 
-{% block content %}
+{% block inner %}
   <h1>{{ user.username }}</h1>
   <form class="form-horizontal" method="post" action="{% url 'users:update' %}">
     {% csrf_token %}
     {{ form|crispy }}
     <div class="control-group">
       <div class="controls">
-        <button type="submit" class="btn">Update</button>
+        <button class="aa-submit-btn" type="submit" class="btn">Update</button>
       </div>
     </div>
   </form>
+{% endblock %}
+
+{% block javascript_section %}
+    {% include '_javascripts/_javascript_home.html' %}
 {% endblock %}

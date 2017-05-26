@@ -15,6 +15,11 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     slug_field = 'username'
     slug_url_kwarg = 'username'
 
+    def get_context_data(self, **kwargs):
+        context = super(UserDetailView, self).get_context_data(**kwargs)
+        # burada adamın siparişlerin vb. çekip contexte eklemiliyiz.
+        return context
+
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
@@ -41,8 +46,8 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         return User.objects.get(username=self.request.user.username)
 
 
-class UserListView(LoginRequiredMixin, ListView):
-    model = User
-    # These next two lines tell the view to index lookups by username
-    slug_field = 'username'
-    slug_url_kwarg = 'username'
+# class UserListView(LoginRequiredMixin, ListView):
+#     model = User
+#     # These next two lines tell the view to index lookups by username
+#     slug_field = 'username'
+#     slug_url_kwarg = 'username'

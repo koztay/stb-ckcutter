@@ -6,11 +6,12 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(
-        regex=r'^$',
-        view=views.UserListView.as_view(),
-        name='list'
-    ),
+    # mevcut userların diğer user 'ları görmesine gerek yok.
+    # url(
+    #     regex=r'^$',
+    #     view=views.UserListView.as_view(),
+    #     name='list'
+    # ),
     url(
         regex=r'^~redirect/$',
         view=views.UserRedirectView.as_view(),

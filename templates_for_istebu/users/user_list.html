@@ -1,8 +1,11 @@
-{% extends "__base.html" %}
+{% extends "account/base.html" %}
 {% load static i18n %}
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
 {% block title %}Members{% endblock %}
 
-{% block content %}
+{% block inner %}
 <div class="container">
   <h2>Users</h2>
 
@@ -14,4 +17,8 @@
     {% endfor %}
   </div>
 </div>
-{% endblock content %}
+{% endblock inner %}
+
+{% block javascript_section %}
+    {% include '_javascripts/_javascript_home.html' %}
+{% endblock %}

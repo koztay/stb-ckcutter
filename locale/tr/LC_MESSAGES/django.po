@@ -4,11 +4,13 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
+# 503 'teyim...
+
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-08 23:50+0300\n"
+"POT-Creation-Date: 2017-05-26 19:10+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,83 +53,87 @@ msgid "This account is inactive."
 msgstr "Bu hesap aktif değil."
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:7
-#: templates_for_istebu/account/email.html:7
+#: templates_for_istebu/account/email.html:5
 msgid "Account"
 msgstr "Hesabım"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:10
-#: templates_for_istebu/account/email.html:10
+#: templates_for_istebu/account/email.html:8
 msgid "E-mail Addresses"
 msgstr "E-posta Adresi"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:13
-#: templates_for_istebu/account/email.html:13
+#: templates_for_istebu/account/email.html:10
 msgid "The following e-mail addresses are associated with your account:"
 msgstr "Aşağıdaki e-posta adresleri hesabınız ile ilişkilendirildi."
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:27
-#: templates_for_istebu/account/email.html:27
+#: templates_for_istebu/account/email.html:24
 msgid "Verified"
 msgstr "Onaylandı"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:29
-#: templates_for_istebu/account/email.html:29
+#: templates_for_istebu/account/email.html:26
 msgid "Unverified"
 msgstr "Onaylanmadı"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:31
-#: templates_for_istebu/account/email.html:31
+#: templates_for_istebu/account/email.html:28
 msgid "Primary"
 msgstr "Birincil"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:37
-#: templates_for_istebu/account/email.html:37
+#: templates_for_istebu/account/email.html:34
 msgid "Make Primary"
 msgstr "Birincil Yap"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:38
-#: templates_for_istebu/account/email.html:38
+#: templates_for_istebu/account/email.html:35
 msgid "Re-send Verification"
 msgstr "Yeniden Onay Postası Gönder"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:39
-#: templates_for_istebu/account/email.html:39
+#: templates_for_istebu/account/email.html:36
+#: templates_for_istebu/socialaccount/connections.html:35
 msgid "Remove"
 msgstr "Kaldır"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:46
-#: templates_for_istebu/account/email.html:46
+#: templates_for_istebu/account/email.html:43
 msgid "Warning:"
 msgstr "Uyarı:"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:46
-#: templates_for_istebu/account/email.html:46
+#: templates_for_istebu/account/email.html:43
 msgid ""
 "You currently do not have any e-mail address set up. You should really add "
 "an e-mail address so you can receive notifications, reset your password, etc."
 msgstr ""
+"Şu anda sistemize kayıtlı bir e-posta adresiniz yok. Sitemize ait "
+"bildirimlerialabilmeniz ve şifrenizi sıfırlamak gibi işlemler için bir e-"
+"posta adresi eklemelisiniz."
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:51
-#: templates_for_istebu/account/email.html:51
+#: templates_for_istebu/account/email.html:48
 msgid "Add E-mail Address"
-msgstr ""
+msgstr "E-posta adresi ekleyin"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:56
-#: templates_for_istebu/account/email.html:56
+#: templates_for_istebu/account/email.html:53
 msgid "Add E-mail"
-msgstr ""
+msgstr "E-posta ekleyin"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email.html:66
-#: templates_for_istebu/account/email.html:66
+#: templates_for_istebu/account/email.html:62
 msgid "Do you really want to remove the selected e-mail address?"
-msgstr ""
+msgstr "Seçili e-posta adresini silmek istediğinize emin misiniz?"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email_confirm.html:6
 #: ecommerce_istebu_cookiecutter/templates/account/email_confirm.html:10
 #: templates_for_istebu/account/email_confirm.html:6
 #: templates_for_istebu/account/email_confirm.html:10
 msgid "Confirm E-mail Address"
-msgstr ""
+msgstr "E-posta adresinizi onaylayın"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email_confirm.html:16
 #: templates_for_istebu/account/email_confirm.html:16
@@ -136,11 +142,13 @@ msgid ""
 "Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
 "address for user %(user_display)s."
 msgstr ""
+"Lütfen <a href=\"mailto:%(email)s\">%(email)s</a> adresinin "
+"%(user_display)sadlı kullanıcıya ait olduğunu doğrulayın."
 
 #: ecommerce_istebu_cookiecutter/templates/account/email_confirm.html:20
 #: templates_for_istebu/account/email_confirm.html:20
 msgid "Confirm"
-msgstr ""
+msgstr "Onayla"
 
 #: ecommerce_istebu_cookiecutter/templates/account/email_confirm.html:27
 #: templates_for_istebu/account/email_confirm.html:27
@@ -149,19 +157,21 @@ msgid ""
 "This e-mail confirmation link expired or is invalid. Please <a href="
 "\"%(email_url)s\">issue a new e-mail confirmation request</a>."
 msgstr ""
+"Bu e-posta doğrulana linki geçersiz veya geçerlilik süresi dolmuşLütfen <a "
+"href=\"%(email_url)s\"> yeni doğrulama kodu isteyin."
 
 #: ecommerce_istebu_cookiecutter/templates/account/login.html:8
 #: ecommerce_istebu_cookiecutter/templates/account/login.html:12
 #: ecommerce_istebu_cookiecutter/templates/account/login.html:45
 #: ecommerce_istebu_cookiecutter/templates/base.html:63
-#: templates_for_istebu/account/login.html:8
-#: templates_for_istebu/account/login.html:12
-#: templates_for_istebu/account/login.html:45
+#: templates_for_istebu/account/login.html:6
+#: templates_for_istebu/account/login.html:10
+#: templates_for_istebu/account/login.html:43
 msgid "Sign In"
-msgstr ""
+msgstr "Giriş yap"
 
 #: ecommerce_istebu_cookiecutter/templates/account/login.html:17
-#: templates_for_istebu/account/login.html:17
+#: templates_for_istebu/account/login.html:15
 #, python-format
 msgid ""
 "Please sign in with one\n"
@@ -169,24 +179,29 @@ msgid ""
 "up</a>\n"
 "for a %(site_name)s account and sign in below:"
 msgstr ""
+"Lütfen mevcut sosyal medyahesaplarınızdan biriyle giriş yapın. Ya da "
+"%(site_name)s hesabı içinaşağıdaki linkten kayıt olarak giriş yapın:<a href="
+"\"%(signup_url)s\">Kayıt ol</a>"
 
 #: ecommerce_istebu_cookiecutter/templates/account/login.html:27
-#: templates_for_istebu/account/login.html:27
+#: templates_for_istebu/account/login.html:25
 msgid "or"
-msgstr ""
+msgstr "veya"
 
 #: ecommerce_istebu_cookiecutter/templates/account/login.html:34
-#: templates_for_istebu/account/login.html:34
+#: templates_for_istebu/account/login.html:32
 #, python-format
 msgid ""
 "If you have not created an account yet, then please\n"
 "<a href=\"%(signup_url)s\">sign up</a> first."
 msgstr ""
+"Eğer henüz bir hesabınız yoksa lütfen<a href=\"%(signup_url)s\">Kayıt ol</a> "
+"'a tıklayarak kayıt olun."
 
 #: ecommerce_istebu_cookiecutter/templates/account/login.html:44
-#: templates_for_istebu/account/login.html:44
+#: templates_for_istebu/account/login.html:42
 msgid "Forgot Password?"
-msgstr ""
+msgstr "Şifremi Unuttum"
 
 #: ecommerce_istebu_cookiecutter/templates/account/logout.html:5
 #: ecommerce_istebu_cookiecutter/templates/account/logout.html:8
@@ -196,12 +211,12 @@ msgstr ""
 #: templates_for_istebu/account/logout.html:8
 #: templates_for_istebu/account/logout.html:17
 msgid "Sign Out"
-msgstr ""
+msgstr "Çıkış Yap"
 
 #: ecommerce_istebu_cookiecutter/templates/account/logout.html:10
 #: templates_for_istebu/account/logout.html:10
 msgid "Are you sure you want to sign out?"
-msgstr ""
+msgstr "Çıkmak istediğinize emin misiniz?"
 
 #: ecommerce_istebu_cookiecutter/templates/account/password_change.html:6
 #: ecommerce_istebu_cookiecutter/templates/account/password_change.html:9
@@ -210,43 +225,47 @@ msgstr ""
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key.html:8
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key_done.html:4
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key_done.html:7
-#: templates_for_istebu/account/password_change.html:6
-#: templates_for_istebu/account/password_change.html:9
-#: templates_for_istebu/account/password_change.html:14
-#: templates_for_istebu/account/password_reset_from_key.html:5
-#: templates_for_istebu/account/password_reset_from_key.html:8
+#: templates_for_istebu/account/password_change.html:5
+#: templates_for_istebu/account/password_change.html:8
+#: templates_for_istebu/account/password_change.html:13
+#: templates_for_istebu/account/password_reset_from_key.html:4
+#: templates_for_istebu/account/password_reset_from_key.html:7
 #: templates_for_istebu/account/password_reset_from_key_done.html:4
 #: templates_for_istebu/account/password_reset_from_key_done.html:7
 msgid "Change Password"
-msgstr ""
+msgstr "Şifremi Değiştir"
 
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset.html:7
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset.html:11
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset_done.html:6
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset_done.html:9
-#: templates_for_istebu/account/password_reset.html:7
-#: templates_for_istebu/account/password_reset.html:11
+#: templates_for_istebu/account/password_reset.html:6
+#: templates_for_istebu/account/password_reset.html:10
 #: templates_for_istebu/account/password_reset_done.html:6
 #: templates_for_istebu/account/password_reset_done.html:9
 msgid "Password Reset"
-msgstr ""
+msgstr "Şifremi Sıfırla"
 
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset.html:16
-#: templates_for_istebu/account/password_reset.html:16
+#: templates_for_istebu/account/password_reset.html:15
 msgid ""
 "Forgotten your password? Enter your e-mail address below, and we'll send you "
 "an e-mail allowing you to reset it."
 msgstr ""
+"Şifrenizi mi unuttunuz? Lütfen şifrenizi sıfırlamanız için gerekli "
+"adımlarıgönderebilecğeimiz sistemimizde kayıtlı e-posta adresinizi aşağıya "
+"girin:"
 
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset.html:21
-#: templates_for_istebu/account/password_reset.html:21
+#: templates_for_istebu/account/password_reset.html:20
 msgid "Reset My Password"
-msgstr ""
+msgstr "Şifremi Sıfırla"
 
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset.html:24
-#: templates_for_istebu/account/password_reset.html:24
+#: templates_for_istebu/account/password_reset.html:23
 msgid "Please contact us if you have any trouble resetting your password."
 msgstr ""
+"Şifrenizi sıfırlamakta sorun yaşıyorsanız lütfen bizimle iletişime geçin."
 
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset_done.html:15
 #: templates_for_istebu/account/password_reset_done.html:15
@@ -254,73 +273,82 @@ msgid ""
 "We have sent you an e-mail. Please contact us if you do not receive it "
 "within a few minutes."
 msgstr ""
+"Size bir e-posta gönderdik. Eğer birkaç dakika içerisinde e-posta "
+"almazsanızlütfen bizimle iletişime geçin."
 
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key.html:8
-#: templates_for_istebu/account/password_reset_from_key.html:8
+#: templates_for_istebu/account/password_reset_from_key.html:7
 msgid "Bad Token"
-msgstr ""
+msgstr "Hatalı Kod"
 
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key.html:12
-#: templates_for_istebu/account/password_reset_from_key.html:12
+#: templates_for_istebu/account/password_reset_from_key.html:11
 #, python-format
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
 "a>."
 msgstr ""
+"Şifre değiştirme linki geçerli değil. Sorunun nedeni daha önce kullanılmış "
+"olmasıolabilir. Lütfen <a href=\"%(passwd_reset_url)s\">yeni sıfırlama "
+"linki</a>tıklayarak yeni link isteyin."
 
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key.html:18
-#: templates_for_istebu/account/password_reset_from_key.html:18
+#: templates_for_istebu/account/password_reset_from_key.html:17
 msgid "change password"
-msgstr ""
+msgstr "şifre değiştir"
 
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key.html:21
 #: ecommerce_istebu_cookiecutter/templates/account/password_reset_from_key_done.html:8
-#: templates_for_istebu/account/password_reset_from_key.html:21
+#: templates_for_istebu/account/password_reset_from_key.html:20
 #: templates_for_istebu/account/password_reset_from_key_done.html:8
 msgid "Your password is now changed."
-msgstr ""
+msgstr "Şifreniz değiştirildi."
 
 #: ecommerce_istebu_cookiecutter/templates/account/password_set.html:6
 #: ecommerce_istebu_cookiecutter/templates/account/password_set.html:9
 #: ecommerce_istebu_cookiecutter/templates/account/password_set.html:14
-#: templates_for_istebu/account/password_set.html:6
-#: templates_for_istebu/account/password_set.html:9
-#: templates_for_istebu/account/password_set.html:14
+#: templates_for_istebu/account/password_set.html:5
+#: templates_for_istebu/account/password_set.html:8
+#: templates_for_istebu/account/password_set.html:13
 msgid "Set Password"
-msgstr ""
+msgstr "Şifre Belirle"
 
 #: ecommerce_istebu_cookiecutter/templates/account/signup.html:6
-#: templates_for_istebu/account/signup.html:6
+#: templates_for_istebu/account/signup.html:5
+#: templates_for_istebu/socialaccount/signup.html:5
 msgid "Signup"
-msgstr ""
+msgstr "Kayıt Ol"
 
 #: ecommerce_istebu_cookiecutter/templates/account/signup.html:9
 #: ecommerce_istebu_cookiecutter/templates/account/signup.html:19
 #: ecommerce_istebu_cookiecutter/templates/base.html:60
-#: templates_for_istebu/account/signup.html:9
-#: templates_for_istebu/account/signup.html:19
+#: templates_for_istebu/account/signup.html:8
+#: templates_for_istebu/account/signup.html:18
+#: templates_for_istebu/socialaccount/signup.html:8
+#: templates_for_istebu/socialaccount/signup.html:19
 msgid "Sign Up"
-msgstr ""
+msgstr "Kayıt Ol"
 
 #: ecommerce_istebu_cookiecutter/templates/account/signup.html:11
-#: templates_for_istebu/account/signup.html:11
+#: templates_for_istebu/account/signup.html:10
 #, python-format
 msgid ""
 "Already have an account? Then please <a href=\"%(login_url)s\">sign in</a>."
 msgstr ""
+"Hesabınız var mı? O zaman lütfen <a href=\"%(login_url)s\">giriş yapın</a>."
 
 #: ecommerce_istebu_cookiecutter/templates/account/signup_closed.html:5
 #: ecommerce_istebu_cookiecutter/templates/account/signup_closed.html:8
 #: templates_for_istebu/account/signup_closed.html:5
 #: templates_for_istebu/account/signup_closed.html:8
 msgid "Sign Up Closed"
-msgstr ""
+msgstr "Kayıt Kapalı"
 
 #: ecommerce_istebu_cookiecutter/templates/account/signup_closed.html:10
 #: templates_for_istebu/account/signup_closed.html:10
 msgid "We are sorry, but the sign up is currently closed."
-msgstr ""
+msgstr "Üzgünüz, ancak şu anda kayıt işlemleri kapatıldı."
 
 #: ecommerce_istebu_cookiecutter/templates/account/verification_sent.html:5
 #: ecommerce_istebu_cookiecutter/templates/account/verification_sent.html:8
@@ -331,7 +359,7 @@ msgstr ""
 #: templates_for_istebu/account/verified_email_required.html:5
 #: templates_for_istebu/account/verified_email_required.html:8
 msgid "Verify Your E-mail Address"
-msgstr ""
+msgstr "E-posta adresinizi doğrulayın"
 
 #: ecommerce_istebu_cookiecutter/templates/account/verification_sent.html:10
 #: templates_for_istebu/account/verification_sent.html:10
@@ -340,6 +368,9 @@ msgid ""
 "finalize the signup process. Please contact us if you do not receive it "
 "within a few minutes."
 msgstr ""
+"Doğrulamanız için size bir e-posta gönderdik. Gelen e-postadaki linki "
+"tıklayarak lütfen kayıt işleminizi tamamlayın. Eğer birkaç dakika içerisinde "
+"e-posta ulaşmazsa lütfen bizimle iletişim kurun."
 
 #: ecommerce_istebu_cookiecutter/templates/account/verified_email_required.html:12
 #: templates_for_istebu/account/verified_email_required.html:12
@@ -348,6 +379,9 @@ msgid ""
 "you are who you claim to be. For this purpose, we require that you\n"
 "verify ownership of your e-mail address. "
 msgstr ""
+"Bu bölüme erişebilmeniz için kayıt için kullandığınız\n"
+"e-posta adresnizi doğrulamanız gerekmektedir. Bu nedenle sizden\n"
+"e-posta nın size ait olduğunu doğrulamanızı rica ediyoruz."
 
 #: ecommerce_istebu_cookiecutter/templates/account/verified_email_required.html:16
 #: templates_for_istebu/account/verified_email_required.html:16
@@ -368,31 +402,238 @@ msgid ""
 "<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
 "mail address</a>."
 msgstr ""
+"<strong>Not:</strong> E-posta adresinizi <a href=\"%(email_url)s\">e-posta "
+"adresimideğiştir</a> linkine tıklayarak değiştirebilirsiniz."
 
 #: ecommerce_istebu_cookiecutter/templates/base.html:53
 msgid "My Profile"
-msgstr ""
+msgstr "Profilim"
 
 #: ecommerce_istebu_cookiecutter/users/models.py:16
 msgid "Name of User"
-msgstr ""
+msgstr "Kullanıcı Adı"
 
 #: orders/forms.py:54
 msgid "Cadde, Sokak, Mahalle"
-msgstr ""
+msgstr "Cadde, Sokak, Mahalle"
 
 #: orders/forms.py:55
 msgid "İl:"
-msgstr ""
+msgstr "İl:"
 
 #: orders/forms.py:56
 msgid "İlçe:"
-msgstr ""
+msgstr "İlçe:"
 
 #: orders/forms.py:57
 msgid "Posta Kodu:"
-msgstr ""
+msgstr "Posta Kodu:"
 
 #: orders/forms.py:58
 msgid "Adres Tipi:"
+msgstr "Adres Tipi:"
+
+#: templates_for_istebu/account/email/email_confirmation_message.txt:1
+#, python-format
+msgid ""
+"Hello from %(site_name)s!\n"
+"\n"
+"You're receiving this e-mail because user %(user_display)s has given yours "
+"as an e-mail address to connect their account.\n"
+"\n"
+"To confirm this is correct, go to %(activate_url)s\n"
 msgstr ""
+"%(site_name)s 'a hoş geldiniz!"
+"\n"
+"Bu e-postayı %(user_display)s isimli kullanıcının sitemize kayıt olurken"
+"e-posta adresi olarak bu adresi gösterdiği için aldınız.\n"
+"\n"
+"Eğer e-posta adresi doğru ise hesabınızı aktive etmek için lütfen aşağıdaki"
+"bağlantıya tıklayın: \n"
+"%(activate_url)s\n"
+
+
+#: templates_for_istebu/account/email/email_confirmation_message.txt:7
+#, python-format
+msgid ""
+"Thank you from %(site_name)s!\n"
+"%(site_domain)s"
+msgstr ""
+"%(site_name)s!\n olarak teşekkür ederiz!\n"
+"%(site_domain)s"
+
+#: templates_for_istebu/account/email/email_confirmation_subject.txt:3
+#, fuzzy
+#| msgid "Confirm E-mail Address"
+msgid "Please Confirm Your E-mail Address"
+msgstr "E-posta adresinizi onaylayın"
+
+#: templates_for_istebu/account/email/password_reset_key_message.txt:1
+#, python-format
+msgid ""
+"Hello from %(site_name)s!\n"
+"\n"
+"You're receiving this e-mail because you or someone else has requested a "
+"password for your user account.\n"
+"It can be safely ignored if you did not request a password reset. Click the "
+"link below to reset your password."
+msgstr ""
+"%(site_name)s 'dan merhaba!"
+"\n"
+"Bu e-postayı siz veya bir başkası kullanıcı hesabınıza ait şifre talebinde "
+"bulunduğu için aldınız.\n"
+"Eğer böyle bir talebiniz olmadıysa bu mesajı dikkate almayın. "
+"Eğer şifrenizi unuttuysanız sıfırlamak için aşağıdaki bağlantıya tıklayın."
+
+#: templates_for_istebu/account/email/password_reset_key_message.txt:8
+#, python-format
+msgid "In case you forgot, your username is %(username)s."
+msgstr "Eğer kullanıcı adınızı unuttuysanız, kullanıcı adınız : %(username)s."
+
+#: templates_for_istebu/account/email/password_reset_key_message.txt:10
+#, python-format
+msgid ""
+"Thank you for using %(site_name)s!\n"
+"%(site_domain)s"
+msgstr ""
+"%(site_name)s 'u kullandığınız için teşekkür ederiz.!"
+"%(site_domain)s"
+
+#: templates_for_istebu/account/email/password_reset_key_subject.txt:3
+msgid "Password Reset E-mail"
+msgstr "Şifre Sıfırlama E-postası"
+
+#: templates_for_istebu/account/messages/cannot_delete_primary_email.txt:2
+#, python-format
+msgid "You cannot remove your primary e-mail address (%(email)s)."
+msgstr "Birincil e-posta adresinizi (%(email)s) silemezsiniz."
+
+#: templates_for_istebu/account/messages/email_confirmation_sent.txt:2
+#, python-format
+msgid "Confirmation e-mail sent to %(email)s."
+msgstr "%(email)s adresine doğrulama e-postası gönderildi."
+
+#: templates_for_istebu/account/messages/email_confirmed.txt:2
+#, python-format
+msgid "You have confirmed %(email)s."
+msgstr "%(email)s adresinizi doğruladınız."
+
+#: templates_for_istebu/account/messages/email_deleted.txt:2
+#, python-format
+msgid "Removed e-mail address %(email)s."
+msgstr "%(email)s e-posta adresi silindi."
+
+#: templates_for_istebu/account/messages/logged_in.txt:4
+#, python-format
+msgid "Successfully signed in as %(name)s."
+msgstr "%(name)s olarak başarıyla giriş yaptınız."
+
+#: templates_for_istebu/account/messages/logged_out.txt:2
+msgid "You have signed out."
+msgstr "Çıkış yaptınız."
+
+#: templates_for_istebu/account/messages/password_changed.txt:2
+#, fuzzy
+#| msgid "Your password is now changed."
+msgid "Password successfully changed."
+msgstr "Şifreniz değiştirildi."
+
+#: templates_for_istebu/account/messages/password_set.txt:2
+#, fuzzy
+#| msgid "Password Reset"
+msgid "Password successfully set."
+msgstr "Şifremi Sıfırla"
+
+#: templates_for_istebu/account/messages/primary_email_set.txt:2
+#, fuzzy
+#| msgid "Confirm E-mail Address"
+msgid "Primary e-mail address set."
+msgstr "E-posta adresinizi onaylayın"
+
+#: templates_for_istebu/account/messages/unverified_primary_email.txt:2
+msgid "Your primary e-mail address must be verified."
+msgstr "Birincil e-posta adresiniz doğrulanmalıdır."
+
+#: templates_for_istebu/account/snippets/already_logged_in.html:5
+msgid "Note"
+msgstr "Not"
+
+#: templates_for_istebu/account/snippets/already_logged_in.html:5
+#, python-format
+msgid "you are already logged in as %(user_display)s."
+msgstr "Halihazırda %(user_display)s kullanıcısı olarak giriş yapmış durumdasınız."
+
+#: templates_for_istebu/openid/login.html:9
+msgid "OpenID Sign In"
+msgstr "OpenID ile Giriş yap"
+
+#: templates_for_istebu/socialaccount/authentication_error.html:5
+#: templates_for_istebu/socialaccount/authentication_error.html:8
+msgid "Social Network Login Failure"
+msgstr "Sosyal Medya Hesabı Giriş Hatası"
+
+#: templates_for_istebu/socialaccount/authentication_error.html:10
+msgid ""
+"An error occurred while attempting to login via your social network account."
+msgstr ""
+"Sosyal medya hesabınız ile giriş yapmaya çalışırken bir hata oluştu."
+
+#: templates_for_istebu/socialaccount/connections.html:5
+#: templates_for_istebu/socialaccount/connections.html:8
+msgid "Account Connections"
+msgstr "Hesaba Ait Sosyal Medya Bağlantıları"
+
+#: templates_for_istebu/socialaccount/connections.html:11
+msgid ""
+"You can sign in to your account using any of the following third party "
+"accounts:"
+msgstr ""
+"Sitemize aşağıdaki sosyal medya hesaplarından herhangi biri ile giriş "
+"yapabilirsiniz:"
+
+#: templates_for_istebu/socialaccount/connections.html:43
+msgid ""
+"You currently have no social network accounts connected to this account."
+msgstr ""
+"Henüz kullanıcı hesabınız herhangi bir sosyal medya hesabı ile ilişkilendirilmemiş."
+
+#: templates_for_istebu/socialaccount/connections.html:46
+msgid "Add a 3rd Party Account"
+msgstr "Bir sosyal medya hesabı ekleyin"
+
+#: templates_for_istebu/socialaccount/login_cancelled.html:5
+#: templates_for_istebu/socialaccount/login_cancelled.html:9
+msgid "Login Cancelled"
+msgstr "Giriş İptal Edildi"
+
+#: templates_for_istebu/socialaccount/login_cancelled.html:13
+#, python-format
+msgid ""
+"You decided to cancel logging in to our site using one of your existing "
+"accounts. If this was a mistake, please proceed to <a href=\"%(login_url)s"
+"\">sign in</a>."
+msgstr ""
+"Sitemize aşağıdaki hesaplarınızdan biri ile giriş yaparken giriş işlemini "
+"iptal ettiniz. Eğer yanlışlıkla olduğunu düşünüyorsanız <a href=\"%(login_url)s"
+"\">Giriş Yap</a> bağlantısına tıklayarak yeniden deneyin."
+
+#: templates_for_istebu/socialaccount/messages/account_connected.txt:2
+msgid "The social account has been connected."
+msgstr "Sosyal medya hesabı ilişkilendirildi."
+
+#: templates_for_istebu/socialaccount/messages/account_connected_other.txt:2
+msgid "The social account is already connected to a different account."
+msgstr "Bu sosyal medya hesabı bir başka kullanıcı hesabı ile ilişkilendirilmiş."
+
+#: templates_for_istebu/socialaccount/messages/account_disconnected.txt:2
+msgid "The social account has been disconnected."
+msgstr "Bu sosyal medya hesabı, artık hesabınız ile ilişkili değil."
+
+#: templates_for_istebu/socialaccount/signup.html:10
+#, python-format
+msgid ""
+"You are about to use your %(provider_name)s account to login to\n"
+"%(site_name)s. As a final step, please complete the following form:"
+msgstr ""
+"%(provider_name)s hesabınızı kullanarak %(site_name)s 'a giriş yapmak\n"
+"üzeresiniz. Son adım olarak lütfen aşağıdaki formu doldurun:"
