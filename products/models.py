@@ -190,6 +190,44 @@ class Currency(models.Model):
 
 # delete this model and use product instead of this like commenting system. So, products belongs
 # products like comments. And if product has child products we use an algorithm which one to show.
+"""
+
+class ProductQuerySet(models.query.QuerySet):
+    def active(self):
+        return self.filter(active=True)
+
+
+class ProductManager(models.Manager):
+    def get_queryset(self):
+        return ProductQuerySet(self.model, using=self._db)
+
+    def all(self, *args, **kwargs):
+        return self.get_queryset().active()
+
+    def get_related(self, instance):
+        products_one = self.get_queryset().filter(categories__in=instance.categories.all()).filter(variation__inventory__gte=0)
+        products_two = self.get_queryset().filter(default=instance.default).filter(variation__inventory__gte=0)
+        qs = (products_one | products_two).exclude(id=instance.id).distinct()
+        return qs
+
+
+"""
+
+
+class VariationQueryset(models.query.QuerySet):
+    def active(self):
+        return self.filter(product__active=True)
+
+    def local_price(self):
+        qs = self.active()
+        local_field = F("sale_price")*F("buying_currency__value")
+        local_field.output_field = models.DecimalField()
+        return qs.annotate(local_price=local_field)
+
+    # def all(self):
+    #     return self.local_price()
+
+
 class Variation(models.Model):
 
     """
@@ -225,6 +263,9 @@ class Variation(models.Model):
     # product sayfasında hangi vendor seçiliyse onun ürünü gösterilir. Eşleştirirken de önce vendoru kendi olan ürünleri
     # bulur sonra kendine ait vendor no.lu ürün var mı bakar varsa update eder yoksa pas geçer. Şimdilik yukarıdaki
     # modelleri eklemeyeyim.
+    objects = models.Manager()
+    annotated = VariationQueryset.as_manager()
+    # objects = VariationQueryset.as_manager()
 
     def __str__(self):
         return self.title

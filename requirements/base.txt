@@ -5,7 +5,7 @@
 wheel==0.29.0
 
 # Bleeding edge Django
-django==1.10.6
+django==1.11.1
 
 # Configuration
 django-environ==0.4.1
@@ -61,7 +61,7 @@ django-taggit==0.22.0
 django-ckeditor==5.2.1
 django-uuslug==1.1.8  # TODO : bunu kaldır mevcuttaki awesome-slugify'ı kullan
 Markdown==2.6.8 # blog app kullanıyor bunu.
-urllib3==1.20 # image_downloader için gerekli
+urllib3==1.21.1 # image_downloader için gerekli
 lxml==3.7.3
 django-cleanup==0.4.2
 django-pure-pagination==0.3.0

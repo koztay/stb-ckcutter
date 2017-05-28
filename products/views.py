@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # from datetime import datetime
-from django.db.models import Q, Max, Min, Count, Sum
+from django.db.models import Q, Max, Min, Count, Sum, DecimalField, F
 from django.http import Http404, HttpResponse, StreamingHttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Context, loader
@@ -16,7 +16,7 @@ from django.utils.html import escape
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
-from django_filters import FilterSet, CharFilter, NumberFilter
+from django_filters import FilterSet, CharFilter, NumberFilter, RangeFilter
 
 from pure_pagination.mixins import PaginationMixin
 
@@ -183,23 +183,46 @@ class VariationListView(StaffRequiredMixin, ListView):
 
 
 class ProductFilter(FilterSet):
+
     title = CharFilter(name='title', lookup_expr='icontains', distinct=True)
     category = CharFilter(name='categories__slug', lookup_expr='iexact', distinct=True)
     # category_id = CharFilter(name='categories__id', lookup_type='icontains', distinct=True)
-    min_price = NumberFilter(name='variation__sale_price', lookup_expr='gte', distinct=True)  # (some_price__gte=somequery)
-    max_price = NumberFilter(name='variation__sale_price', lookup_expr='lte', distinct=True)
+    # min_price = NumberFilter(name='variation__sale_price', lookup_expr='gte', distinct=True)  # (some_price__gte=somequery)
+    # max_price = NumberFilter(name='variation__sale_price', lookup_expr='lte', distinct=True)
     tag = CharFilter(name='tags__name', lookup_expr='icontains', distinct=True)
+    local_price = RangeFilter()
 
     class Meta:
         model = Product
         fields = [
-            'min_price',
-            'max_price',
+            # 'min_price',
+            # 'max_price',
             'category',
             'title',
             'description',
             'tag',
+            'local_price'
         ]
+
+
+# class PriceRangeFilter(FilterSet):
+#         """Filter for Variations by Price"""
+#         local_price = RangeFilter()
+#
+#         class Meta:
+#             model = Variation
+#             fields = ['local_price']
+
+    # qs = Book.objects.all().order_by('title')
+    #
+    # # Range: Books between 5€ and 15€
+    # f = F({'price_0': '5', 'price_1': '15'}, queryset=qs)
+    #
+    # # Min-Only: Books costing more the 11€
+    # f = F({'price_0': '11'}, queryset=qs)
+    #
+    # # Max-Only: Books costing less than 19€
+    # f = F({'price_1': '19'}, queryset=qs)
 
 
 # def product_list(request):
@@ -364,13 +387,18 @@ class NewProductListView(FilterMixin, SignupFormView, PaginationMixin, ListView)
         context["filter_form"] = ProductFilterForm(data=self.request.GET or None)  # BUNU KULLANMIYOR OLABİLİRİZ.
 
         context["number_of_object_list"] = len(context["object_list"])
-        minimum_price_aggregate = context["object_list"].aggregate(Min('price'))
-        minimum_price = minimum_price_aggregate['price__min']
-        context["minimum_price"] = minimum_price
 
-        maximum_price_aggregate = context["object_list"].aggregate(Max('price'))
-        maximum_price = maximum_price_aggregate['price__max']
-        context["maximum_price"] = maximum_price
+        variation_qs = Variation.annotated.local_price().filter(
+            product__in=context["object_list"]
+        ).order_by('local_price')
+
+        try:
+            minimum_price = variation_qs.first().local_price
+            context["minimum_price"] = minimum_price-1
+            maximum_price = variation_qs.last().local_price
+            context["maximum_price"] = maximum_price+1
+        except:
+            pass  # empty query döndürmüş demektir. O nedenlde de local_price set etmeye çalışırken patlar.
 
         paginated = self.paginate_queryset(context["object_list"], self.paginate_by)
         context["paginator"] = paginated[0]
@@ -403,6 +431,8 @@ class NewProductListView(FilterMixin, SignupFormView, PaginationMixin, ListView)
     def get_queryset(self, *args, **kwargs):
         qs = super(NewProductListView, self).get_queryset(*args, **kwargs)
         query = self.request.GET.get("q")
+        minimum_price = self.request.GET.get("min_price")
+        maximum_price = self.request.GET.get("max_price")
         if query:
             # qs = self.model.objects.filter(
             #     Q(title__icontains=query) |
@@ -419,6 +449,19 @@ class NewProductListView(FilterMixin, SignupFormView, PaginationMixin, ListView)
             # yukarıdakileri kaldırdım, sadece title yeterli.
             # description 'da aramaya gerek yok.
         # print("qs neymiş :", qs)
+        if minimum_price or maximum_price:
+            # print(minimum_price, maximum_price)
+            variation_object_list = Variation.annotated.local_price().filter(
+                product__in=qs
+            ).order_by('local_price')
+            f = ProductFilter({'local_price_0': minimum_price, 'local_price_1': maximum_price}, queryset=variation_object_list)
+            # f = ProductFilter({'local_price_0': '730.0', 'local_price_1': '750.0'}, queryset=variation_object_list)
+            # print("what is f?:", f.qs)
+            # for var in f.qs:
+            #     print(var.local_price)
+            qs = qs.filter(variation__in=f.qs)
+
+        # print(qs)
         return qs
 
     # This utility function removes page parameter for preserving the query parameters.
@@ -429,7 +472,7 @@ class NewProductListView(FilterMixin, SignupFormView, PaginationMixin, ListView)
         return queries_without_page
 
 
-# # bu da yine otomatik listeliyor ancak filtermixin çalışmıyor düzeltilecek...
+# bu da yine otomatik listeliyor ancak filtermixin çalışmıyor düzeltilecek...
 # class CategoryDetailView(FilterMixin, SignupFormView, LatestProducts, PaginationMixin, ListView):
 #     model = Product
 #     filter_class = ProductFilter
