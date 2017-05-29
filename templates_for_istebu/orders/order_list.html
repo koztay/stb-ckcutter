@@ -1,14 +1,15 @@
-{% extends "__base.html" %}
+{% extends "account/base.html" %}
+
 
 {% block messages %}
     {% include '_messages.html' %}
 {% endblock %}
 
-{% block content %}
+{% block inner %}
 
     {% if object_list|length <= 0 %}
 
-        <div class='col-sm-6 col-sm-offset-3 text-center'>
+        <div class='text-center'>
             <p class='lead'>
                 Henüz siparişiniz yok.
             </p>

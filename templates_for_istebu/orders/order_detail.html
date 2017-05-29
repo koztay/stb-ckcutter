@@ -1,10 +1,11 @@
-{% extends "__base.html" %}
+{% extends "__custom_base.html" %}
+
 
 {% block messages %}
     {% include '_messages.html' %}
 {% endblock %}
 
-{% block content %}
+{% block inner %}
 
     {% include "orders/order_summary_short.html" with order=order %}
 

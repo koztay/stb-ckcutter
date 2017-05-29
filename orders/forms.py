@@ -8,8 +8,8 @@ User = get_user_model()
 
 
 class GuestCheckoutForm(forms.Form):
-    email = forms.EmailField()
-    email2 = forms.EmailField(label='Verify Email')
+    email = forms.EmailField(label='E-posta')
+    email2 = forms.EmailField(label='E-postanızı doğrulayın')
 
     def clean_email2(self):
         email = self.cleaned_data.get("email")
@@ -18,10 +18,10 @@ class GuestCheckoutForm(forms.Form):
         if email == email2:
             user_exists = User.objects.filter(email=email).count()
             if user_exists != 0:
-                raise forms.ValidationError("This User already exists. Please login instead.")
+                raise forms.ValidationError("Bu kullanıcı sistemize zaten kayıtlı. Lütfen giriş yaparak devam edin!")
             return email2
         else:
-            raise forms.ValidationError("Please confirm emails are the same")
+            raise forms.ValidationError("Lütfen e-posta adreslerinizin aynı olduğundan emin olun!")
 
 
 class AddressForm(forms.Form):

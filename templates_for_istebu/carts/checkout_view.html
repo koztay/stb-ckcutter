@@ -1,4 +1,4 @@
-{% extends "__base.html" %}
+{% extends "__custom_base.html" %}
 {% load i18n %}
 {% load crispy_forms_tags %}
 
@@ -22,72 +22,64 @@
     {% endblock %}
 </script>
 
-{% block content %}
+{% block inner %}
 
 
     {% if not user_can_continue %}
         <div class='col-sm-6'>
-            <p class='lead'>Continue as Guest</p>
+            <p class='lead'>Üye olmadan satın alacağım!</p>
 
 
             <form method='POST' action=''>{% csrf_token %}
                 {{ form|crispy }}
-                <input type='submit' class='btn btn-success' value='Continue as Guest'/>
+                <input type='submit' class='btn-block aa-submit-btn' value='Üye olmadan devam et'/>
             </form>
 
 
         </div>
         <div class='col-sm-6'>
-            <p class='lead'>Login to Continue</p>
+            <p class='lead'>Giriş yaparak devam edeceğim!</p>
             <form method='POST' action="{% url 'account_login' %}"> {% csrf_token %}
                 {{ login_form|crispy }}
 
                 <input type='hidden' name='next' value='{{ next_url }}'/>
-                <input type='submit' class='btn btn-success' value='Login'/>
+                <input type='submit' class='btn-block aa-submit-btn' value='Giriş Yap'/>
             </form>
             <p class='text-center'>
 
             <p>{% trans "Forgot password" %}? <a href="{% url 'account_reset_password' %}">{% trans "Reset it" %}</a>!</p>
-            <p>{% trans "Not member" %}? <a href="{% url 'about' %}">{% trans "Register" %}</a>!</p>
+            <p>{% trans "Not member" %}? <a href="{% url 'account_signup' %}">{% trans "Register" %}</a>!</p>
             </p>
 
         </div>
 
     {% else %}
 
-        <div class='col-sm-4 col-sm-offset-4 text-center'>
+    {% include "orders/order_summary_short.html" with order=order %}
 
-            {% include "orders/order_summary_short.html" with order=order %}
+    <p>
+        <a href='{% url "order_address" %}'>Adres değiştir</a>
+    </p>
+    <br/>
 
-
-            <p>
-                <a href='{% url "order_address" %}'>Change an Address</a>
-            </p>
-            <br/>
-
-            <form id="checkout" method='POST' action="{% url 'checkout_final' %}">{% csrf_token %}
-                <script
-                    class="paynet-button"
-                    type="text/javascript"
-                    src="{{ paynet_js_url }}"
-                    data-key="{{ paynet_publishable_key }}"
-                    data-amount="{{ order.paynet_order_total }}"
-                    data-button_label="Ödeme Yap"
-                    data-image="[image_url]">
-                </script>
-                <!-- <input type='hidden' name='payment_token' value='ABC' /> -->
-{#                <div id="payment-form"></div>#}
-{#                <p><b>#}
-{#                    <button type='submit'>Complete Order</button>#}
-{#                </b>#}
-{##}
-{#                </p>#}
-            </form>
-
-
-        </div>
-
-
+    <form id="checkout" method='POST' action="{% url 'checkout_final' %}">{% csrf_token %}
+        <script
+            class="paynet-button"
+            type="text/javascript"
+            src="{{ paynet_js_url }}"
+            data-key="{{ paynet_publishable_key }}"
+            data-amount="{{ order.paynet_order_total }}"
+            data-button_label="Ödeme Yap"
+            data-image="[image_url]">
+        </script>
+        <!-- <input type='hidden' name='payment_token' value='ABC' /> -->
+    {#                <div id="payment-form"></div>#}
+    {#                <p><b>#}
+    {#                    <button type='submit'>Complete Order</button>#}
+    {#                </b>#}
+    {##}
+    {#                </p>#}
+    </form>
 
     {% endif %}
 

@@ -103,7 +103,10 @@ figure {
   /*text-align: center;*/
   width: 100%;
   border: 5px solid #37c6f5;
+}
 
+#cart-view .cart-view-area .cart-view-table{
+  width: 90%;
 }
 
 /* Display django-debug-toolbar.

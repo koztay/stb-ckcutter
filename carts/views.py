@@ -181,12 +181,14 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 
     def get_object(self, *args, **kwargs):
         cart = self.get_cart()
+        # print(cart)
         if cart is None:
             return None
+        # print("print(cart) => ", cart)
         return cart
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(CheckoutView, self).get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(CheckoutView, self).get_context_data(**kwargs)
         user_can_continue = False
         user_check_id = self.request.session.get("user_checkout_id")
         if self.request.user.is_authenticated():
@@ -218,7 +220,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        # self.object = self.get_object()
+        self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
             email = form.cleaned_data.get("email")
