@@ -27,7 +27,10 @@
                                             {% endif %}
 
                                                 <figcaption>
-                                                    <h4 class="aa-product-title"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
+                                                    <h4 class="aa-product-title">
+                                                        <a href="{{ product.get_absolute_url }}">{{ product.title | truncatechars:50 }}
+                                                        </a>
+                                                    </h4>
                                                     {{ product.variation_set.first.get_html_price }}
                                                 </figcaption>
                                             </figure>
@@ -38,7 +41,7 @@
                                         {#        <a href="#" data-toggle="tooltip" data-placement="top"#}
                                         {#           title="Compare"><span class="fa fa-exchange"></span></a>#}
                                                 <a href="#" data-toggle2="tooltip" data-placement="top"
-                                                   title="Quick View" data-toggle="modal"
+                                                   title="Ön İzleme" data-toggle="modal"
                                                    data-target="#quick-view-modal"
                                                    data-product_pk="{{ product.id }}"
                                                 ><span class="fa fa-search"></span></a>
