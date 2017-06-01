@@ -6,8 +6,8 @@ RUN rm /usr/share/nginx/html/*
 COPY configs/nginx.conf /etc/nginx/nginx.conf
 COPY configs/default.conf /etc/nginx/conf.d/default.conf
 
-COPY certs/productionexample.crt /etc/ssl/certs/productionexample.crt
-COPY certs/productionexample.key /etc/ssl/private/productionexample.key
+COPY certs/istebu_com_bundle.crt /etc/ssl/certs/istebu_com_bundle.crt
+COPY certs/istebu.key /etc/ssl/private/istebu.key
 COPY certs/dhparam.pem /etc/ssl/private/dhparam.pem
 
 COPY docker-entrypoint /

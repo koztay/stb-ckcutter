@@ -109,9 +109,11 @@ class BaseDataImporterTask:
 
             elif cell_value_model is "AttributeValue":
                 attributetype_instance = AttributeType.objects.get(type="Marka")
+                attributetype_instance.product_type = product_instance.product_type  # burada ptoduc
                 AttributeValue.objects.get_or_create(attribute_type=attributetype_instance,
                                                      product=product_instance,
                                                      value=cell)
+
 
             elif cell_value_model is "Currency":
                 # print("attribute: ", default_fields[main_field]["local_field"])
