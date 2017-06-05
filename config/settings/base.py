@@ -354,6 +354,7 @@ PAGINATION_SETTINGS = {
 }
 
 DEFAULT_FIELDS = {
+    # Buraya yeni field eklediğinde admin panele gelmesi için "kaydet ve düzenlemeye devem et" demen lazım
     "Magaza_Kodu": {"model": "Product", "local_field": "istebu_product_no"},
     "Vendor_Urun_Kodu": {"model": "Product", "local_field": "vendor_product_no"},  # urun eşleşmesi bu kod ile olacak
     "Kategori": {"model": "Category", "local_field": "categories"},  # product.categories olarak eklenecek !!!!
@@ -375,4 +376,5 @@ DEFAULT_FIELDS = {
     "Urun_Resmi": {"model": "ProductImage", "local_field": "image"},
 }
 
-IMPORTER_SALE_PRICE_FACTOR = 1.05
+# IMPORTER APP USES IT FOR EXCEL IMPORT
+IMPORTER_SALE_PRICE_FACTOR = 1.0

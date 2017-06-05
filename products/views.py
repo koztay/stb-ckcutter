@@ -73,12 +73,19 @@ def big_xml(marketplace):
         output.write(
             '<product_price>' + '<![CDATA[{}]]>'.format(variation_instance.get_xml_sale_price(market=marketplace))
             + '</product_price>\n')
-        if not product.kargo == "None":
+        if product.kargo:
             output.write(
                 '<kargo>' + '<![CDATA[{}]]>'.format(product.kargo) + '</kargo>\n')
         else:
             output.write(
                 '<kargo>' + '<![CDATA[{}]]>'.format("Mağaza Öder") + '</kargo>\n')
+
+        if product.kargo_suresi:
+            output.write(
+                '<kargo_suresi>' + '<![CDATA[{}]]>'.format(product.kargo_suresi) + '</kargo_suresi>\n')
+        else:
+            output.write(
+                '<kargo_suresi>' + '<![CDATA[{}]]>'.format("3 gün") + '</kargo_suresi>\n')
 
         try:
             media_url = product.productimage_set.first().sd_thumb
