@@ -244,5 +244,7 @@ def process_xml_row(self, row=None, create_allowed=False, download_images=False)
 def process_xls_row(self, importer_map_pk, row, values, create_allowed=False, download_images=False):
     xls_task = XLSImporterTesk(file_type="XLS", row=values, importer_map_pk=importer_map_pk, row_number=row,
                                create_allowed=create_allowed, download_images=download_images)
+    print("create_allowed:", create_allowed)
+    print("download_images:", download_images)
     return xls_task.run_import_task()
 

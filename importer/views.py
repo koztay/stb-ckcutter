@@ -14,7 +14,7 @@ from products.models import Product, ProductType, Currency, Variation, Attribute
 from products.mixins import StaffRequiredMixin
 
 
-from .forms import ProductImporterMapTypeForm, ImporterForm
+from .forms import ProductImporterMapTypeForm, ImporterForm, ExcelImporterAdditionalFieldsForm
 from .models import ProductImportMap
 from .tasks import process_xls_row
 
@@ -120,12 +120,20 @@ class ProductGenericImporter(GenericImporter):
     # TODO: Burada her Row 'u process ederken task olarak Celery queue 'ye ekle.
     def process_row(self, row, values):
         importer_map = ProductImportMap.objects.get(pk=self.importer_type)
+        number_of_items_for_testing = self.number_of_items_for_testing
+        download_images = self.download_images
+        allow_item_creation = self.allow_item_creation
         # process_xls_row_no_task(importer_map.pk, row, values)
         # download_image_for_product.apply_async(args=[img_url, product.id], kwargs={}, queue='image')
         # process_xls_row.delay(importer_map_pk=importer_map.pk, row=row, values=values)
+        print("download_images", download_images)
+        print("download_images", allow_item_creation)
         process_xls_row.apply_async(args=[], kwargs={'importer_map_pk': importer_map.pk,
                                                      'row': row,
-                                                     'values': values}, queue='xml')
+                                                     'values': values,
+                                                     'create_allowed': allow_item_creation,
+                                                     'download_images': download_images,
+                                                     }, queue='xml')
 
 
 class GenericImporterCreateView(StaffRequiredMixin, DataImporterForm):
@@ -141,11 +149,25 @@ class GenericImporterCreateView(StaffRequiredMixin, DataImporterForm):
         context = super(GenericImporterCreateView, self).get_context_data(**kwargs)
         importer_type_form = ProductImporterMapTypeForm(self.request.POST or None)
         context['importer_type_form'] = importer_type_form
+        additional_form = ExcelImporterAdditionalFieldsForm(self.request.POST or None)
+        context['additional_form'] = additional_form
         return context
 
     def form_valid(self, form, owner=None):
-        selected_import_map_id = self.request.POST.get('import_map')  # import map seçebilmek için.
-        self.importer.importer_type = selected_import_map_id
+
+        # self.request.POST.get() ile almamızın sebebi birden fazla form olması
+        self.importer.importer_type = self.request.POST.get('import_map')
+        self.importer.number_of_items_for_testing = self.request.POST.get('number_of_items_for_testing')
+        self.importer.download_images = self.request.POST.get('download_images')
+        self.importer.allow_item_creation = self.request.POST.get('allow_item_creation')
+
+        print("importer_type", self.importer.importer_type)
+        print("number_of_items_for_testing", form.cleaned_data.get('number_of_items_for_testing'))
+        print("self.importer.number_of_items_for_testing", self.importer.number_of_items_for_testing)
+        print("download_images", form.cleaned_data.get('download_images'))
+        print("self.importer.download_images", self.importer.download_images)
+        print("allow_item_creation", form.cleaned_data.get('allow_item_creation'))
+        print("self.importer.allow_item_creation", self.importer.allow_item_creation)
 
         if self.request.user.id:
             owner = self.request.user

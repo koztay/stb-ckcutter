@@ -1,4 +1,4 @@
-{% extends "__base.html" %}
+{% extends "__custom_base.html" %}
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 
@@ -6,24 +6,7 @@
     {% include '_messages.html' %}
 {% endblock %}
 
-{% block content %}
-    <!-- catg header banner section -->
-    <section id="aa-catg-head-banner">
-        <img src={% static "img/fashion/fashion-header-bg-8.jpg" %} alt="fashion img">
-        <div class="aa-catg-head-banner-area">
-            <div class="container">
-                <div class="aa-catg-head-banner-content">
-                    <h2>Contact</h2>
-                    <ol class="breadcrumb">
-                        <li><a href="index.html">Home</a></li>
-                        <li class="active">Product Importer</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- / catg header banner section -->
-
+{% block inner %}
 
     {% comment %}Include this to your upload page template{% endcomment %}
 
