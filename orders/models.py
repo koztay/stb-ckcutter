@@ -113,7 +113,7 @@ class Order(models.Model):
         self.save()
 
     def paynet_order_total(self):
-        return self.order_total*100
+        return int(self.order_total*100)  # int 'e çevirmezsen sonuna ,00 ekliyor.
 
     def create_order_id(self):
         print("burada order id yarat!")

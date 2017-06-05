@@ -68,16 +68,34 @@
             type="text/javascript"
             src="{{ paynet_js_url }}"
             data-key="{{ paynet_publishable_key }}"
-            data-amount="{{ order.paynet_order_total }}">
+            data-amount="{{ order.paynet_order_total }}"
+            data-image="http://icons.iconarchive.com/icons/stalker018/mmii-flat-vol-3/72/dictionary-icon.png"
+            data-button_label="ÖDEMEYİ TAMAMLA"
+            data-description="Ödemenizi tamamlamak için bilgileri girip tamam butonuna basınız"
+            data-no_instalment="false"
+            data-tds_required="true">
         </script>
-        <button type="button" class="aa-cart-view-btn"><span>Ödemeyi Tamamla</span></button>
     </form>
 
 
     {% comment %}
         <form action="/Demo/ChargeTransaction" method="post" name="checkout-form" id="checkout-form">
         <input name="__RequestVerificationToken" type="hidden" value="2xFtq1P7AtsckyuTGsbWTcjwq2K7kcadWHV6RX8pPUl6ZKiSLzt2HlW21zFY8QgdejoQFk--dzUzofyCDGamT3_fxmgBsiiujeAouwa890A1">
-        <script type="text/javascript" class="paynet-button" src="https://pts-pj.paynet.com.tr/public/js/paynet.js" data-key="pbk_pcs_wCtr5nd31EhNm7DhjUarQpgxQasTb2pa" data-amount="100" data-image="http://icons.iconarchive.com/icons/stalker018/mmii-flat-vol-3/72/dictionary-icon.png" data-button_label="Ödemeyi Tamamla" data-description="Ödemenizi tamamlamak için bilgileri girip tamam butonuna basınız" data-agent="" data-add_commission_amount="false" data-no_instalment="false" data-tds_required="false" data-pos_type="5">
+        <script type="text/javascript"
+                class="paynet-button"
+                src="https://pts-pj.paynet.com.tr/public/js/paynet.js"
+                data-key="pbk_pcs_wCtr5nd31EhNm7DhjUarQpgxQasTb2pa"
+                data-amount="100"
+                data-image="http://icons.iconarchive.com/icons/stalker018/mmii-flat-vol-3/72/dictionary-icon.png"
+                # yukarıdaki alana iştebu logosu koyalım
+                data-button_label="Ödemeyi Tamamla"
+                data-description="Ödemenizi tamamlamak için bilgileri girip tamam butonuna basınız"
+                data-agent=""
+                data-add_commission_amount="false"
+                data-no_instalment="false"  # bunu rakama göre true false yapabiliriz
+                data-tds_required="false"  # biz bütün işlemleri 3D Secure yapalım.
+                data-pos_type="5"  # bunu 1 yapınca POS tipi kullanılamaz hatası veriyor.
+        >
 
         </script>
 

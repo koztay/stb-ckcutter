@@ -328,7 +328,7 @@ PAYNET_TEST_API_URL = env('PAYNET_TEST_API_URL', default='string for prevent cra
 PAYNET_TEST_PAYNETJS_URL = env('PAYNET_TEST_PAYNETJS_URL', default='string for prevent crash building docker')
 PAYNET_PRODUCTION_API_URL = env('PAYNET_PRODUCTION_API_URL', default='string for prevent crash building docker')
 PAYNET_PRODUCTION_PAYNETJS_URL = env('PAYNET_PRODUCTION_PAYNETJS_URL', default='string for prevent crash building docker')
-
+PRODUCTION_ENVIRONMENT = False  # bunu test çalışmaları bitince True yap.
 
 CKEDITOR_UPLOAD_PATH = 'ck_uploads/'
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
