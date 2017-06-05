@@ -371,6 +371,7 @@ DEFAULT_FIELDS = {
     "GG_Satis_fiyati": {"model": "Variation", "local_field": "gittigidiyor_price"},
     "Barkod": {"model": "Variation", "local_field": "product_barkod"},
     "Kargo": {"model": "Product", "local_field": "kargo"},
+    "Kargo_Suresi": {"model": "Product", "local_field": "kargo_suresi"},
     "Urun_Resmi": {"model": "ProductImage", "local_field": "image"},
 }
 

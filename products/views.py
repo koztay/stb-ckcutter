@@ -465,6 +465,7 @@ class NewProductListView(FilterMixin, SignupFormView, PaginationMixin, ListView)
         return qs
 
     # This utility function removes page parameter for preserving the query parameters.
+    # TODO : Aşağıdakine işe yarıyor anlamadım.
     def get_queries_without_page(self):
         queries_without_page = self.request.GET.copy()
         if "page" in queries_without_page:
