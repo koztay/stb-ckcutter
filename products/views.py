@@ -445,7 +445,7 @@ class NewProductListView(FilterMixin, SignupFormView, PaginationMixin, ListView)
             #     qs = (qs | qs2).distinct()
             # except:
             #     pass
-            qs = self.model.objects.filter(title__icontains=query)
+            qs = self.model.objects.all().filter(title__icontains=query)
             # yukarıdakileri kaldırdım, sadece title yeterli.
             # description 'da aramaya gerek yok.
         # print("qs neymiş :", qs)
