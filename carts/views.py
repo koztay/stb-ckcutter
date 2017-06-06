@@ -263,7 +263,7 @@ class CheckoutFinalView(CartOrderMixin, View):
         if session_id is not None and token_id is not None:
             headers = {"Content-Type": "application/json; charset=UTF-8",
                        "Accept": "application/json; charset=UTF-8",
-                       "Authorization": settings.PAYNET_SECRET_KEY
+                       "Authorization": "Basic " + settings.PAYNET_SECRET_KEY
                        }
             data = {
                 'session_id': session_id,
