@@ -42,13 +42,27 @@
                                     <tr>
                                         <th></th>
                                         <th></th>
-                                        <th>Product</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
+                                        <th>Ürün</th>
+                                        <th>Fiyat (₺)</th>
+                                        <th>Adet</th>
+                                        <th>Toplam</th>
                                     </tr>
                                     </thead>
                                     <tbody>
+
+                                    {% for i in order.cart.cartitem_set.all %}
+                                        {{ i.item }}
+                                        <tr>
+                                        <td><a class="remove" href="#">
+                                            <fa class="fa fa-close"></fa>
+                                        </a></td>
+                                        <td><a href="#"><img src="{{ i.item.product.micro_thumb }}" alt="img"></a></td>
+                                        <td><a class="aa-cart-title" href="#">{{ i.item.get_title }}</a></td>
+                                        <td>{{ i.item.get_sale_price }}</td>
+                                        <td><input class="aa-cart-quantity" type="number" value="{{ i.quantity }}"></td>
+                                        <td>$250</td>
+                                        </tr>
+                                    {% endfor %}
                                     <tr>
                                         <td><a class="remove" href="#">
                                             <fa class="fa fa-close"></fa>

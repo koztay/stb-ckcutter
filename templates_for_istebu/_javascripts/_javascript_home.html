@@ -28,6 +28,25 @@
 <script type="text/javascript" src="{% static 'js/slick.js' %}"></script>
 {% endblock %}
 
+{% block raw_js %}
+    <!-- Custom js -->
+<script src="{% static 'js/custom.js' %}"></script>
+<!-- istebu js -->
+<script src="{% static 'js/istebu.js' %}"></script>
+
+{% endblock %}
+
+{% block custom_javascript %}
+<script>
+    jQuery('.simpleLens-thumbnails-container img').simpleGallery({
+        loading_image: '{% static 'img/view-slider/loading.gif' %}'
+    });
+
+    jQuery('.simpleLens-big-image').simpleLens({
+        loading_image: '{% static 'img/view-slider/loading.gif' %}'
+    });
+</script>
+{% endblock %}
 
 {#{% block price_picker_slider %}#}
 {#<!-- Price picker slider / Buna anasayfada gerek yok -->#}

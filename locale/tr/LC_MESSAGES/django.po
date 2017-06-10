@@ -143,7 +143,7 @@ msgid ""
 "address for user %(user_display)s."
 msgstr ""
 "Lütfen <a href=\"mailto:%(email)s\">%(email)s</a> adresinin "
-"%(user_display)sadlı kullanıcıya ait olduğunu doğrulayın."
+"%(user_display)s adlı kullanıcıya ait olduğunu doğrulayın."
 
 #: ecommerce_istebu_cookiecutter/templates/account/email_confirm.html:20
 #: templates_for_istebu/account/email_confirm.html:20
@@ -445,10 +445,10 @@ msgid ""
 msgstr ""
 "%(site_name)s 'a hoş geldiniz!"
 "\n"
-"Bu e-postayı %(user_display)s isimli kullanıcının sitemize kayıt olurken"
+"Bu e-postayı %(user_display)s isimli kullanıcının sitemize kayıt olurken "
 "e-posta adresi olarak bu adresi gösterdiği için aldınız.\n"
 "\n"
-"Eğer e-posta adresi doğru ise hesabınızı aktive etmek için lütfen aşağıdaki"
+"Eğer e-posta adresi doğru ise hesabınızı aktive etmek için lütfen aşağıdaki "
 "bağlantıya tıklayın: \n"
 "%(activate_url)s\n"
 

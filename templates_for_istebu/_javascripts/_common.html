@@ -386,6 +386,7 @@ $('#quick-view-modal').on('show.bs.modal', function (event) {
 
 });
 
+{% comment %}
 jQuery('.simpleLens-thumbnails-container img').simpleGallery({
     loading_image: '{% static 'img/view-slider/loading.gif' %}'
 });
@@ -393,6 +394,7 @@ jQuery('.simpleLens-thumbnails-container img').simpleGallery({
 jQuery('.simpleLens-big-image').simpleLens({
     loading_image: '{% static 'img/view-slider/loading.gif' %}'
 });
+{% endcomment %}
 
 $(document).ready(function () {
     updateCartItemCount();

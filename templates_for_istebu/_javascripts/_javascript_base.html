@@ -16,11 +16,13 @@
 {% block slick_slider %} {% endblock %}
 
 {% block price_picker_slider %} {% endblock %}
-<!-- Custom js -->
-<script src="{% static 'js/custom.js' %}"></script>
-<!-- istebu js -->
-<script src="{% static 'js/istebu.js' %}"></script>
+
+{% block raw_js %}
+
+{% endblock %}
 
 {% include '_javascripts/_common.html' %}
 
-{% block custom_javascript %} {% endblock %}
+{% block custom_javascript %}
+
+{% endblock %}
