@@ -370,7 +370,8 @@ msgid ""
 msgstr ""
 "Doğrulamanız için size bir e-posta gönderdik. Gelen e-postadaki linki "
 "tıklayarak lütfen kayıt işleminizi tamamlayın. Eğer birkaç dakika içerisinde "
-"e-posta ulaşmazsa lütfen bizimle iletişim kurun."
+"e-posta ulaşmazsa spam klasörünüzü kontrol edin ve e-post almamışsanız lütfen "
+"bizimle iletişim kurun."
 
 #: ecommerce_istebu_cookiecutter/templates/account/verified_email_required.html:12
 #: templates_for_istebu/account/verified_email_required.html:12
@@ -393,7 +394,7 @@ msgstr ""
 "Posta adresininizi doğrulamanız için size bir onay e-postası gönderdik.\n"
 "Lütfen size gelen e-postadaki linke tıklayarak e-posta adresinizi doğrulayın."
 "Birkaç dakika içerisinde onay e-postası almazsanız spam klasörünüzü kontrol\n"
-"edin ve e-posta almamışsanız bizimle iletişime geçin."
+"edin ve e-posta almamışsanız lütfen bizimle iletişime geçin."
 
 #: ecommerce_istebu_cookiecutter/templates/account/verified_email_required.html:20
 #: templates_for_istebu/account/verified_email_required.html:20

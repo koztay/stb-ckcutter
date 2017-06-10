@@ -5,10 +5,6 @@
     {% include '_messages.html' %}
 {% endblock %}
 
-{% block generic_page_header %}
-    {% include 'products/_head_banner.html' %}
-{% endblock %}
-
 {% block content %}
 
 <!-- product category -->
@@ -74,17 +70,16 @@
 {#                                        <a href="#" class="aa-color-white"></a>#}
 {#                                    </div>#}
                                     <div class="aa-prod-quantity">
-                                        <form action="">
-                                            <select id="" name="">
-                                                <option selected="1" value="0">1</option>
-                                                <option value="1">2</option>
-                                                <option value="2">3</option>
-                                                <option value="3">4</option>
-                                                <option value="4">5</option>
-                                                <option value="5">6</option>
-                                            </select>
-                                        </form>
-                                        <p class="aa-prod-category">
+{#                                        <form action="">#}
+{#                                            <select id="" name="qty">#}
+{#                                                <option selected="1" value="1">1</option>#}
+{#                                                <option value="2">2</option>#}
+{#                                                <option value="3">3</option>#}
+{#                                                <option value="4">4</option>#}
+{#                                                <option value="5">5</option>#}
+{#                                            </select>#}
+{#                                        </form>#}
+                                        <p>
                                             Kategori: <a href="{% url 'products:products' %}?category={{ object.get_main_category.slug }}">{{ object.get_main_category.title }}</a>
                                         </p>
                                     </div>
@@ -133,10 +128,7 @@
     </div>
 </section>
 <!-- / product category -->
-
 {% endblock %}
-
-
 
 {% block subscribe_section %}
     {% include '_subscribe_section.html' %}
