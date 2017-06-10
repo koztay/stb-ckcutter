@@ -84,7 +84,7 @@ class CartView(SingleObjectMixin, View):
         cart_id = self.request.session.get("cart_id")
         if cart_id is None:
             cart = Cart()
-            cart.tax_percentage = 0.075  # TODO: bunu üründen al.
+            cart.tax_percentage = 0.0  # TODO: bunu üründen al. KDV Dahil olduğu için eklemeyeceğiz.
             cart.save()
             cart_id = cart.id
             self.request.session["cart_id"] = cart_id

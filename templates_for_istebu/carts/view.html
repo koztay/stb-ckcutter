@@ -1,4 +1,4 @@
-{% extends "__base.html" %}
+{% extends "__custom_base.html" %}
 {% load staticfiles %}
 
 {% block messages %}
@@ -6,7 +6,7 @@
 {% endblock %}
 
 
-{% block content %}
+{% block inner %}
 
 
     <div class='row main-content'>
@@ -15,7 +15,7 @@
 
             {% include "carts/empty_cart.html" %}
         {% else %}
-
+            {% comment %}
             <div class='col-sm-8 col-sm-offset-2'>
 
                 <h1>Sepetinizdeki Ürünler</h1>
@@ -62,6 +62,8 @@
 
 
             </div>
+            {% endcomment %}
+            {% include "carts/cart_summary.html" with cart=object %}
         {% endif %}
 
     </div>

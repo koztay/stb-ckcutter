@@ -1,8 +1,8 @@
 
 <div class="container">
 <div class="row">
-    <div class="col-md-6 col-md-offset-3" style="text-align: center">
-        <h2>{% if order.order_id %}#{{ order.order_id }} no.lu {% endif %}Sipariş Özeti</h2>
+    <div class="col-md-6 col-md-offset-3 centered" style="text-align: center">
+        <h2>Sepetinizdeki Ürünler</h2>
     </div>
 </div>
 <section id="cart-view">
@@ -26,7 +26,7 @@
                                     </thead>
                                     <tbody>
 
-                                    {% for i in order.cart.cartitem_set.all %}
+                                    {% for i in cart.cartitem_set.all %}
                                         <tr id='item-{{ i.item.id }}'>
                                         <td><a class="remove" href='{{ i.remove }}'>
                                             <fa class="fa fa-close"></fa>
@@ -62,52 +62,18 @@
                         </form>
                         <!-- Cart Total view -->
                         <div class="cart-view-total">
-                            <h4>GENEL TOPLAM :</h4>
+                            <h4>SEPET TOPLAMI :</h4>
                             <table class="aa-totals-table">
                                 <tbody>
                                 <tr>
-                                    <th>Kargo Ücreti :</th>
-                                    <td>{{ order.shipping_total_price }} ,-₺</td>
-                                </tr>
-                                <tr>
-                                    <th>Sipariş Toplamı :</th>
-                                    <td id='carttotal'>{{ order.order_total }} ,-₺</td>
+                                    <th>Toplam Tutar :</th>
+                                    <td id='carttotal'>{{ cart.total }} ,-₺</td>
                                 </tr>
                                 </tbody>
                             </table>
 
-                                    <form id="checkout" method='POST' action="{% url 'checkout_final' %}">{% csrf_token %}
-                                        <script
-                                            class="paynet-button"
-                                            type="text/javascript"
-                                            src="{{ paynet_js_url }}"
-                                            data-key="{{ paynet_publishable_key }}"
-                                            data-amount="{{ order.paynet_order_total }}"
-                                            data-image="http://icons.iconarchive.com/icons/stalker018/mmii-flat-vol-3/72/dictionary-icon.png"
-                                            data-button_label="ÖDEMEYİ TAMAMLA"
-                                            data-description="Ödemenizi tamamlamak için bilgileri girip tamam butonuna basınız"
-                                            data-no_instalment="false"
-                                            data-tds_required="false">
-                                        </script>
-                                    </form>
+                            <a class="aa-cart-view-btn" href="{% url 'checkout' %}">Alışverişi Tamamla</a>
 
-                        </div>
-                        <hr>                 <!-- Cart Total view -->
-                        <div class="cart-view-total">
-                            <h4>ADRES BİLGİLERİ :</h4>
-                            <table class="aa-totals-table">
-                                <tbody>
-                                <tr>
-                                    <th>Sevk Adresi :</th>
-                                    <td>{{ order.shipping_address.get_address }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Fatura Adresi :</th>
-                                    <td>{{ order.billing_address.get_address }}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <a href='{% url "order_address" %}' class="aa-cart-view-btn">ADRES DEĞİŞTİR</a>
                         </div>
                     </div>
                 </div>

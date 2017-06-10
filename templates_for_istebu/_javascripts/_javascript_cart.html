@@ -4,7 +4,7 @@
 
 <script>
     {% block javascript_section %}
-        $(".item-qty").change(function () {
+        $(".aa-cart-quantity").change(function () {
             // $(this).next(".btn-update").fadeIn();
 
             // event.preventDefault();
@@ -24,14 +24,14 @@
                     $("#jquery-message").text("Added " + data.item_added + " Deleted " + data.deleted);
                     if (data.deleted) {
                         $("#item-" + item).fadeOut();
-                        $("#subtotal").text(data.subtotal);
-                        $("#taxtotal").text(data.tax_total);
-                        $("#carttotal").text(data.cart_total);
+                        $("#subtotal").text(data.subtotal + " ,-₺");
+                        $("#taxtotal").text(data.tax_total + " ,-₺");
+                        $("#carttotal").text(data.cart_total + " ,-₺");
                     } else {
-                        $("#item-line-total-" + item).text(data.line_total);
-                        $("#subtotal").text(data.subtotal);
-                        $("#taxtotal").text(data.tax_total);
-                        $("#carttotal").text(data.cart_total);
+                        $("#item-line-total-" + item).text(data.line_total + " ,-₺");
+                        $("#subtotal").text(data.subtotal + " ,-₺");
+                        $("#taxtotal").text(data.tax_total + " ,-₺");
+                        $("#carttotal").text(data.cart_total + " ,-₺");
                     }
 
                     if (data.total_items == 0) {

@@ -317,9 +317,13 @@ class Variation(models.Model):
 
     def remove_from_cart(self):
         return "%s?item=%s&qty=1&delete=True" % (reverse("cart"), self.id)
+        # return "%s?item=%s&qty=0" % (reverse("cart"), self.id)
 
     def get_title(self):
-        return "%s - %s" % (self.product.title, self.title)
+        if self.title == "Default":
+            return "%s" % self.product.title
+        else:
+            return "%s - %s" % (self.product.title, self.title)
 
 # ************************************************************************************************************ #
 
