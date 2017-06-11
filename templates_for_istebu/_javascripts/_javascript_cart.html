@@ -1,4 +1,13 @@
 {% extends "_javascripts/_javascript_base.html" %}
+{% load staticfiles %}
+
+{% block raw_js %}
+    <!-- Custom js -->
+{#<script src="{% static 'js/custom.js' %}"></script> #}
+<!-- istebu js -->
+<script src="{% static 'js/istebu.js' %}"></script>
+
+{% endblock %}
 
 {% block custom_javascript %}
 
@@ -61,6 +70,63 @@
 
 
         });
+
+
+        function removeCartItem(cartitem) {
+
+            var item = cartitem;
+            var qty = 0;
+            var data = {
+                item: item,
+                qty: qty,
+                deleted: true
+            };
+            console.log(data);
+            $.ajax({
+                type: "GET", // "POST"
+                url: "{% url 'cart' %}",
+                data: data,
+                success: function (data) {
+                    $("#jquery-message").text("Added " + data.item_added + " Deleted " + data.deleted);
+                    if (data.deleted) {
+                        $("#item-" + item).fadeOut();
+                        $("#subtotal").text(data.subtotal + " ,-₺");
+                        $("#taxtotal").text(data.tax_total + " ,-₺");
+                        $("#carttotal").text(data.cart_total + " ,-₺");
+                    } else {
+                        $("#item-line-total-" + item).text(data.line_total + " ,-₺");
+                        $("#subtotal").text(data.subtotal + " ,-₺");
+                        $("#taxtotal").text(data.tax_total + " ,-₺");
+                        $("#carttotal").text(data.cart_total + " ,-₺");
+                    }
+
+                    if (data.total_items == 0) {
+                        $("#order-summary").fadeOut();
+                        var template = "{% include 'carts/empty_cart.html' %}";
+                        $(".aa-myaccount-login").html(template);
+
+                    }
+
+                    var message = "";
+                    if (data.item_added) {
+                        message = "Ürün sepetinize eklendi."
+                    } else if (data.deleted) {
+                        message = "Ürün sepetten çıkarıldı."
+                    } else {
+                        message = "Ürün adeti güncellendi."
+                    }
+                    showFlashMessage(message);
+                    updateCartItemCount()
+                },
+                error: function (response, error) {
+                    // console.log(response)
+                    // console.log(error)
+                    $("#add-form").submit()
+                }
+            })
+
+        }
+
 
     {% endblock %}
 </script>

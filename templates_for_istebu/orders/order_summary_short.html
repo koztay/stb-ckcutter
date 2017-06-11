@@ -1,5 +1,5 @@
 
-<div class="container">
+<div id="order-summary" class="container">
 <div class="row">
     <div class="col-md-6 col-md-offset-3" style="text-align: center">
         <h2>{% if order.order_id %}#{{ order.order_id }} no.lu {% endif %}Sipariş Özeti</h2>
@@ -28,7 +28,7 @@
 
                                     {% for i in order.cart.cartitem_set.all %}
                                         <tr id='item-{{ i.item.id }}'>
-                                        <td><a class="remove" href='{{ i.remove }}'>
+                                        <td><a id="{{ i.item.id }}" class="remove" href='#' onclick="return removeCartItem({{ i.item.id }});">
                                             <fa class="fa fa-close"></fa>
                                         </a></td>
                                         <td><a href="#"><img src="{{ i.item.product.micro_thumb }}" alt="img"></a></td>
@@ -83,7 +83,7 @@
                                             src="{{ paynet_js_url }}"
                                             data-key="{{ paynet_publishable_key }}"
                                             data-amount="{{ order.paynet_order_total }}"
-                                            data-image="http://icons.iconarchive.com/icons/stalker018/mmii-flat-vol-3/72/dictionary-icon.png"
+                                            data-image="{% static 'img/paynet_72x72.png' %}"
                                             data-button_label="ÖDEMEYİ TAMAMLA"
                                             data-description="Ödemenizi tamamlamak için bilgileri girip tamam butonuna basınız"
                                             data-no_instalment="false"
