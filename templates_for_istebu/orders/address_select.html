@@ -11,17 +11,15 @@
             Lütfen siparişiniz için adres seçin.
         </p>
         <form method="POST" action=''>{% csrf_token %}
-
-
             {{ form|crispy }}
-
-
-            <input class='btn btn-primary btn-block' type='submit' value='Seç'/>
-            <a class='btn btn-link' href='{% url "user_address_create" %}'>Yeni adres ekle</a>
-
+            <input class='aa-cart-view-btn btn-block' type='submit' value='DEVAM ET'/>
         </form>
 
     </div>
+    </div>
+    <hr>
+    <div class="row">
+        <a class='aa-cart-view-btn btn-block' href='{% url "user_address_create" %}'>YENİ ADRES EKLE</a>
     </div>
 {% endblock %}
 
