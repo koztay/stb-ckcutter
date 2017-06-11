@@ -52,6 +52,12 @@ class UserAddressCreateView(CreateView):
     template_name = "forms.html"
     success_url = "/checkout/address/"
 
+    def get_context_data(self, **kwargs):
+        context = super(UserAddressCreateView, self).get_context_data(**kwargs)
+        context["address_type"] = self.request.session.get("address_type")
+        # print("address_type :", address_type)
+        return context
+
     def get_checkout_user(self):
         user_check_id = self.request.session.get("user_checkout_id")
         user_checkout = UserCheckout.objects.get(id=user_check_id)
@@ -59,6 +65,8 @@ class UserAddressCreateView(CreateView):
 
     def form_valid(self, form, *args, **kwargs):
         form.instance.user = self.get_checkout_user()
+        form.instance.type = self.request.session.get("address_type")
+        # print("adres tipi otomatik seçilmiş mi", form.instance.type)
         return super(UserAddressCreateView, self).form_valid(form, *args, **kwargs)
 
 
@@ -69,10 +77,13 @@ class AddressSelectFormView(CartOrderMixin, FormView):
     def dispatch(self, *args, **kwargs):
         b_address, s_address = self.get_addresses()
         if b_address.count() == 0:
-            messages.success(self.request, "Lütfen devam etmeden önce fatura adresi ekleyin! (Adres tipi olarak 'Fatura Adresi' seçin)")
+            messages.success(self.request, "Lütfen devam etmeden önce fatura adresi ekleyin!")
+            self.request.session['address_type'] = "billing"
+
             return redirect("user_address_create")
         elif s_address.count() == 0:
-            messages.success(self.request, "Lütfen devam etmeden önce sevk adresi ekleyin! (Adres tipi olarak 'Sevk Adresi' seçin)")
+            messages.success(self.request, "Lütfen devam etmeden önce sevk adresi ekleyin!")
+            self.request.session['address_type'] = "shipping"
             return redirect("user_address_create")
         else:
             return super(AddressSelectFormView, self).dispatch(*args, **kwargs)

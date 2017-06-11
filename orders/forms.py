@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import Textarea
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 
@@ -48,14 +49,17 @@ class UserAddressForm(forms.ModelForm):
             'city',
             'state',
             'zipcode',
-            'type'
+            # 'type'
         ]
         labels = {
-            'street': _('Cadde, Sokak, Mahalle'),
+            'street': _('Açık Adresiniz'),
             'city': _('İl:'),
             'state': _('İlçe:'),
             'zipcode': _('Posta Kodu:'),
-            'type': _('Adres Tipi:')
+            # 'type': _('Adres Tipi:')
+        }
+        widgets = {
+            'street': Textarea(),
         }
 
 
