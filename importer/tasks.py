@@ -172,17 +172,17 @@ class BaseDataImporterTask:
 
         if self.download_images:
             img_url_list = self._get_value_for_field("Urun_Resmi")
-            # print("img_url_list =>", img_url_list)
-            # print("img_url_list tipi ne?", type(img_url_list))
+            print("img_url_list =>", img_url_list)
+            print("img_url_list tipi ne?", type(img_url_list))
             if isinstance(img_url_list, str):  # string yani bu durumda sadece tek url var ve listeye dönüşmeli
                 img_url_list = [img_url_list]
-                # print("tip değişmiş mi? =>", type(img_url_list))
+                print("tip değişmiş mi? =>", type(img_url_list))
 
             # TODO: Şimdilik sadece tek resim alabiliyoruz. İleride düzelt.
             if product.productimage_set.all().count() == 0:  # image varsa boşu boşuna task ekleme.
-                # print("Resim daha önce eklenmemiş. Download task çalıştırılacak. Yeni fonksiyon bu.")
+                print("Resim daha önce eklenmemiş. Download task çalıştırılacak. Yeni fonksiyon bu.")
                 # download_image_for_product.delay(img_url, product.id)
-                # print("gönderdiği argüman img_url_list[0] =>", img_url_list[0])
+                print("gönderdiği argüman img_url_list[0] =>", img_url_list[0])
                 # print("tipi list değilse hata verir, empty döndürür.")
                 download_image_for_product.apply_async(args=[img_url_list[0], product.id], kwargs={}, queue='images')
 
