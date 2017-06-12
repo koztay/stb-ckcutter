@@ -26,6 +26,8 @@ services:
       - POSTGRES_USER=ecommerce_istebu_cookiecutter
       - USE_DOCKER=yes
       - DJANGO_ALLOWED_HOSTS=192.168.99.100
+      - CELERY_BROKER_URL=redis://192.168.99.100:32768
+      - REDIS_URL=redis://192.168.99.100:32768
     volumes:
       - .:/app
     ports:
@@ -43,9 +45,14 @@ services:
     volumes:
       - .:/app
 
+  redis:
+    image: redis:latest
 
   mailhog:
     image: mailhog/mailhog
     ports:
       - "8025:8025"
 
+# to run tasks on local development first run the redis on kitematic and update the ip/port of CELERY_BROKER_URL
+# after that run the following command on terminal in the project folder:
+# docker-compose -f dev.yml run django celery -A ecommerce_istebu_cookiecutter.taskapp worker -Q images,xml,default -l INFO -Ofair --concurrency=1 --without-gossip --without-mingle --without-heartbeat

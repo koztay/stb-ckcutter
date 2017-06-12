@@ -9,6 +9,8 @@ import urllib3
 from products.models import ProductImage, Product
 
 download_url = 'http://i.hurimg.com/i/hurriyet/75/892x220/58a9fa28c03c0e20402a9064.jpg'
+
+'http://images.hepsiburada.net/assets/Mobilya/500/9443499868210.jpg'
 # new_product = Product.objects.create(title='yeni ürün 1')
 # result = download_image(download_url, new_product)
 """
@@ -20,7 +22,7 @@ isimde ilk ürünün klasöründe kalıyor. Çünkü image_upload_to bu şekilde
 
 # bu fonksiyon muhtemelen production 'da çalışmayacak.
 def download_image(url, product_id):
-
+    print("indirilecek resim linki :", url)
     product = Product.objects.get(pk=product_id)
     if product.productimage_set.all().count() == 0:
         filename = url.split('/')[-1]

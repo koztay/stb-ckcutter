@@ -330,6 +330,7 @@ PAYNET_PRODUCTION_API_URL = env('PAYNET_PRODUCTION_API_URL', default='string for
 PAYNET_PRODUCTION_PAYNETJS_URL = env('PAYNET_PRODUCTION_PAYNETJS_URL', default='string for prevent crash building docker')
 PRODUCTION_ENVIRONMENT = False  # bunu test çalışmaları bitince True yap.
 
+# CKEDITOR SETTINGS
 CKEDITOR_UPLOAD_PATH = 'ck_uploads/'
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
 CKEDITOR_CONFIGS = {
@@ -346,13 +347,14 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-
+# PAGINATION SETTINGS
 PAGINATION_SETTINGS = {
     'PAGE_RANGE_DISPLAYED': 4,
     'MARGIN_PAGES_DISPLAYED': 2,
     'SHOW_FIRST_PAGE_WHEN_INVALID': True,
 }
 
+# DATA IMPORTER DEFAULT FIELDS
 DEFAULT_FIELDS = {
     # Buraya yeni field eklediğinde admin panele gelmesi için "kaydet ve düzenlemeye devem et" demen lazım
     "Magaza_Kodu": {"model": "Product", "local_field": "istebu_product_no"},

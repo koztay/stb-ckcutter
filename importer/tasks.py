@@ -153,17 +153,17 @@ class BaseDataImporterTask:
         title = self._get_value_for_field("Urun_Adi")  # it is a list contains another list
         # print("title list mi kine acabağı?:", title)
         vendor_urun_kodu = self._get_value_for_field("Vendor_Urun_Kodu")  # bunu eşleştirdim.
-        print("vendor kod :", self._get_value_for_field)
+        # print("vendor kod :", self._get_value_for_field)
 
         # magaza kodu alanı varsa import edilen dokümanda o zaman magaza kodunu kullan
         if vendor_urun_kodu:
-            print("vendor kod var burada bulması lazım ürünü...")
+            # print("vendor kod var burada bulması lazım ürünü...")
             product, product_created = Product.objects.get_or_create(vendor_product_no=vendor_urun_kodu)
             if product_created:
-                print("buraya sadece product yaratılmışsa düşmesi lazım...")
+                # print("buraya sadece product yaratılmışsa düşmesi lazım...")
                 product.title = title
         else:
-            print("vendor kod yok eşleşecek alan sadece title")
+            # print("vendor kod yok eşleşecek alan sadece title")
             # product_type = ProductType.objects.get(name=importer_map.type)
             product, product_created = Product.objects.get_or_create(title=title)
 
@@ -172,10 +172,18 @@ class BaseDataImporterTask:
 
         if self.download_images:
             img_url_list = self._get_value_for_field("Urun_Resmi")
+            # print("img_url_list =>", img_url_list)
+            # print("img_url_list tipi ne?", type(img_url_list))
+            if isinstance(img_url_list, str):  # string yani bu durumda sadece tek url var ve listeye dönüşmeli
+                img_url_list = [img_url_list]
+                # print("tip değişmiş mi? =>", type(img_url_list))
+
             # TODO: Şimdilik sadece tek resim alabiliyoruz. İleride düzelt.
             if product.productimage_set.all().count() == 0:  # image varsa boşu boşuna task ekleme.
-                print("Resim daha önce eklenmemiş. Download task çalıştırılacak. Yeni fonksiyon bu.")
+                # print("Resim daha önce eklenmemiş. Download task çalıştırılacak. Yeni fonksiyon bu.")
                 # download_image_for_product.delay(img_url, product.id)
+                # print("gönderdiği argüman img_url_list[0] =>", img_url_list[0])
+                # print("tipi list değilse hata verir, empty döndürür.")
                 download_image_for_product.apply_async(args=[img_url_list[0], product.id], kwargs={}, queue='images')
 
         if product_created:
@@ -204,7 +212,7 @@ class XMLImporterTask(BaseDataImporterTask):
                 return None
 
 
-class XLSImporterTesk(BaseDataImporterTask):
+class XLSImporterTask(BaseDataImporterTask):
     def __init__(self, importer_map_pk, row_number, file_type, row, create_allowed, download_images):
         super().__init__(file_type, row, create_allowed, download_images)
         self.importer_map = ProductImportMap.objects.get(pk=importer_map_pk)
@@ -242,7 +250,7 @@ def process_xml_row(self, row=None, create_allowed=False, download_images=False)
 
 @task(bind=True, name="Process XLS Row", rate_limit="120/m")
 def process_xls_row(self, importer_map_pk, row, values, create_allowed=False, download_images=False):
-    xls_task = XLSImporterTesk(file_type="XLS", row=values, importer_map_pk=importer_map_pk, row_number=row,
+    xls_task = XLSImporterTask(file_type="XLS", row=values, importer_map_pk=importer_map_pk, row_number=row,
                                create_allowed=create_allowed, download_images=download_images)
     print("create_allowed:", create_allowed)
     print("download_images:", download_images)
