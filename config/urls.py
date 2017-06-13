@@ -64,7 +64,6 @@ urlpatterns = [
     # url(r'^xml-map/$', xml_map_view, name='xml_map'),
     # url(r'^run-xml-task/$', TaskRunnerView.as_view(), name='run_xml_task'),
 
-
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

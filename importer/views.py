@@ -17,6 +17,7 @@ from products.mixins import StaffRequiredMixin
 from .forms import ProductImporterMapTypeForm, ImporterForm, ExcelImporterAdditionalFieldsForm
 from .models import ProductImportMap
 from .tasks import process_xls_row
+from utils.tasks import download_xml
 
 # https://www.youtube.com/watch?v=z0Gxxjbos4k linkinde anlatmış nasıl yapıldığını
 # from pycharmdebug import pydevd
@@ -224,6 +225,13 @@ class XMLImporterRunImportTaskView(StaffRequiredMixin, FormView):
         # print("number_of_items :", number_of_items)
         # print("download_images ", download_images)
         # print("allow_item_creation ", allow_item_creation)
+
+        # TODO : Aşağıdaki fonksiyonu aktif edersek o zaman her çalışmada XML 'i download ederek update eder ürünleri.
+        # download_xml.delay(xml_file_pk=xml_file_instance.pk,
+        #                    import_map_pk=import_map_instance.pk,
+        #                    number_of_items=number_of_items,
+        #                    download_images=download_images,
+        #                    allow_item_creation=allow_item_creation)
 
         run_all_steps(xml_file_pk=xml_file_instance.pk,
                       import_map_pk=import_map_instance.pk,

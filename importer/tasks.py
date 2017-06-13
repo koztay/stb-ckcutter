@@ -177,6 +177,18 @@ class BaseDataImporterTask:
             if isinstance(img_url_list, str):  # string yani bu durumda sadece tek url var ve listeye dönüşmeli
                 img_url_list = [img_url_list]
                 print("tip değişmiş mi? =>", type(img_url_list))
+            elif isinstance(img_url_list, list):
+                # [['http://www.projeksiyon.com/resimler/urun/productimage-mf45_ft1_ri71.jpg',
+                # 'http://www.projeksiyon.com/resimler/urun/pt-vx400_panasonic_projeksiyon_inout.jpg',
+                # 'http://www.projeksiyon.com/resimler/urun/pt-vx400_panasonic_projeksiyon_inout_2.jpg']]
+                # check the type of first element list of list döndürüyor
+                if isinstance(img_url_list[0], list):
+                    # get the first element of the inner list:
+                    img_url_list = img_url_list[0]  # ilk listi aldık artık sıkıntı olmaması lazım
+                    # aşağıdaki gibi bir liste dönüşmeli (yukarıda çift tırnak aşağıda tek tırnak) :
+                    # ['http://www.projeksiyon.com/resimler/urun/w710st_benq_projeksiyon_front2.jpg',
+                    # 'http://www.projeksiyon.com/resimler/urun/w710st_benq_projeksiyon_back2.jpg',
+                    # 'http://www.projeksiyon.com/resimler/urun/w710st_benq_projeksiyon_front-22.jpg']
 
             # TODO: Şimdilik sadece tek resim alabiliyoruz. İleride düzelt.
             if product.productimage_set.all().count() == 0:  # image varsa boşu boşuna task ekleme.

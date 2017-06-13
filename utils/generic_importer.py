@@ -59,12 +59,12 @@ def search_and_replace(func):
 
 class BaseParser:
     def __init__(self, file_path, xpath_for_products, dropping_words, replacing_words):
-        """ 
-        This class is base class for the xml file or excel file to be imported. It parses the source and sends the row 
+        """
+        This class is base class for the xml file or excel file to be imported. It parses the source and sends the row
         objects to the BaseImporter class.
         :param file_path:
-        :param xpath_for_products: it is a string object like ".//Urun" 
-        :param dropping_words: the list of dictionary objects as the following: 
+        :param xpath_for_products: it is a string object like ".//Urun"
+        :param dropping_words: the list of dictionary objects as the following:
         drop_words=[{"words": ("PANASONIC", "panasonic", "Panasonic", "perdesi", "Perdesi"),
                     "field": "//Urun/Baslik/node()"}]
         :param replacing_words: list of dictionary objects as the following:
@@ -100,9 +100,9 @@ class BaseImporter:
 
     def __init__(self, map_obj, xml_document, xpath_for_products):
         """
-        
+
         :param default_db_fields: a dictionary object of the minimum fields to create product record.
-        :param row_object: a dictionary or xml object contains single product with default fields. 
+        :param row_object: a dictionary or xml object contains single product with default fields.
         will be replaced in product title.
         """
         self.map_obj = map_obj
@@ -159,7 +159,7 @@ class BaseImporter:
     def get_model_field_for_row_value(self, *args, **kwargs):
         """
         This is a helper function for process_row_object
-        :param value: 
+        :param value:
         :return: Returns a tuple as (model, local_field)
         """
         default_fields = settings.DEFAULT_FIELDS
@@ -171,7 +171,7 @@ class BaseImporter:
         # else:
         #     return None
 
-    def update_db(self, number_of_items):
+    def update_db(self, number_of_items, create_allowed, download_images):
 
         for number, row in enumerate(self.process_row_object()):
             if number_of_items:
@@ -186,7 +186,10 @@ class BaseImporter:
                     # print(json_values)
                     # process_xml_row(self, row=json_values)
                     # process_xml_object_oriented(self, row=json_values)
-                    process_xml_row.apply_async(args=[], kwargs={'row': json_values, }, queue='xml')
+                    process_xml_row.apply_async(args=[], kwargs={'row': json_values,
+                                                                 'create_allowed': create_allowed,
+                                                                 'download_images': download_images,
+                                                                 }, queue='xml')
                 else:
                     break
             else:
@@ -260,6 +263,6 @@ def run_all_steps(**kwargs):
                                                 replacing_words=parser.replacing_words)
 
     my_importer = XMLImporter(map_obj=import_map_obj, xml_document=filtered_xml_document, xpath_for_products=root_xpath)
-    my_importer.update_db(number_of_items=number_of_items)
+    my_importer.update_db(number_of_items=number_of_items, create_allowed=allow_item_creation, download_images=download_images)
 
 
