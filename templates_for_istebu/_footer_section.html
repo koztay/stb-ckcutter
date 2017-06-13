@@ -12,7 +12,7 @@
                                 <div class="aa-footer-widget">
                                     <h3>istebu.com</h3>
                                     <ul class="aa-footer-nav">
-                                        <li><a href="#">Hakkımızda</a></li>
+                                        <li><a href="{% url 'hakkimizda' %}">Hakkımızda</a></li>
                                         <li><a href="{% url 'contact' %}">İletişim</a></li>
                                         {% if request.user.is_authenticated %}
                                         <li><a href="{% url 'users:detail' username=request.user.username %}">Hesabım</a></li>

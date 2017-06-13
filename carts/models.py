@@ -30,11 +30,11 @@ class CartItem(models.Model):
 
 
 def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
-    print("cart_item_pre_save_receiver çalıştı")
+    # print("cart_item_pre_save_receiver çalıştı")
     qty = instance.quantity
     if int(qty) >= 1:
         price = instance.item.get_sale_price()
-        print("price : ", price)
+        # print("price : ", price)
         line_item_total = Decimal(qty) * Decimal(price)
         instance.line_item_total = line_item_total
 
@@ -43,8 +43,8 @@ pre_save.connect(cart_item_pre_save_receiver, sender=CartItem)
 
 
 def cart_item_post_save_receiver(sender, instance, *args, **kwargs):
-    print("cart_item_post_save_receiver çalıştı")
-    print("instance var mı:", instance)
+    # print("cart_item_post_save_receiver çalıştı")
+    # print("instance var mı:", instance)
     instance.cart.update_subtotal()
 
 
@@ -70,7 +70,7 @@ class Cart(models.Model):
         return str(self.id)
 
     def update_subtotal(self):
-        print("updating...")
+        # print("updating...")
         subtotal = 0
         items = self.cartitem_set.all()
         for item in items:
@@ -80,10 +80,10 @@ class Cart(models.Model):
 
 
 def do_tax_and_total_receiver(sender, instance, *args, **kwargs):
-    print("cart presave çalıştı, pre save'de do_tax_and_total_receiver yapıyoruz")
+    # print("cart presave çalıştı, pre save'de do_tax_and_total_receiver yapıyoruz")
     subtotal = Decimal(instance.subtotal)
     tax_total = round(subtotal * Decimal(instance.tax_percentage), 2)  # 8.5%
-    print(instance.tax_percentage)
+    # print(instance.tax_percentage)
     total = round(subtotal + Decimal(tax_total), 2)
     instance.tax_total = "%.2f" % tax_total
     instance.total = "%.2f" % total

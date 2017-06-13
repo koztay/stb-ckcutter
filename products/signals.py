@@ -68,7 +68,7 @@ def create_featureset(instance=None, valueset=None):  # instance içerisinde val
     assigned_product_features = AttributeType.objects.filter(product=instance)
     # aradaki farka bak : product feature olarak eklenmemiş feature var mı?
     difference = list(set(product_features) - set(assigned_product_features))
-    print(len(difference))
+    # print(len(difference))
     # eğer varsa:
     if len(difference) > 0:  # ilkinde eklenmişse sonradan valuseti nasıl ekleyeceğiz.? Update edeceğiz.
         for feature in difference:  # burada sadece 1 feature varsa sıkıntı olabilir, non iterable diyordu sanki
@@ -104,12 +104,12 @@ def create_featureset(instance=None, valueset=None):  # instance içerisinde val
 def attribute_type_post_save_receiver(sender, instance, *args, **kwargs):
     # 1 - tüm productlar içerisinde product_type 'ı yeni yaratılan attibute'un product_type'ı aynı olanları süz.
     products = Product.objects.filter(product_type=instance.product_type)
-    print(products)
+    # print(products)
     # 2 - süzülen productlara yeni attribute' u ekle:
     for product in products:
-        print(instance)
+        # print(instance)
         assigned_product_features = AttributeType.objects.filter(product=product)
-        print("assigned product features :%s" % assigned_product_features)
+        # print("assigned product features :%s" % assigned_product_features)
         if instance not in assigned_product_features:
             instance.product.add(product)
             AttributeValue.objects.create(attribute_type=instance, product=product, value="")
