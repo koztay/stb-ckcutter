@@ -262,7 +262,11 @@ def run_all_steps(**kwargs):
     filtered_xml_document = parser.process_file(dropping_words=parser.dropping_words,
                                                 replacing_words=parser.replacing_words)
 
-    my_importer = XMLImporter(map_obj=import_map_obj, xml_document=filtered_xml_document, xpath_for_products=root_xpath)
-    my_importer.update_db(number_of_items=number_of_items, create_allowed=allow_item_creation, download_images=download_images)
+    my_importer = XMLImporter(map_obj=import_map_obj,
+                              xml_document=filtered_xml_document,
+                              xpath_for_products=root_xpath)
+    my_importer.update_db(number_of_items=number_of_items,
+                          create_allowed=allow_item_creation,
+                          download_images=download_images)
 
 
