@@ -200,7 +200,10 @@ class BaseImporter:
                 json_values = json.dumps(row)
 
                 # print(json_values)
-                process_xml_row.apply_async(args=[], kwargs={'row': json_values, }, queue='xml')
+                process_xml_row.apply_async(args=[], kwargs={'row': json_values,
+                                                             'create_allowed': create_allowed,
+                                                             'download_images': download_images,
+                                                             }, queue='xml')
 
     def get_value_for_field(self, field, element):
         raise NotImplementedError('subclasses of BaseImporter must Implement get_value_for_field() method')
@@ -243,6 +246,8 @@ def run_all_steps(**kwargs):
     number_of_items = kwargs.get("number_of_items")
     download_images = kwargs.get("download_images")
     allow_item_creation = kwargs.get("allow_item_creation")
+
+    print(kwargs)
 
     import_map_obj = ProductImportMap.objects.get(pk=import_map_pk)
     xml_file_obj = ImporterFile.objects.get(pk=xml_file_pk)

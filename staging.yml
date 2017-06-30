@@ -7,7 +7,6 @@ volumes:
 
 services:
   postgres:
-    restart: always
     build: ./compose/postgres
     image: koztay/istebu_dev_db
     volumes:
@@ -16,7 +15,6 @@ services:
     env_file: .env_staging
 
   django:
-    restart: always
     build:
       context: .
       dockerfile: ./compose/django/Dockerfile
@@ -53,7 +51,6 @@ services:
 #    build:
 #      context: .
 #      dockerfile: ./compose/django/Dockerfile
-    restart: always
     image: istebu_cookicutter/django
     user: django
     env_file: .env_staging
@@ -71,7 +68,6 @@ services:
 #    build:
 #      context: .
 #      dockerfile: ./compose/django/Dockerfile
-    restart: always
     image: istebu_cookicutter/django
     user: django
     env_file: .env_staging

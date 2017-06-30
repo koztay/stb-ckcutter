@@ -28,7 +28,7 @@
 
                                                 <figcaption>
                                                     <h4 class="aa-product-title">
-                                                        <a href="{{ product.get_absolute_url }}">{{ product.title | truncatechars:50 }}
+                                                        <a href="{{ product.get_absolute_url }}">{{ product.title | truncatechars:45 }}
                                                         </a>
                                                     </h4>
                                                     {{ product.variation_set.first.get_html_price }}
