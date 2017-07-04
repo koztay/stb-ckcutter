@@ -88,6 +88,7 @@ class Product(models.Model):
 
     title = models.CharField(db_index=True, max_length=1000)
     # description = models.TextField(blank=True, null=True)
+    sub_title = models.CharField(max_length=1000, blank=True, null=True)  # n11 ve gg için alt başlık değeri
     description = RichTextField(db_index=True, default="<h1>default description</h1>", blank=True, null=True)
     price = models.DecimalField(db_index=True, decimal_places=2, max_digits=20, blank=True, null=True)
     active = models.BooleanField(default=True)

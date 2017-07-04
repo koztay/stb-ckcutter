@@ -1,8 +1,8 @@
 # import braintree
-import json
-from requests import Request, Session
-import requests
-from requests.auth import HTTPBasicAuth
+# import json
+# from requests import Request, Session
+import requests  # NOTE : yukarıdaki ve aşağıdaki satırı sildim.
+# from requests.auth import HTTPBasicAuth
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
