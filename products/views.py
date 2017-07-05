@@ -65,6 +65,8 @@ def big_xml(marketplace):
         output.write(
             '<product_title>' + '<![CDATA[{}]]>'.format(product_instance.title) + '</product_title>\n')
         output.write(
+            '<product_subtitle>' + '<![CDATA[{}]]>'.format(product_instance.sub_title) + '</product_subtitle>\n')
+        output.write(
             '<product_description>' + '<![CDATA[{}]]>'.format(escape(product_instance.description))
             + '</product_description>\n')
         output.write(
@@ -87,12 +89,15 @@ def big_xml(marketplace):
             output.write(
                 '<kargo_suresi>' + '<![CDATA[{}]]>'.format("3 gün") + '</kargo_suresi>\n')
 
-        try:
-            media_url = product.images.first().sd_thumb
-        except:
-            media_url = "No Image"
-        output.write(
-            '<product_image>' + '<![CDATA[{}]]>'.format(media_url) + '</product_image>\n')
+        images = product.images.all()
+        media_url_output = ""
+        if images.count() == 0:
+            media_url_output += "<image>No Image</image>"
+        else:
+            for image in images:
+                media_url_output += "<image>{}</image>\n".format(image.sd_thumb)
+            output.write(
+                '<product_image>' + '<![CDATA[{}]]>'.format(media_url_output) + '</product_image>\n')
 
         domain = Site.objects.get_current().domain
         path = product.get_absolute_url()
