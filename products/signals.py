@@ -167,7 +167,7 @@ pre_delete.connect(image_pre_delete_receiver_for_cleanup, sender=ProductImage)
 
 
 def create_slug(instance, sender, new_slug=None):
-    print(instance)
+
     slug = slugify(instance.title)
     if new_slug is not None:
         slug = new_slug
@@ -179,18 +179,20 @@ def create_slug(instance, sender, new_slug=None):
     return slug
 
 
-# TODO : Bunu normal olarak product ve kategori post save olarak yaratamaz mıyız? (mixin vb. yöntemle)
+# # TODO : Aşağıdakini normal olarak product ve kategori post save olarak yaratamaz mıyız? (mixin vb. yöntemle)
+
+
 @receiver(pre_save)  # tüm objeler pre_save olmadan çalışıyor...
 def slug_pre_save_receiver(sender, instance, *args, **kwargs):
     # print("pre_save_receiver_çalıştı...")
 
     list_of_models = ('Product', 'Category')
-    # print("sender:", sender.__name__)
 
     if sender.__name__ in list_of_models:  # this is the dynamic part you want
+        # print("sender:", sender.__name__)
         if not instance.slug:
             instance.slug = create_slug(instance, sender)
     else:
         pass
-        # print("sender list of models içinde değil")
+        print("sender list of models içinde değil")
 

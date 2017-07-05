@@ -364,6 +364,7 @@ DEFAULT_FIELDS = {
     "Urun_Tipi": {"model": "ProductType", "local_field": "name"},  # product.product_type olarak ekle !!!
     "Marka": {"model": "AttributeValue", "local_field": "value"},  # value for AtrributeType.type == "Marka"
     "Urun_Adi": {"model": "Product", "local_field": "title"},
+    "Alt_Baslik": {"model": "Product", "local_field": "sub_title"},
     "Aciklama": {"model": "Product", "local_field": "description"},
     "Stok": {"model": "Variation", "local_field": "inventory"},
     "KDV": {"model": "Product", "local_field": "kdv"},

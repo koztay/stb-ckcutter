@@ -1,11 +1,13 @@
 # coding=utf-8
-from django.conf import settings
-from django.core.files import File
 import os
 import shutil
 import random
-import requests
 import urllib3
+
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.files import File
+
 from products.models import ProductImage, Product
 
 download_url = 'http://i.hurimg.com/i/hurriyet/75/892x220/58a9fa28c03c0e20402a9064.jpg'
@@ -20,11 +22,14 @@ isimde ilk ürünün klasöründe kalıyor. Çünkü image_upload_to bu şekilde
 """
 
 
-# bu fonksiyon muhtemelen production 'da çalışmayacak.
 def download_image(url, product_id):
     print("indirilecek resim linki :", url)
     product = Product.objects.get(pk=product_id)
-    if product.productimage_set.all().count() == 0:
+    try:
+        product_image = product.images.get(remote_url=url)
+        return "Product image exist for %s and for remote url: %s" % (product.title, product_image.remote_url)
+    except ObjectDoesNotExist:
+        # product image does not exist, therefore download image
         filename = url.split('/')[-1]
         print('file_name', filename)
         # create temp location
@@ -39,18 +44,7 @@ def download_image(url, product_id):
             temp_path = os.path.join(temp_loc, "%s" % (random.random()))
             os.makedirs(temp_path)
             temp_file_path = os.path.join(temp_path, filename)
-        # download_image
-        # response = requests.get(url, stream=True)
 
-        # with open(temp_file_path, 'wb') as out_file:
-        #     http = urllib3.PoolManager()
-        #     response = http.request('GET', url)
-        #     if response.status is 200:
-        #         shutil.copyfileobj(response.data, out_file)
-        #         del response
-        #     else:
-        #         del response
-        #         raise ValueError('A very specific bad thing happened. Response code was not 200')
         http = urllib3.PoolManager()
         with http.request('GET', url, preload_content=False) as resp, \
                 open(temp_file_path, 'wb') as out_file:
@@ -62,10 +56,10 @@ def download_image(url, product_id):
         product_image_data = open(temp_file_path, "rb")
         product_image_file = File(product_image_data)
         product_image = ProductImage.objects.create(product=product)
+        product_image.remote_url = url
         product_image.image.save(os.path.basename(temp_file_path), product_image_file)
-        return "Product image downloaded for %s" % product.title
-    else:
-        return "Product has image, so image will not be downloaded"
+    return "Product image downloaded for %s" % product.title
+
 
 
 

@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 import json
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from celery.decorators import task
 
 
@@ -177,26 +178,41 @@ class BaseDataImporterTask:
             if isinstance(img_url_list, str):  # string yani bu durumda sadece tek url var ve listeye dönüşmeli
                 img_url_list = [img_url_list]
                 print("tip değişmiş mi? =>", type(img_url_list))
-            elif isinstance(img_url_list, list):
-                # [['http://www.projeksiyon.com/resimler/urun/productimage-mf45_ft1_ri71.jpg',
-                # 'http://www.projeksiyon.com/resimler/urun/pt-vx400_panasonic_projeksiyon_inout.jpg',
-                # 'http://www.projeksiyon.com/resimler/urun/pt-vx400_panasonic_projeksiyon_inout_2.jpg']]
-                # check the type of first element list of list döndürüyor
-                if isinstance(img_url_list[0], list):
-                    # get the first element of the inner list:
-                    img_url_list = img_url_list[0]  # ilk listi aldık artık sıkıntı olmaması lazım
-                    # aşağıdaki gibi bir liste dönüşmeli (yukarıda çift tırnak aşağıda tek tırnak) :
-                    # ['http://www.projeksiyon.com/resimler/urun/w710st_benq_projeksiyon_front2.jpg',
-                    # 'http://www.projeksiyon.com/resimler/urun/w710st_benq_projeksiyon_back2.jpg',
-                    # 'http://www.projeksiyon.com/resimler/urun/w710st_benq_projeksiyon_front-22.jpg']
 
-            # TODO: Şimdilik sadece tek resim alabiliyoruz. İleride düzelt.
-            if product.productimage_set.all().count() == 0:  # image varsa boşu boşuna task ekleme.
-                print("Resim daha önce eklenmemiş. Download task çalıştırılacak. Yeni fonksiyon bu.")
-                # download_image_for_product.delay(img_url, product.id)
-                print("gönderdiği argüman img_url_list[0] =>", img_url_list[0])
-                # print("tipi list değilse hata verir, empty döndürür.")
-                download_image_for_product.apply_async(args=[img_url_list[0], product.id], kwargs={}, queue='images')
+            # Aşağıdaki kod parçası çoklu imaj indirmeye yarıyor...
+            # images = product.images.all()
+            # for img_url in img_url_list:
+            #     if not images.filter(remote_url=img_url).exists():
+            #         download_image_for_product.apply_async(args=[img_url, product.id], kwargs={},
+            #                                                queue='images')
+
+            # aşağıdaki kodu sadece 1 kez çalıştıracağız. Bu kod mevcut resimlerin remote url 'lerini güncelleyecek.
+            if product.images.all().count() == 1:
+                print("ürüne ait bir resim var remote url'i update et ki duplice resim olmasın")
+                image = product.images.all()[0]
+                image.remote_url = img_url_list[0]
+                image.save()
+
+            # artık resimler için list döndürüyoruz her durumda sadece excel ise yukarıda liste çeviriyoruz.
+            # elif isinstance(img_url_list, list):
+            #     # [['http://www.projeksiyon.com/resimler/urun/productimage-mf45_ft1_ri71.jpg',
+            #     # 'http://www.projeksiyon.com/resimler/urun/pt-vx400_panasonic_projeksiyon_inout.jpg',
+            #     # 'http://www.projeksiyon.com/resimler/urun/pt-vx400_panasonic_projeksiyon_inout_2.jpg']]
+            #     # check the type of first element list of list döndürüyor
+            #     if isinstance(img_url_list[0], list):
+            #         # get the first element of the inner list:
+            #         img_url_list = img_url_list[0]  # ilk listi aldık artık sıkıntı olmaması lazım
+            #         # aşağıdaki gibi bir liste dönüşmeli (yukarıda çift tırnak aşağıda tek tırnak) :
+            #         # ['http://www.projeksiyon.com/resimler/urun/w710st_benq_projeksiyon_front2.jpg',
+            #         # 'http://www.projeksiyon.com/resimler/urun/w710st_benq_projeksiyon_back2.jpg',
+            #         # 'http://www.projeksiyon.com/resimler/urun/w710st_benq_projeksiyon_front-22.jpg']
+
+            # if product.images.count() == 0:  # image varsa boşu boşuna task ekleme.
+            #     print("Resim daha önce eklenmemiş. Download task çalıştırılacak. Yeni fonksiyon bu.")
+            #     # download_image_for_product.delay(img_url, product.id)
+            #     print("gönderdiği argüman img_url_list[0] =>", img_url_list[0])
+            #     # print("tipi list değilse hata verir, empty döndürür.")
+            #     download_image_for_product.apply_async(args=[img_url_list[0], product.id], kwargs={}, queue='images')
 
         if product_created:
             return "%s veritabanına eklendi." % product.title
@@ -207,21 +223,28 @@ class BaseDataImporterTask:
 class XMLImporterTask(BaseDataImporterTask):
 
     def _get_value_for_field(self, field_name):
+        """
+        This function returns text values except image fields. It returns list for image fields.
+        :param field_name:
+        :return:
+        """
         db_field = settings.DEFAULT_FIELDS.get(field_name).get('local_field')  # bu tek başına saçmalatıyor...
         model = settings.DEFAULT_FIELDS.get(field_name).get('model')  # model de olmalı
-        # print("db_field", db_field)
+
         value = [d.get('value') for d in self.row if d.get('field') == db_field and d.get('model') == model]
 
-        if field_name is 'Urun_Resmi':
-            return value
-        else:
-            if len(value) > 0:
-                if isinstance(value[0], list):
-                    return value[0][0]
+        field_value = None
+
+        if len(value) > 0:
+            if isinstance(value[0], list):
+                if field_name is 'Urun_Resmi':
+                    field_value = value[0]  # içindeki tüm değerleri list olarak döndürmek istiyoruz
                 else:
-                    return value[0]
+                    field_value = value[0][0]  # resim değilse text değerini döndür.
             else:
-                return None
+                field_value = value[0]
+        # print(field_name, field_value, value)
+        return field_value
 
 
 class XLSImporterTask(BaseDataImporterTask):

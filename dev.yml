@@ -34,6 +34,15 @@ services:
       - "8000:8000"
 
 
+  celeryworker:
+    image: istebu_cookicutter/django
+    user: django
+    depends_on:
+     - postgres
+     - redis
+    command: celery -A ecommerce_istebu_cookiecutter.taskapp worker -Q images,xml,default -l INFO -Ofair --time-limit=300 --soft-time-limit=300 --without-gossip --without-mingle --without-heartbeat
+
+
   pycharm:
     build:
       context: .

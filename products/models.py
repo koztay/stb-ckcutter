@@ -330,8 +330,9 @@ class Variation(models.Model):
 
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(Product)
+    product = models.ForeignKey(Product, related_name='images')
     image = models.ImageField(upload_to=image_upload_to, blank=True, null=True, max_length=1000)
+    remote_url = models.URLField(blank=True, null=True)
 
     def get_image_path(self):
         # img = self.image
