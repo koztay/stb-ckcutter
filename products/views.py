@@ -95,9 +95,8 @@ def big_xml(marketplace):
             media_url_output += "<image>No Image</image>"
         else:
             for image in images:
-                media_url_output += "<image>{}</image>\n".format(image.sd_thumb)
-            output.write(
-                '<product_image>' + '<![CDATA[{}]]>'.format(media_url_output) + '</product_image>\n')
+                media_url_output += "\n\t<image><![CDATA[{}]]></image>\n".format(image.sd_thumb)
+        output.write('<product_image>' + media_url_output + '</product_image>\n')
 
         domain = Site.objects.get_current().domain
         path = product.get_absolute_url()

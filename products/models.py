@@ -376,10 +376,14 @@ class ProductImage(models.Model):
     @property
     def sd_thumb(self):
         sd_thumb = Thumbnail.objects.all().filter(main_image=self, type='sd').first()
-        if sd_thumb.media:
-            return sd_thumb.media.url
-        else:
-            return "Image has no SD Thumbnail"
+
+        # print("sd_thumb var mı?", sd_thumb, self) # try blocku içine koymazsan error durumunda xml output patlıyor.
+        try:
+            url = sd_thumb.media
+        except:
+            url = "Image has no SD Thumbnail"
+
+        return url
 
     @property
     def hd_thumb(self):
