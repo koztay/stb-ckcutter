@@ -66,7 +66,7 @@ class ItemsView(View):
                 print(cart_items)
                 for cart_item in cart_items:
                     print('cart item title', cart_item.product.title)
-                    # print('cart item image', cart_item.item.product.productimage_set[0])
+                    # print('cart item image', cart_item.item.product.images[0])
                     # burada pk 'den product ve image 'a nasıl erişeceğiz?
 
                 cart_items = serializers.serialize('json', cart.items.all(), fields=('product', 'sale_price'))

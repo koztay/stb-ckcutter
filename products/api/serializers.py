@@ -58,7 +58,7 @@ class ProductModelSerializer(serializers.ModelSerializer):
         product_id = obj.pk
         product = Product.objects.get(id=product_id)
 
-        images = product.productimage_set.all()
+        images = product.images.all()
         thumbnails_array = []
 
         for image in images:

@@ -3,13 +3,11 @@
 {% load jsonify %}
 {% for product in products %}
                                         <!-- start single product item -->
-
-
                                         <li>
                                             <figure>
-                                                {% if product.productimage_set.all.count > 0 %}
+                                                {% if product.images.all.count > 0 %}
                                                     <a class="aa-product-img" href='{{ product.get_absolute_url }}'>
-                                                        <img src='{{ product.productimage_set.all.0 | get_image_thumbnail:"medium" }}'
+                                                        <img src='{{ product.images.all.0 | get_image_thumbnail:"medium" }}'
                                                         alt="{{ product.title|lower }} img" />
                                                     </a>
                                                 {% endif %}

@@ -51,10 +51,10 @@
                             <ul>
                                 {% for product in last_visited_item_list %}
                                     <li>
-                                    {% if product.productimage_set.all.count > 0 %}
+                                    {% if product.images.all.count > 0 %}
                                         <a href='{{ product.get_absolute_url }}' class="aa-cartbox-img">
                                             <img alt="{{ product.title|lower }} img"
-                                                 src='{{ product.productimage_set.all.0 | get_image_thumbnail:"micro" }}'/>
+                                                 src='{{ product.images.all.0 | get_image_thumbnail:"micro" }}'/>
                                         </a>
                                     {% endif %}
                                     <div class="aa-cartbox-info">
@@ -74,9 +74,9 @@
                             <ul>
                                 {% for product in most_popular_products %}
                                     <li>
-                                    {% if product.productimage_set.all.count > 0 %}
+                                    {% if product.images.all.count > 0 %}
                                         <a class="aa-cartbox-img" href='{{ product.get_absolute_url }}'>
-                                            <img src='{{ product.productimage_set.all.0 | get_image_thumbnail:"micro" }}'
+                                            <img src='{{ product.images.all.0 | get_image_thumbnail:"micro" }}'
                                             alt="{{ product.title|lower }} img" />
                                         </a>
                                     {% endif %}

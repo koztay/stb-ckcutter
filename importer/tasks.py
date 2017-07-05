@@ -180,18 +180,18 @@ class BaseDataImporterTask:
                 print("tip değişmiş mi? =>", type(img_url_list))
 
             # Aşağıdaki kod parçası çoklu imaj indirmeye yarıyor...
-            # images = product.images.all()
-            # for img_url in img_url_list:
-            #     if not images.filter(remote_url=img_url).exists():
-            #         download_image_for_product.apply_async(args=[img_url, product.id], kwargs={},
-            #                                                queue='images')
+            images = product.images.all()
+            for img_url in img_url_list:
+                if not images.filter(remote_url=img_url).exists():
+                    download_image_for_product.apply_async(args=[img_url, product.id], kwargs={},
+                                                           queue='images')
 
             # aşağıdaki kodu sadece 1 kez çalıştıracağız. Bu kod mevcut resimlerin remote url 'lerini güncelleyecek.
-            if product.images.all().count() == 1:
-                print("ürüne ait bir resim var remote url'i update et ki duplice resim olmasın")
-                image = product.images.all()[0]
-                image.remote_url = img_url_list[0]
-                image.save()
+            # if product.images.all().count() == 1:
+            #     print("ürüne ait bir resim var remote url'i update et ki duplice resim olmasın")
+            #     image = product.images.all()[0]
+            #     image.remote_url = img_url_list[0]
+            #     image.save()
 
             # artık resimler için list döndürüyoruz her durumda sadece excel ise yukarıda liste çeviriyoruz.
             # elif isinstance(img_url_list, list):

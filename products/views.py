@@ -88,7 +88,7 @@ def big_xml(marketplace):
                 '<kargo_suresi>' + '<![CDATA[{}]]>'.format("3 gün") + '</kargo_suresi>\n')
 
         try:
-            media_url = product.productimage_set.first().sd_thumb
+            media_url = product.images.first().sd_thumb
         except:
             media_url = "No Image"
         output.write(
