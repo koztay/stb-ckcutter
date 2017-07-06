@@ -1,15 +1,16 @@
 from decimal import Decimal
+
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models import Case, Count, F, Max, Q, Value, When
+from django.db.models import F
 from django.utils.safestring import mark_safe
 
 # third party apps
-from multiselectfield import MultiSelectField
-from uuslug import slugify
-from taggit.managers import TaggableManager
 from ckeditor.fields import RichTextField
+from multiselectfield import MultiSelectField
+from taggit.managers import TaggableManager
+from uuslug import slugify
 
 
 # for Thumbnail Class
@@ -57,14 +58,41 @@ class ProductManager(models.Manager):
     def get_queryset(self):
         return ProductQuerySet(self.model, using=self._db)
 
-    def all(self, *args, **kwargs):
+    def all(self):
         return self.get_queryset().active()
 
     def get_related(self, instance):
-        products_one = self.get_queryset().filter(categories__in=instance.categories.all()).filter(variation__inventory__gte=0)
-        products_two = self.get_queryset().filter(default=instance.default).filter(variation__inventory__gte=0)
-        qs = (products_one | products_two).exclude(id=instance.id).distinct()
-        return qs
+        # products_one = self.get_queryset().filter(
+        #     categories__in=instance.categories.all()).filter(variation__inventory__gte=0)
+        products_one = self.get_queryset().filter(
+            product_type=instance.product_type).filter(variation__inventory__gte=0)
+        price_min = instance.price * Decimal('0.95')
+        price_max = instance.price * Decimal('1.05')
+        products_start = products_one.filter(price__gte=price_min).distinct()
+        # duplicate oluyor yukarıya ve aşağıya distinct() koymayınca
+        products_end = products_start.filter(price__lte=price_max).exclude(id=instance.id).distinct()
+        print(products_end)
+        if products_one.count() > 0 and products_end.count() < 8:
+            while (products_end.count() < 9) \
+                and ((products_start.count() <= products_one.count())
+                     or (products_end.count() <= products_one.count())):
+                # print("while döngüsü =>", products_end)
+
+                price_min *= Decimal('0.7')
+                price_max *= Decimal('1.3')
+                products_start = products_one.filter(price__gte=price_min).distinct()
+                products_end = products_start.filter(price__lte=price_max).exclude(id=instance.id).distinct()
+                print("price_min", price_min)
+                print("price_max", price_max)
+                print("products_one.count", products_one.count())
+                print("products_start.count", products_start.count())
+                print("products_end.count", products_end.count())
+
+        # aşağıdaki products_two default olmadığı için patlıyors
+        # products_two = self.get_queryset().filter(default=instance.default).filter(variation__inventory__gte=0)
+        # qs = (products_one | products_two).exclude(id=instance.id).distinct()
+        # qs = (products_start | products_end).exclude(id=instance.id).distinct()
+        return products_end.order_by('?')
 
 
 class Product(models.Model):
@@ -539,7 +567,8 @@ class Thumbnail(models.Model):
         max_length=2000)
 
     def __str__(self):  # __str__(self):
-        return str(self.product.title + " " + self.type + " thumbnail image for main image with pk :" + str(self.main_image.pk))
+        return str(self.product.title + " " + self.type + " thumbnail image for main image with pk :"
+                   + str(self.main_image.pk))
 
 
 # ************************************************************************************************************ #
