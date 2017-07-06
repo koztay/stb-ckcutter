@@ -27,11 +27,18 @@
                                                     class="simpleLens-big-image"></a></div>
                                         </div>
                                         <div class="simpleLens-thumbnails-container">
-                                            <a data-big-image="{{ object.images.all.0 | get_image_thumbnail:"sd" }}"
-                                               data-lens-image="{{ object.images.all.0 | get_image_thumbnail:"hd" }}"
+                                            {% for image in object.images.all %}
+                                            <a data-big-image="{{ image | get_image_thumbnail:"sd" }}"
+                                               data-lens-image="{{ image | get_image_thumbnail:"hd" }}"
                                                class="simpleLens-thumbnail-wrapper" href="#">
-                                                <img src="{{ object.images.all.0 | get_image_thumbnail:"micro" }}">
+                                                <img src="{{ image | get_image_thumbnail:"micro" }}">
                                             </a>
+                                            {% endfor %}
+{#                                            <a data-big-image="{{ object.images.all.0 | get_image_thumbnail:"sd" }}"#}
+{#                                               data-lens-image="{{ object.images.all.0 | get_image_thumbnail:"hd" }}"#}
+{#                                               class="simpleLens-thumbnail-wrapper" href="#">#}
+{#                                                <img src="{{ object.images.all.0 | get_image_thumbnail:"micro" }}">#}
+{#                                            </a>#}
                                         </div>
                                     </div>
                                 </div>
@@ -52,6 +59,9 @@
                                             </span>
                                         </p>
                                     </div>
+                                        {% if object.sub_title %}
+                                        <p>{{ object.sub_title }}</p>
+                                        {% endif %}
 {#                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis animi,#}
 {#                                        veritatis quae repudiandae quod nulla porro quidem, itaque quis quaerat!</p>#}
 {#                                    <h4>Size</h4>#}
