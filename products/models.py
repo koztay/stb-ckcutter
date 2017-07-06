@@ -62,21 +62,27 @@ class ProductManager(models.Manager):
         return self.get_queryset().active()
 
     def get_related(self, instance):
-        # products_one = self.get_queryset().filter(
-        #     categories__in=instance.categories.all()).filter(variation__inventory__gte=0)
+        """
+        This function creates a list of related products from given instance. The related items are defined
+        the same product_type of the instance which inventory is greater than zero. After that the list is reduced
+        by the min and max price range. If the range returns the products less than 8 then range is increased until
+        the related products reach 8. If the products_one list is less than or equal to 10 the all the list except
+        the instance.
+        :param instance: the instance which to create list of related with itself
+        :return: the list of related products
+        """
         products_one = self.get_queryset().filter(
-            product_type=instance.product_type).filter(variation__inventory__gte=0)
+            product_type=instance.product_type).filter(variation__inventory__gt=0)
         price_min = instance.price * Decimal('0.95')
         price_max = instance.price * Decimal('1.05')
         products_start = products_one.filter(price__gte=price_min).distinct()
         # duplicate oluyor yukarıya ve aşağıya distinct() koymayınca
         products_end = products_start.filter(price__lte=price_max).exclude(id=instance.id).distinct()
         print(products_end)
-        if products_one.count() > 0 and products_end.count() < 8:
-            while (products_end.count() < 9) \
+        if products_one.count() > 10:
+            while (products_end.count() < 8) \
                 and ((products_start.count() <= products_one.count())
                      or (products_end.count() <= products_one.count())):
-                # print("while döngüsü =>", products_end)
 
                 price_min *= Decimal('0.7')
                 price_max *= Decimal('1.3')
@@ -87,12 +93,9 @@ class ProductManager(models.Manager):
                 print("products_one.count", products_one.count())
                 print("products_start.count", products_start.count())
                 print("products_end.count", products_end.count())
-
-        # aşağıdaki products_two default olmadığı için patlıyors
-        # products_two = self.get_queryset().filter(default=instance.default).filter(variation__inventory__gte=0)
-        # qs = (products_one | products_two).exclude(id=instance.id).distinct()
-        # qs = (products_start | products_end).exclude(id=instance.id).distinct()
-        return products_end.order_by('?')
+            return products_end.order_by('?')
+        else:
+            return products_one.order_by('?').exclude(id=instance.id).distinct()
 
 
 class Product(models.Model):
