@@ -48,8 +48,11 @@
                                 <div class="aa-product-view-content">
                                     <h3>{{ object.title }}</h3>
                                     <div class="aa-price-block">
-                                        <span class="aa-product-view-price">{{ object.variation_set.first.get_html_price }}</span>
-                                        <p class="aa-product-avilability">Stok Durumu:
+                                     {% if object.sub_title %}
+                                        <p>{{ object.sub_title }}</p>
+                                    {% endif %}
+                                        <span class="aa-product-view-price">Fiyat: {{ object.variation_set.first.get_html_price }}  (KDV Dahil)</span>
+                                        <p class="aa-product-availability">Stok Durumu:
                                             <span>
                                                 {% if object.variation_set.all.0.inventory > 0 %}
                                                     Stok mevcut
@@ -59,9 +62,7 @@
                                             </span>
                                         </p>
                                     </div>
-                                        {% if object.sub_title %}
-                                        <p>{{ object.sub_title }}</p>
-                                        {% endif %}
+
 {#                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis animi,#}
 {#                                        veritatis quae repudiandae quod nulla porro quidem, itaque quis quaerat!</p>#}
 {#                                    <h4>Size</h4>#}

@@ -340,13 +340,12 @@ class ProductImage(models.Model):
             img_url = self.image.url
 
             if "http" not in img_url:  # cloud kullanmıyoruz demektir
-                print("img_url", img_url)
+                # print("img_url", img_url)
                 # remove MEDIA_URL from img_url
                 img_url = img_url.replace(settings.MEDIA_URL, "/", 1)
                 # combine with media_root
                 img_path = settings.MEDIA_ROOT + img_url
-                print("img_path", img_url)
-                print("amazon 'da bu ikisi arasındaki fark nasıl acaba?")
+                # print("img_path", img_url)
                 return img_path
             else:
                 return img_url
@@ -360,38 +359,42 @@ class ProductImage(models.Model):
     @property
     def micro_thumb(self):
         micro_thumb = Thumbnail.objects.all().filter(main_image=self, type='micro').first()
-        if micro_thumb.media:
-            return micro_thumb.media.url
-        else:
-            return "Image has no Micro Thumbnail"
+        # print("sd_thumb var mı?", sd_thumb, self) # try blocku içine koymazsan error durumunda xml output patlıyor.
+        try:
+            url = micro_thumb.media.url
+        except:
+            url = "Image has no Micro Thumbnail"
+        return url
 
     @property
     def medium_thumb(self):
         medium_thumb = Thumbnail.objects.all().filter(main_image=self, type='medium').first()
-        if medium_thumb.media:
-            return medium_thumb.media.url
-        else:
-            return "Image has no Medium Thumbnail"
+        try:
+            url = medium_thumb.media.url
+
+        except:
+            url = "Image has no Medium Thumbnail"
+        return url
 
     @property
     def sd_thumb(self):
         sd_thumb = Thumbnail.objects.all().filter(main_image=self, type='sd').first()
-
         # print("sd_thumb var mı?", sd_thumb, self) # try blocku içine koymazsan error durumunda xml output patlıyor.
         try:
-            url = sd_thumb.media
+            url = sd_thumb.media.url
         except:
             url = "Image has no SD Thumbnail"
-
         return url
 
     @property
     def hd_thumb(self):
         hd_thumb = Thumbnail.objects.all().filter(main_image=self, type='hd').first()
-        if hd_thumb.media:
-            return hd_thumb.media.url
-        else:
-            return "Image has no HD Thumbnail"
+        # print("sd_thumb var mı?", sd_thumb, self) # try blocku içine koymazsan error durumunda xml output patlıyor.
+        try:
+            url = hd_thumb.media.url
+        except:
+            url = "Image has no HD Thumbnail"
+        return url
 
 # ************************************************************************************************************ #
 
