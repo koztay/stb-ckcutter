@@ -20,11 +20,14 @@
                                 <div class="aa-product-view-slider">
                                     <div id="demo-1" class="simpleLens-gallery-container">
                                         <div class="simpleLens-container">
-                                            <div class="simpleLens-big-image-container"><a
+                                            <div class="simpleLens-big-image-container">
+                                                <a
                                                     data-lens-image="{{ object.images.all.0 | get_image_thumbnail:"hd" }}"
-                                                    class="simpleLens-lens-image"><img
-                                                    src="{{ object.images.all.0 | get_image_thumbnail:"sd" }}"
-                                                    class="simpleLens-big-image"></a></div>
+                                                    class="simpleLens-lens-image">
+                                                    <img src="{{ object.images.all.0 | get_image_thumbnail:"sd" }}"
+                                                    class="simpleLens-big-image">
+                                                </a>
+                                            </div>
                                         </div>
                                         <div class="simpleLens-thumbnails-container">
                                             {% for image in object.images.all %}
