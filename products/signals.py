@@ -194,5 +194,5 @@ def slug_pre_save_receiver(sender, instance, *args, **kwargs):
             instance.slug = create_slug(instance, sender)
     else:
         pass
-        print("sender list of models içinde değil")
+        # print("sender list of models içinde değil")
 

@@ -99,12 +99,7 @@ class BaseImporter:
     # default_fields tek bir merkezden yönetilir böylece...
 
     def __init__(self, map_obj, xml_document, xpath_for_products):
-        """
 
-        :param default_db_fields: a dictionary object of the minimum fields to create product record.
-        :param row_object: a dictionary or xml object contains single product with default fields.
-        will be replaced in product title.
-        """
         self.map_obj = map_obj
         self.xml_document = xml_document  # this dict will come from importer or my_importer (Ancak row 'lar dict_olarak
         # gelmeyebilir). O nedenle bunu row object olarak adlandırdım.
@@ -156,12 +151,8 @@ class BaseImporter:
         # for key in settings.DEFAULT_FIELDS:
         #     print(key)
 
-    def get_model_field_for_row_value(self, *args, **kwargs):
-        """
-        This is a helper function for process_row_object
-        :param value:
-        :return: Returns a tuple as (model, local_field)
-        """
+    def get_model_field_for_row_value(self, **kwargs):
+
         default_fields = settings.DEFAULT_FIELDS
         product_field = kwargs.get('value')
         # print(product_field)

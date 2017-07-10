@@ -8,7 +8,6 @@ volumes:
 services:
   postgres:
     build: ./compose/postgres
-    image: koztay/istebu_dev_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - postgres_backup:/backups

@@ -107,7 +107,10 @@ MIDDLEWARE = [
 # ------------------------------------------------------------------------------
 MIGRATION_MODULES = {
     'sites': 'ecommerce_istebu_cookiecutter.contrib.sites.migrations',
-    # 'data_importer': 'data_importer.django_migrations',  # bu satır hata verdiriyor...
+    'data_importer': 'data_importer.django_migrations',  # bu satır migration sonrasında hala
+    # yapacak migrationların ver diyor, bu satırı kaldırınca da testler çalışmıyor.
+    # en iyisi data-importer dan kurtulmak.
+
 }
 
 # DEBUG

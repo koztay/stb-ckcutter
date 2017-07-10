@@ -7,7 +7,6 @@ volumes:
 services:
   postgres:
     build: ./compose/postgres
-    image: koztay/istebu_dev_db
     volumes:
       - postgres_data_dev:/var/lib/postgresql/data_dev  # volume data yerine data_dev yazdık bakalım olacak mı?
       - postgres_backup_dev:/backups

@@ -14,9 +14,9 @@ from products.models import Product, ProductType, Currency, Category, AttributeT
 
 # TODO: http://stackoverflow.com/questions/11618390/celery-having-sequential-tasks-rather-than-concurrent
 """
-Single worker consuming from a queue with concurrency equals to one ensures that the tasks-delete-this will be processed in
-sequential order. In other words you can create a special queue and run only one celery worker with concurrency
-equals to one:
+Single worker consuming from a queue with concurrency equals to one ensures that the tasks-delete-this will be 
+processed insequential order. In other words you can create a special queue and run only one celery worker with 
+concurrency equals to one:
 
 celery -A tasks-delete-this worker -Q amazon_queue -c 1
 And submit tasks-delete-this to that queue:
@@ -115,7 +115,6 @@ class BaseDataImporterTask:
                                                      product=product_instance,
                                                      value=cell)
 
-
             elif cell_value_model is "Currency":
                 # print("attribute: ", default_fields[main_field]["local_field"])
                 # print("Currency neden eşleşmiyor AMK?: ", cell)
@@ -123,18 +122,19 @@ class BaseDataImporterTask:
                 try:
                     currency_instance = Currency.objects.get(name=cell)
                     variation_instance.buying_currency = currency_instance
-                except:
+                except ObjectDoesNotExist:
                     print("Currency bulunamadı, %s eklenmedi!" % product_instance.title)
                     pass
 
                     # print("variation_instance.buying_currency", variation_instance.buying_currency)
 
             elif cell_value_model is "Category":
+                print("Model Category")
                 try:
                     category = Category.objects.get(title=cell)
-                    # print("Kategori: ", category)
+                    print("Kategori: ", category)
                     product_instance.categories.add(category)
-                except:
+                except ObjectDoesNotExist:
                     print("Kategori bulunamadı lütfen ekleyin : ", cell)
 
             else:
@@ -261,12 +261,12 @@ class XLSImporterTask(BaseDataImporterTask):
 
             cell_value = self.row[int(cell_value_index)]  # field eşleştirmeleri 0,1,2 gibi indeks değeri ile yapıldığı
             # için sorun yok. Şimdilik indeks yerine hücreye ait başlık ile eşleştirme yapmayı çözemedim.
-        except:
+        except ValueError:
             cell_value = ""
         return cell_value
 
 
-@task(bind=True, name="Download Image", rate_limit="240/h")
+@task(bind=True, name="Download Image", rate_limit="120/h")
 def download_image_for_product(self, image_link=None, product_id=None):
     result = "Hata! %s linkindeki resim indirilemedi:" % image_link
     try:
@@ -290,4 +290,3 @@ def process_xls_row(self, importer_map_pk, row, values, create_allowed=False, do
     print("create_allowed:", create_allowed)
     print("download_images:", download_images)
     return xls_task.run_import_task()
-
