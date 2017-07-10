@@ -364,7 +364,10 @@ class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images')
     image = models.ImageField(upload_to=image_upload_to, blank=True, null=True, max_length=1000)
     remote_url = models.URLField(blank=True, null=True)
-    order = models.IntegerField(default=-1)  # Eğer -1 ise o zaman sıralanmamış demektir.s
+    order = models.IntegerField(default=-1)  # Eğer -1 ise o zaman sıralanmamış demektir.
+
+    class Meta:
+        ordering = ('order',)
 
     def get_image_path(self):
         # img = self.image

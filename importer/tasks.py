@@ -266,7 +266,7 @@ class XLSImporterTask(BaseDataImporterTask):
         return cell_value
 
 
-@task(bind=True, name="Download Image", rate_limit="40/h")
+@task(bind=True, name="Download Image", rate_limit="240/h")
 def download_image_for_product(self, image_link=None, product_id=None):
     result = "Hata! %s linkindeki resim indirilemedi:" % image_link
     try:
