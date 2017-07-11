@@ -1,0 +1,1 @@
+Yeni Sipariş geldi: order id: {{ order_id }}

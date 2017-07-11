@@ -148,7 +148,7 @@ class AttributeTypeInline(admin.TabularInline):
 
 class AttributeValueInline(admin.TabularInline):
     model = AttributeValue
-    extra = 1
+    extra = 0
     ordering = ("attribute_type__order",)
 
 
@@ -178,7 +178,7 @@ class ThumbnailInline(admin.StackedInline):
 
 class ProductImageInline(admin.StackedInline):
     model = ProductImage
-    extra = 1
+    extra = 0
     max_num = 10
     # inlines = [ThumbnailInline]
 
@@ -196,7 +196,7 @@ class ProductImageAdmin(admin.ModelAdmin):
 
 class ThumbnailAdmin(admin.ModelAdmin):
     list_filter = ('type',)
-    search_fields = ['type', 'width', 'height']
+    search_fields = ['type', 'width', 'height', 'product__title']
 
 
 class ProductAdmin(admin.ModelAdmin):

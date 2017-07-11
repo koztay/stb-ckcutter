@@ -14,6 +14,11 @@ from django.views.generic.base import View
 from django.views.generic.detail import SingleObjectMixin, DetailView
 from django.views.generic.edit import FormMixin
 
+# E-mail related imports start
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
+# E-mail related imports end
 
 from orders.forms import GuestCheckoutForm
 from orders.mixins import CartOrderMixin
@@ -30,13 +35,27 @@ else:
     paynet_js_url = settings.PAYNET_TEST_PAYNETJS_URL
 
 
-# print("carts.views içerisindeki bu printleri neden yazıyor bu? Ayrıca debug değerini neden doğru okumaz?")
-# print('PAYNET_PUBLISHABLE_KEY: ', settings.PAYNET_PUBLISHABLE_KEY)
-# print('PAYNET_SECRET_KEY: ', settings.PAYNET_SECRET_KEY)
-# print('PAYNET_TEST_API_URL: ', settings.PAYNET_TEST_API_URL)
-# print('PAYNET_TEST_PAYNETJS_URL: ', settings.PAYNET_TEST_PAYNETJS_URL)
-# print('PAYNET_PRODUCTION_API_URL: ', settings.PAYNET_PRODUCTION_API_URL)
-# print('PAYNET_PRODUCTION_PAYNETJS_URL: ', settings.PAYNET_PRODUCTION_PAYNETJS_URL)
+def send_email(txt_template="carts/order_mail_customer.txt", html_template="carts/order_mail_customer.html",
+               email_context=None, email_subject=None, from_email=None, to=None):
+    """
+    sends e-mail after order as txt and html
+    :param txt_template: txt template for txt mail
+    :param html_template: html template for html mail
+    :param email_context: context for email instantiate like : "Context({'username': username})"
+    :param email_subject: subject of email
+    :param from_email: from address
+    :param to: to address
+    :return: Nothing returned
+    """
+    plaintext = get_template(txt_template)  # path to txt file template
+    htmly = get_template(html_template)  # path to html template file
+    d = email_context  # initialize this before sending mail as like as "Context({'username': username})"
+    _subject, _from, _to = email_subject, from_email, to
+    text_content = plaintext.render(d)
+    html_content = htmly.render(d)
+    msg = EmailMultiAlternatives(_subject, text_content, _from, [_to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
 
 
 class ItemCountView(View):
@@ -288,6 +307,11 @@ class CheckoutFinalView(CartOrderMixin, View):
                     # result.transaction.id to order
                     order.mark_completed(order_id=json_response['order_id'])
                     messages.success(request, "Siparişiniz için teşekkür ederiz.")
+                    # send order-email to the customer
+                    # send order-email to the admin
+                    adminmail_context = Context({'order_id': request.session["order_id"]})
+                    send_email(txt_template="carts/order_mail_admin.txt", html_template="carts/order_mail_admin.html",
+                               email_context=adminmail_context, from_email="webmaster@istebu.com", to="info@istebu.com")
                     # burada siliyoruz cart değerlerini
                     del request.session["cart_id"]
                     del request.session["order_id"]
@@ -298,7 +322,7 @@ class CheckoutFinalView(CartOrderMixin, View):
                     return redirect("checkout")
             else:
                 # messages.success(request, "There was a problem with your order.")
-                messages.success(request, "%s" % (json_response['message']))
+                messages.error(request, "%s" % (json_response['message']))
                 return redirect("checkout")
         else:
             print("form post edildikten sonra nonce değerini bulamadık ve cartı silemedik.")
