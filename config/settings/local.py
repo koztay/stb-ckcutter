@@ -87,3 +87,12 @@ CELERY_ALWAYS_EAGER = True
 # ------------------------------------------------------------------------------
 
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['istebu.com', ])  # INTERNAL IP ile olmuyor illa koymak lazım.
+
+MIGRATION_MODULES = {
+    'sites': 'ecommerce_istebu_cookiecutter.contrib.sites.migrations',
+    'data_importer': 'data_importer.django_migrations',  # bu satır migration sonrasında hala
+    # yapacak migrationların ver diyor, bu satırı kaldırınca da testler çalışmıyor.
+    # en iyisi data-importer dan kurtulmak. Bunu sadece localde ekliyorum, production 'da
+    # test yapılmayacağından bu satıra gerek yok.
+
+}

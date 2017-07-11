@@ -103,16 +103,9 @@ MIDDLEWARE = [
     'utils.multilang.AdminLocaleURLMiddleware',
 ]
 
-# MIGRATIONS CONFIGURATION
-# ------------------------------------------------------------------------------
 MIGRATION_MODULES = {
     'sites': 'ecommerce_istebu_cookiecutter.contrib.sites.migrations',
-    'data_importer': 'data_importer.django_migrations',  # bu satır migration sonrasında hala
-    # yapacak migrationların ver diyor, bu satırı kaldırınca da testler çalışmıyor.
-    # en iyisi data-importer dan kurtulmak.
-
 }
-
 # DEBUG
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
