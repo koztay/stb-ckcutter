@@ -24,7 +24,7 @@ def download_and_create_new_media_path_for_remote_images(media_path):
     # create tmp directory if not exists
     if not os.path.exists(temporary_download_location):
         os.makedirs(temporary_download_location)
-
+    print("media path => ", media_path)
     if not os.path.exists(temporary_download_path):  # eğer file indirilmemişse indir.
         # download the file
         http = urllib3.PoolManager()
@@ -33,7 +33,7 @@ def download_and_create_new_media_path_for_remote_images(media_path):
                 shutil.copyfileobj(resp, out_file)
             else:
                 raise ValueError('A very specific bad thing happened. Response code was not 200')
-
+    print("temporary_download_path :", temporary_download_path)
     return temporary_download_path
 
 

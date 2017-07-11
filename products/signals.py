@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models.signals import post_save, pre_save, pre_delete
 from django.dispatch import receiver
 from uuslug import slugify
@@ -135,10 +136,10 @@ def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *ar
                                                                type='micro')
 
         # hd_max = (width, height)
-        hd_max = (900, 900)
-        sd_max = (600, 600)
-        mid_max = (250, 300)  # bunu yatayda 350 pixelin altına ayarlayınca zoom lens sapıtıyor.
-        micro_max = (150, 150)
+        hd_max = settings.HD_MAX
+        sd_max = settings.SD_MAX
+        mid_max = settings.MEDIUM_MAX  # bunu yatayda 350 pixelin altına ayarlayınca zoom lens sapıtıyor.
+        micro_max = settings.MICRO_MAX
 
         media_path = instance.get_image_path()
         print('mediapath nedir?: ', media_path)

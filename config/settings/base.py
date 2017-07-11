@@ -377,3 +377,9 @@ DEFAULT_FIELDS = {
 
 # IMPORTER APP USES IT FOR EXCEL IMPORT
 IMPORTER_SALE_PRICE_FACTOR = 1.0
+
+# THUMBNAIL SIZES
+HD_MAX = (900, 900)
+SD_MAX = (600, 600)
+MEDIUM_MAX = (250, 300)  # bunu yatayda 350 pixelin altına ayarlayınca zoom lens sapıtıyor.
+MICRO_MAX = (150, 150)
