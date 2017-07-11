@@ -397,7 +397,7 @@ class ProductImage(models.Model):
         # print("sd_thumb var mı?", sd_thumb, self) # try blocku içine koymazsan error durumunda xml output patlıyor.
         try:
             url = micro_thumb.media.url
-        except:
+        except models.ObjectDoesNotExist:
             url = "Image has no Micro Thumbnail"
         return url
 
@@ -406,8 +406,7 @@ class ProductImage(models.Model):
         medium_thumb = Thumbnail.objects.all().filter(main_image=self, type='medium').first()
         try:
             url = medium_thumb.media.url
-
-        except:
+        except models.ObjectDoesNotExist:
             url = "Image has no Medium Thumbnail"
         return url
 
@@ -417,7 +416,7 @@ class ProductImage(models.Model):
         # print("sd_thumb var mı?", sd_thumb, self) # try blocku içine koymazsan error durumunda xml output patlıyor.
         try:
             url = sd_thumb.media.url
-        except:
+        except models.ObjectDoesNotExist:
             url = "Image has no SD Thumbnail"
         return url
 
@@ -427,7 +426,7 @@ class ProductImage(models.Model):
         # print("sd_thumb var mı?", sd_thumb, self) # try blocku içine koymazsan error durumunda xml output patlıyor.
         try:
             url = hd_thumb.media.url
-        except:
+        except models.ObjectDoesNotExist:
             url = "Image has no HD Thumbnail"
         return url
 

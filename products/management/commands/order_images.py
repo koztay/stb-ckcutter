@@ -2,12 +2,13 @@
 from django.core.management.base import BaseCommand, CommandError
 from products.models import Product
 
+
 # TODO: ATTENTION ! Please do not run this more than once:
 class Command(BaseCommand):
     help = 'Set orders of product images according to their id if order is -1'
 
     def handle(self, *args, **options):
-        all_products = Product.objects.all()[:10]
+        all_products = Product.objects.all()
 
         for product in all_products:
             self.stdout.write(product.title + " started")
