@@ -234,9 +234,9 @@ class XMLImporter(BaseImporter):
 def run_all_steps(**kwargs):
     xml_file_pk = kwargs.get("xml_file_pk")
     import_map_pk = kwargs.get("import_map_pk")
-    number_of_items = kwargs.get("number_of_items")
+    number_of_items = kwargs.get("number_of_items")  # bunu EXCEL importer kaale almıyor
     download_images = kwargs.get("download_images")
-    allow_item_creation = kwargs.get("allow_item_creation")
+    allow_item_creation = kwargs.get("allow_item_creation")  # bunu XML importer kaale almıyor
 
     print(kwargs)
 
