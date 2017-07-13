@@ -10,9 +10,9 @@ from django.core.files import File
 
 from products.models import ProductImage, Product
 
-download_url = 'http://i.hurimg.com/i/hurriyet/75/892x220/58a9fa28c03c0e20402a9064.jpg'
+# download_url = 'http://i.hurimg.com/i/hurriyet/75/892x220/58a9fa28c03c0e20402a9064.jpg'
 
-'http://images.hepsiburada.net/assets/Mobilya/500/9443499868210.jpg'
+# 'http://images.hepsiburada.net/assets/Mobilya/500/9443499868210.jpg'
 # new_product = Product.objects.create(title='yeni ürün 1')
 # result = download_image(download_url, new_product)
 """
@@ -22,7 +22,7 @@ isimde ilk ürünün klasöründe kalıyor. Çünkü image_upload_to bu şekilde
 """
 
 
-def download_image(url, product_id):
+def download_image(url, product_id, order):
     print("indirilecek resim linki :", url)
     product = Product.objects.get(pk=product_id)
     try:
@@ -57,6 +57,7 @@ def download_image(url, product_id):
         product_image_file = File(product_image_data)
         product_image = ProductImage.objects.create(product=product)
         product_image.remote_url = url
+        product_image.order = order
         product_image.image.save(os.path.basename(temp_file_path), product_image_file)
     return "Product image downloaded for %s" % product.title
 

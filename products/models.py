@@ -393,55 +393,42 @@ class ProductImage(models.Model):
     # // Aşağıdakiler için parametre olarak 'type' alan tek bir fonksiyon yazaydın ya...
     @property
     def micro_thumb(self):
-        micro_thumb = Thumbnail.objects.filter(main_image=self, type='micro')
-        # print("sd_thumb var mı?", sd_thumb, self) # try blocku içine koymazsan error durumunda xml output patlıyor.
-        if micro_thumb.count() > 0:
-            try:
-                thumb = micro_thumb[0]
-                url = thumb.media.url
-            except models.ObjectDoesNotExist:
-                url = "Image has no Micro Thumbnail"
-        else:
-            url = "Image has no Micro Thumbnail"
+        micro_thumb = Thumbnail.objects.filter(main_image=self, type='micro').first()
+        url = "Image has no SD Thumbnail"
+        try:
+            url = micro_thumb.media.url
+        except ValueError:
+            print("The 'media' attribute has no file associated with it.")
         return url
 
     @property
     def medium_thumb(self):
-        medium_thumb = Thumbnail.objects.filter(main_image=self, type='medium')
-        if medium_thumb.count() > 0:
-            try:
-                thumb = medium_thumb[0]
-                url = thumb.media.url
-            except models.ObjectDoesNotExist:
-                url = "Image has no Medium Thumbnail"
-        else:
-            url = "Image has no Medium Thumbnail"
+        medium_thumb = Thumbnail.objects.filter(main_image=self, type='medium').first()
+        url = "Image has no SD Thumbnail"
+        try:
+            url = medium_thumb.media.url
+        except ValueError:
+            print("The 'media' attribute has no file associated with it.")
         return url
 
     @property
     def sd_thumb(self):
-        sd_thumb = Thumbnail.objects.filter(main_image=self, type='sd')
-        if sd_thumb.count() > 0:
-            try:
-                thumb = sd_thumb[0]
-                url = thumb.media.url
-            except models.ObjectDoesNotExist:
-                url = "Image has no SD Thumbnail"
-        else:
-            url = "Image has no SD Thumbnail"
+        sd_thumb = Thumbnail.objects.filter(main_image=self, type='sd').first()
+        url = "Image has no SD Thumbnail"
+        try:
+            url = sd_thumb.media.url
+        except ValueError:
+            print("The 'media' attribute has no file associated with it.")
         return url
 
     @property
     def hd_thumb(self):
-        hd_thumb = Thumbnail.objects.filter(main_image=self, type='hd')
-        if hd_thumb.count() > 0:
-            try:
-                thumb = hd_thumb[0]
-                url = thumb.media.url
-            except models.ObjectDoesNotExist:
-                url = "Image has no HD Thumbnail"
-        else:
-            url = "Image has no HD Thumbnail"
+        hd_thumb = Thumbnail.objects.filter(main_image=self, type='hd').first()
+        url = "Image has no SD Thumbnail"
+        try:
+            url = hd_thumb.media.url
+        except ValueError:
+            print("The 'media' attribute has no file associated with it.")
         return url
 
 # ************************************************************************************************************ #

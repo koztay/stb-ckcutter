@@ -1,5 +1,6 @@
 import random  # related products için kullanılıyor...
 from io import StringIO
+from sys import stdout
 
 from django.contrib.sites.models import Site
 from django.contrib import messages
@@ -91,6 +92,8 @@ def big_xml(marketplace):
             media_url_output += "<image>No Image</image>"
         else:
             for image in images:
+                # stdout.write("Image: " + image.product.title + " " + str(image.pk) + '\n')
+                # print("Image: ", image.product.title, " ", image.pk) print kullanmak stdout kullanmaktan daha iyi
                 media_url_output += "\n\t<image><![CDATA[{}]]></image>\n".format(image.sd_thumb)
         output.write('<product_image>' + media_url_output + '</product_image>\n')
 

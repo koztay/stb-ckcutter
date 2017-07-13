@@ -181,9 +181,9 @@ class BaseDataImporterTask:
 
             # Aşağıdaki kod parçası çoklu imaj indirmeye yarıyor...
             images = product.images.all()
-            for img_url in img_url_list:
+            for img_url, index in enumerate(img_url_list):
                 if not images.filter(remote_url=img_url).exists():
-                    download_image_for_product.apply_async(args=[img_url, product.id], kwargs={},
+                    download_image_for_product.apply_async(args=[img_url, product.id], kwargs={"order": index},
                                                            queue='images')
 
             # aşağıdaki kodu sadece 1 kez çalıştıracağız. Bu kod mevcut resimlerin remote url 'lerini güncelleyecek.
@@ -267,10 +267,11 @@ class XLSImporterTask(BaseDataImporterTask):
 
 
 @task(bind=True, name="Download Image", rate_limit="120/h")
-def download_image_for_product(self, image_link=None, product_id=None):
+def download_image_for_product(self, image_link=None, product_id=None, **kwargs):
     result = "Hata! %s linkindeki resim indirilemedi:" % image_link
+    order = kwargs.get('order')
     try:
-        result = image_downloader.download_image(image_link, product_id)
+        result = image_downloader.download_image(image_link, product_id, order)
     except Exception as e:
         self.retry(countdown=120, exc=e, max_retries=2)
 
