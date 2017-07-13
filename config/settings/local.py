@@ -94,5 +94,7 @@ MIGRATION_MODULES = {
     # yapacak migrationların ver diyor, bu satırı kaldırınca da testler çalışmıyor.
     # en iyisi data-importer dan kurtulmak. Bunu sadece localde ekliyorum, production 'da
     # test yapılmayacağından bu satıra gerek yok.
+    # ayrıca postgres ile restore yapınca tekrar migrate komutu çalıştırman lazım yoksa
+    # testler yine çalışmıyor...
 
 }

@@ -139,17 +139,6 @@ class BaseImporter:
                         # print(value)
             # row_object.append(product_field_list)
             yield row_object
-                # print(element.xpath(map_item.xml_field))
-                # print(map_item.product_field, map_item.xml_field)
-                # print("model :", settings.DEFAULT_FIELDS.get(map_item.product_field).get("model"))
-        # row_element = kwargs.get("row_element")
-        # print(row_element.xpath(".//Urun/Baslik/node()"))
-        # şimdilik sadece dropping word 'leri yazsın yeter.
-        # print(self.replacing_words)
-
-
-        # for key in settings.DEFAULT_FIELDS:
-        #     print(key)
 
     def get_model_field_for_row_value(self, **kwargs):
 

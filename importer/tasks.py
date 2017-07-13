@@ -181,7 +181,8 @@ class BaseDataImporterTask:
 
             # Aşağıdaki kod parçası çoklu imaj indirmeye yarıyor...
             images = product.images.all()
-            for img_url, index in enumerate(img_url_list):
+            for index, img_url in enumerate(img_url_list):
+                print("img_url=> ", img_url, "index=> ", index)
                 if not images.filter(remote_url=img_url).exists():
                     download_image_for_product.apply_async(args=[img_url, product.id], kwargs={"order": index},
                                                            queue='images')
