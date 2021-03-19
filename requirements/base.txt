@@ -56,7 +56,7 @@ data-importer==3.0.2  # bunu kullanarak importer klasörünü sil.
 django-celery-beat==1.0.1
 django-celery-results==1.0.1
 django-filter==1.0.2
-djangorestframework==3.5.4
+djangorestframework==3.11.2
 django-taggit==0.22.0
 django-ckeditor==5.2.1
 django-uuslug==1.1.8  # bunu kaldır mevcuttaki awesome-slugify'ı kullan
