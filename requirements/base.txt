@@ -54,7 +54,7 @@ django-compressor==2.1.1
 # Your custom requirements go here
 data-importer==3.0.2  # bunu kullanarak importer klasörünü sil.
 django-celery-beat==1.0.1
-django-celery-results==1.0.1
+django-celery-results==2.4.0
 django-filter==1.0.2
 djangorestframework==3.5.4
 django-taggit==0.22.0
